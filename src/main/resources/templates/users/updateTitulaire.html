@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title th:inline="text">[[#{updatetitulaire.titrepage}]]</title>
+</head>
+<body>
+	<span layout:fragment="titre_boite">
+        <kbd th:inline="text">[[#{updatetitulaire.titreboite}]]</kbd>
+    </span>
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-1"></div>
+<div class="col-md-7">
+	<form action="#" th:action="@{/logesco/users/censeur/postupdateTitulaire}" 
+			method="post"   class="form-inline" th:object="${updateTitulaireForm}">
+				
+				<div th:if="${param.updatetutulaireerror}">
+					<h4 align="justify" class="alert alert-danger" th:inline="text">[[#{updatetitulaire.updatetutulaireerror}]] .</h4>
+				</div>
+				
+				<div th:if="${param.updatetutulaireerrorTit}">
+					<h4 align="justify" class="alert alert-danger" th:inline="text">[[#{updatetitulaire.updatetutulaireerrorTit}]] .</h4>
+				</div>
+				
+				<div th:if="${param.updatetutulairesuccess}">
+					<h4 align="justify" class="alert alert-success" th:inline="text">[[#{updatetitulaire.updatetutulairesuccess}]] .</h4>
+				</div>
+				
+				<div class="form-group">
+					<input type="hidden" name="numPageNiveaux"
+						id="numPageNiveaux" class="form-control" th:value="*{numPageNiveaux}" th:field="*{numPageNiveaux}" />
+				</div>
+								
+				<table class="table table-striped">
+					<thead class="thead-light">
+						<tr>
+							<th class="text-center" scope="col" th:inline="text">[[#{updatetitulaire.th_classe}]]</th>
+							<th class="text-center" scope="col" th:inline="text">[[#{updatetitulaire.th_idProf}]] </th>
+						    <th class="text-center" scope="col">ACTION</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+						
+							<td>
+								
+								<div th:if="${listofNiveaux}">
+									<div class="form-group">
+										<select class="form-control" name="idClassesConcerne" id="idClassesConcerne"  th:field="*{idClassesConcerne}">
+											 
+											<optgroup th:label="${session.lang=='fr'}?${n.codeNiveaux}+'/'+${n.codeNiveaux_en}:${n.codeNiveaux_en}+'/'+${n.codeNiveaux}"
+											 th:if="${listofNiveaux}" th:each="n:${listofNiveaux}">
+											
+												<option th:each="c:${n.listofClasses}" th:value="${c.idClasses}"
+													th:inline="text">
+													 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]] 
+												</option>
+												
+											</optgroup>
+											
+											<!-- <option th:each="c:${listofClasses}" th:value="${c.idClasses}"
+													th:inline="text">
+													 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+											</option> -->
+														 
+										</select>
+									</div>
+									<div th:if="${#fields.hasErrors('idClassesConcerne')}"
+										th:errors="*{idClassesConcerne}" class="redcolor" th:inline="text">[[#{updatetitulaire.erreurclasse}]]</div>
+								</div>
+							</td>
+							
+							<td>
+								<div th:if="${listofProf}">
+									<div class="form-group">
+										<select class="form-control" name="idUsersTitulaire" id="idUsersTitulaire"  th:field="*{idUsersTitulaire}">
+											 
+											 <optgroup label="Proviseur" th:if="${listofproviseur}">
+											 	<option th:each="p:${listofproviseur}" th:value="${p.idUsers}"
+													th:inline="text">
+													 [[${p.username}]] 
+												</option>
+											 </optgroup>
+											 
+											 <optgroup label="Censeurs" th:if="${listofcenseurs}">
+											 	<option th:each="p:${listofcenseurs}" th:value="${p.idUsers}"
+													th:inline="text">
+													 [[${p.username}]] 
+												</option>
+											 </optgroup>
+											 
+											 <optgroup label="SG" th:if="${listofsg}">
+											 	<option th:each="p:${listofsg}" th:value="${p.idUsers}"
+													th:inline="text">
+													 [[${p.username}]] 
+												</option>
+											 </optgroup>
+											 
+											  <optgroup label="Intendant" th:if="${listofintendant}">
+											 	<option th:each="p:${listofintendant}" th:value="${p.idUsers}"
+													th:inline="text">
+													 [[${p.username}]] 
+												</option>
+											 </optgroup>
+											 
+											  <optgroup label="Enseignants" th:if="${listofenseignants}">
+											 	<option th:each="p:${listofenseignants}" th:value="${p.idUsers}"
+													th:inline="text">
+													 [[${p.username}]] 
+												</option>
+											 </optgroup>
+											 
+										</select>
+									</div>
+									<div th:if="${#fields.hasErrors('idUsersTitulaire')}"
+										th:errors="*{idUsersTitulaire}" class="redcolor" th:inline="text">[[#{updatetitulaire.erreuriduser}]]</div>
+								</div>
+							</td>
+							
+							<td>
+								<button type="submit" class="btn btn-primary  pull-right" th:inline="text">
+									<span class="glyphicon glyphicon-save"></span> [[#{updatetitulaire.bouton_envoyer}]]
+								</button>
+							</td>
+							
+						</tr>
+					</tbody>
+				</table>
+				<hr/>
+				<table class="table table-striped" th:each="niv:${listofNiveaux}" th:if="${listofNiveaux}">
+					<thead class="thead-light">
+						<tr>
+							<th th:inline="text" > 
+								<span class="greencolor">[[${session.lang=='fr'}?${niv.codeNiveaux}+'/'+${niv.codeNiveaux_en}:${niv.codeNiveaux_en}+'/'+${niv.codeNiveaux}]]:</span>
+							</th>
+						</tr>
+					</thead>
+				
+					<tbody>
+						<tr th:each="classe:${niv.listofClasses}" th:if="${listofNiveaux}">
+						
+							<td th:inline="text">[[${classe.codeClasses}]] [[${classe.specialite.codeSpecialite}]] 
+								[[${classe.numeroClasses}]] <kbd>[[${classe.geteffectifEleve()}]]</kbd></td>
+								
+							<td th:inline="text"><!-- [[${classe.proffesseur.nomsPers}]] 
+								[[${classe.proffesseur.prenomsPers}]]   -->
+								[[${classe.proffesseur==null}?#{updateTitulaire.pasdefini}:${classe.proffesseur.nomsPers} ]]
+							</td>
+							
+							<td>
+							
+								<div>
+									<span>
+										<a class="btn btn-primary btn-sm pull-left" href="#" 
+											th:href="@{/logesco/users/censeur/getupdateTitulaire(idClasseAModif=${classe.idClasses}, 
+											idUsersTitulaire=${classe.proffesseur==null}?0:${classe.proffesseur.idUsers}, 
+											numPageNiveaux=${pageCouranteNiveaux})}" role="button" th:inline="text">
+											<span class="glyphicon glyphicon-edit"></span> [[#{updatetitulaire.bouton_modifier}]]
+										</a>
+									</span>
+								</div>
+								
+							</td>
+							
+						</tr>
+					</tbody>
+				</table>
+				
+				<div class="container">
+					<ul class="pagination"><!-- nav nav-pills -->
+						<li th:each="p,status:${listofPagesNiveaux}" th:class="${status.index==pageCouranteNiveaux}?active:' ' ">
+							<a th:href="@{/logesco/users/censeur/getupdateTitulaire(numPageNiveaux=${status.index},
+									idClasseAModif=*{idClassesConcerne}, idUsersTitulaire=*{idUsersTitulaire})}"
+									th:text="${status.index+1}"></a>
+						</li>
+					</ul>
+				</div> 
+				
+				<a class=" pull-right" href="#" 
+			      		th:href="@{/logesco/users/censeur/exportlistTitulaireClasse}" 
+			      						role="button" th:inline="text" target="_blank">
+			      				<span class="glyphicon glyphicon-list-alt"></span>[[#{updatetitulaire.bouton_export}]] 
+			    </a>
+				
+			</form>
+</div>
+<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

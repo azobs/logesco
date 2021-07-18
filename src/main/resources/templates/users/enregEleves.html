@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title th:inline="text">[[#{enregelv.titre_page}]]</title>
+</head>
+<body>
+
+	<span layout:fragment="titre_boite">
+        <kbd th:inline="text">[[#{enregelv.titre_boite}]]</kbd>
+    </span>
+
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-9 ">
+			<p class="alert alert-warning" th:inline="text">
+				<span style="text-decoration: underline;">IMPORTANT:</span>
+				[[#{enregelv.warning_important}]]
+			</p>
+			
+			<form action="#" th:action="@{/logesco/users/chefetab/postenregEleves}"
+						th:object="${enregElevesForm}"  method="post" enctype="multipart/form-data">
+				
+				<div th:if="${param.enregelevessuccess}">
+					<h4 align="justify" class="alert alert-success" th:inline="text">
+						[[#{enregelv.labelsuccess_enregelevessuccess}]].
+					</h4>
+				</div>
+				
+				<div th:if="${param.enregeleveserrorClasse}">
+					<h4 align="justify" class="alert alert-danger" th:inline="text">
+						[[#{enregelv.labelerror_enregeleveserrorClasse}]].</h4>
+				</div>
+				
+				<div th:if="${param.enregeleveserrorMatricule}">
+					<h4 align="justify" class="alert alert-danger" th:inline="text">
+						[[#{enregelv.labelerror_enregeleveserrorMatricule}]].</h4>
+				</div>
+				
+				<div th:if="${param.enregeleveserrorNames}">
+					<h4 align="justify" class="alert alert-danger" th:inline="text">
+						[[#{enregelv.labelerror_enregeleveserrorNames}]].</h4>
+				</div>
+				
+				<fieldset class="col-md-4">
+					<legend class="text-primary" th:inline="text">[[#{enregelv.legend_paramperseleve}]]</legend>
+					
+					
+					<div class="form-group">
+						<label for="nomsEleves" th:inline="text">[[#{enregelv.label_nomselv}]] : <span
+							class="redcolor">*</span></label> <input type="text" name="nomsEleves"
+							id="nomsEleves" class="form-control" th:value="*{nomsEleves}" th:field="*{nomsEleves}"
+							placeholder="Les noms de l'élève" />
+					</div>
+					<div th:if="${#fields.hasErrors('nomsEleves')}"
+						th:errors="*{nomsEleves}" class="redcolor">Erreur de noms de l'élève</div>
+					
+					<div class="form-group">
+						<label for="prenomsEleves" th:inline="text">[[#{enregelv.label_prenomselv}]]  : <span
+							class="redcolor">*</span></label> <input type="text" name="prenomsEleves"
+							id="prenomsEleves" class="form-control" th:value="*{prenomsEleves}" th:field="*{prenomsEleves}"
+							placeholder="Les prénoms de l'élève" />
+					</div>
+					<div th:if="${#fields.hasErrors('prenomsEleves')}"
+						th:errors="*{prenomsEleves}" class="redcolor">Erreur de prénoms de l'élève</div>
+					
+					<div class="form-group">
+						<label for="datenaissEleves" th:inline="text"> [[#{enregelv.label_datenaisselv}]]: <span
+							class="redcolor">*</span></label> <input type="date" name="datenaissEleves"
+							id="datenaissEleves" class="form-control" th:value="*{datenaissEleves}" th:field="*{datenaissEleves}"
+							placeholder="Date de naissance(année-mois-jour)"  min="1990-01-01" max="2012-01-01"/>
+					</div>
+					<div th:if="${#fields.hasErrors('datenaissEleves')}"
+							th:errors="*{datenaissEleves}" class="redcolor">Erreur de date de naissance
+					</div>
+					
+					<div class="form-group">
+						<label for="lieunaissEleves" th:inline="text"> [[#{enregelv.label_lieunaisselv}]]: <span
+							class="redcolor">*</span></label> <input type="text" name="lieunaissEleves"
+							id="lieunaissEleves" class="form-control" th:value="*{lieunaissEleves}" th:field="*{lieunaissEleves}"
+							placeholder="Le lieu de naissance de l'élève" />
+					</div>
+					<div th:if="${#fields.hasErrors('lieunaissEleves')}"
+						th:errors="*{lieunaissEleves}" class="redcolor">Erreur de lieu de naissance de l'élève</div>
+					
+					<div class="form-group">
+						<label for="nationaliteEleves" th:inline="text">[[#{enregelv.label_nationaliteelv}]] : <span
+							class="redcolor">*</span></label> <input type="text" name="nationaliteEleves"
+							id="nationaliteEleves" class="form-control" th:value="*{nationaliteEleves}" th:field="*{nationaliteEleves}"
+							placeholder="La nationalité de l'élève" />
+					</div>
+					<div th:if="${#fields.hasErrors('nationaliteEleves')}"
+						th:errors="*{nationaliteEleves}" class="redcolor">Erreur de nationalité de l'élève</div>
+					
+					<div class="form-group">
+						<label for="sexeEleves" class="control-label text-left" th:inline="text">[[#{enregelv.label_sexeelv}]] : <span
+							class="redcolor">*</span></label> 
+									
+						<div class="radio">
+							    <label><input type="radio" name="sexeEleves" id="sexeEleves" class="radio-inline"
+						    				 th:field="*{sexeEleves}" value="masculin" checked="checked"/>Masculin/Male</label>
+							    <label><input type="radio" name="sexeEleves" id="sexeEleves" class="radio-inline"
+						      				th:field="*{sexeEleves}" value="feminin"/>Féminin/Female</label>
+					   </div>
+					</div>
+					<div th:if="${#fields.hasErrors('sexeEleves')}"
+						th:errors="*{sexeEleves}" class="redcolor">erreur sexe Eleves</div>
+					
+					<div class="form-group ">
+						<label for="picturephotoEleves"> Photo: </label> <input type="file"
+							name="picturephotoEleves" id="picturephotoEleves" class="form-control-file" 
+							placeholder="Envoyer la photo" accept="image/*" />
+					</div>
+					<div th:if="${#fields.hasErrors('photoEleves')}"
+							th:errors="*{photoEleves}" class="redcolor">Erreur de photo Eleves
+					</div>
+					
+				</fieldset>
+				
+				<fieldset class="col-md-4">
+					<legend class="text-primary" th:inline="text">[[#{enregelv.adresse}]]</legend>
+					
+					<div class="form-group">
+						<label for="numtel1Parent" th:inline="text"> [[#{enregelv.numtel}]]: <span
+							class="redcolor">*</span></label> <input type="text" name="numtel1Parent"
+							id="numtel1Parent" class="form-control" th:value="*{numtel1Parent}" th:field="*{numtel1Parent}"
+							placeholder="Num tel parent/tuteur" />
+					</div>
+					<div th:if="${#fields.hasErrors('numtel1Parent')}"
+						th:errors="*{numtel1Parent}" class="redcolor">Erreur de numero de tel de l'élève</div>
+					
+					<div class="form-group">
+						<label for="emailParent"> Email: <span
+							class="redcolor">*</span></label> <input type="text" name="emailParent"
+							id="emailParent" class="form-control" th:value="*{emailParent}" th:field="*{emailParent}"
+							placeholder="email parent/tuteur" />
+					</div>
+					<div th:if="${#fields.hasErrors('emailParent')}"
+						th:errors="*{emailParent}" class="redcolor">Erreur de email de l'élève</div>
+					
+					<div class="form-group">
+						<label for="villeEleves" th:inline="text">[[#{enregelv.ville}]] : <span
+							class="redcolor">*</span></label> <input type="text" name="villeEleves"
+							id="villeEleves" class="form-control" th:value="*{villeEleves}" th:field="*{villeEleves}"
+							placeholder="ville habitation" />
+					</div>
+					<div th:if="${#fields.hasErrors('villeEleves')}"
+						th:errors="*{villeEleves}" class="redcolor">Erreur de ville de l'élève</div>
+					
+					<div class="form-group">
+						<label for="quartierEleves" th:inline="text">[[#{enregelv.quartier}]] : <span
+							class="redcolor">*</span></label> <input type="text" name="quartierEleves"
+							id="quartierEleves" class="form-control" th:value="*{quartierEleves}" th:field="*{quartierEleves}"
+							placeholder="quartier habitation" />
+					</div>
+					<div th:if="${#fields.hasErrors('quartierEleves')}"
+						th:errors="*{quartierEleves}" class="redcolor">Erreur de quartier de l'élève</div>
+					
+					<div class="card" th:if="${eleveEnreg}">
+						<img th:src="@{/logesco/users/getphotoEleve(idEleves=${eleveEnreg.idEleves})}" 
+								class="card-img-top" width="100" height="100"/>
+						<div class="card-body">
+							 <p class="card-text">Profil de l'élève enregistré</p>
+						</div>
+					</div>
+					
+				</fieldset>
+				
+				<fieldset class="col-md-4">
+					<legend class="text-primary" th:inline="text">[[#{enregelv.legend_infosclasse}]]</legend>
+					
+					<div class="form-group">
+						<label for="idClasse" th:inline="text"> [[#{enregelv.label_classeapp}]]: <span
+										class="redcolor">*</span></label> 
+						<select class="form-control" name="idClasse"  th:field="*{idClasse}"
+										 id="idClasse" >
+							
+							<optgroup th:label="${session.lang=='fr'}?${n.codeNiveaux}+'/'+${n.codeNiveaux_en}:${n.codeNiveaux_en}+'/'+${n.codeNiveaux}" 
+									th:if="${listofNiveaux}" th:each="n:${listofNiveaux}">
+											
+								<option th:each="c:${n.listofClasses}" th:value="${c.idClasses}"
+										th:inline="text">
+											 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+								</option>
+												
+							</optgroup>
+										 
+						
+										 
+						</select>&nbsp;
+					</div>
+					<div th:if="${#fields.hasErrors('idClasse')}"
+								th:errors="*{idClasse}" class="redcolor">Erreur de classe</div>
+					
+					<button type="submit" class="btn btn-primary  pull-right" th:inline="text">
+						<span class="glyphicon glyphicon-save"></span> [[#{enregelv.bouton_envoyer}]]
+					</button>
+					
+					<div th:if="${eleveEnreg}">
+					
+						<label th:inline="text"> [[#{enregelv.label_effprov}]]  [[${classeConcerne.codeClasses}]] 
+							[[${classeConcerne.specialite.codeSpecialite}]] 	[[${classeConcerne.numeroClasses}]]: 
+							<span class="redcolor" th:inline="text">[[${effectifprovClasse}]]</span></label>
+						
+						<br/><br/>
+							<span class="col-md-4">
+								<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" 
+										th:attr="data-target='#'+${eleveEnreg.idEleves}" th:inline="text">
+										  <span class="glyphicon glyphicon-eye-open"></span>#{enregelv.bouton_affichercoupon} 
+								</button>
+				      		</span>
+				     </div>
+				     <br/><br/>
+				      <div th:if="${eleveEnreg}" >
+				      		<!-- Modal Division concernant la boite de dialogue d'affichage-->
+							<div class="modal fade" th:id="${eleveEnreg.idEleves}"  tabindex="-1" role="dialog" 
+										aria-labelledby="affichage" aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <h3 class="modal-title" id="affichage" align="center" th:inline="text">[[#{enregelv.label_autorisation}]]</h3>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							          <span aria-hidden="true">&times;</span>
+							        </button>
+							      </div>
+							      <div class="modal-body">
+							        	<h4 th:inline="text"><b>[[#{enregelv.nomsprenoms}]]:</b> <span th:inline="text">[[${#strings.capitalize(eleveEnreg.nomsEleves)}]]  
+							        		[[${eleveEnreg.prenomsEleves}]]</span></h4>
+							        	<h4 th:inline="text"><b>[[#{enregelv.datenaiss}]]:</b> <span th:inline="text">[[${eleveEnreg.datenaissEleves}]] à 
+							        		[[${eleveEnreg.lieunaissEleves}]]</span></h4>
+							        	
+								        <!-- <span class="card col-md-4"> 
+											<img th:src="@{/logesco/users/getphotoEleve(idEleves=${eleveEnreg.idEleves})}" 
+													class="card-img-top img-rounded" width="100" height="100"/>
+													
+										</span> -->
+										<h4 align="center" th:inline="text">[[#{enregelv.autorisationinscription}]]</h4>
+										<h4 align="center" th:inline="text"><u>[[#{enregelv.visachef}]]:</u></h4>
+										<br/><br/>
+										
+										
+							      </div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:inline="text">
+							        	[[#{enregelv.bouton_fermer}]] <span class="glyphicon glyphicon-remove"></span>
+							        </button>
+							        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+							        <a class="btn btn-primary btn-sm" href="#" 
+											th:href="@{/logesco/users/chefetab/getimprimerCoupon(idEleves=${eleveEnreg.idEleves})}" 
+											role="button" th:inline="text">
+											<span class="glyphicon glyphicon-print"></span>[[#{enregelv.bouton_imprimer}]] 
+									</a>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<!-- Modal Fin de la Division concernant la boite de dialogue -->
+				      		
+					</div>
+					
+					
+					
+				</fieldset>
+					<a class="btn btn-danger pull-left" href="#" 
+											th:href="@{/logesco/users/chefetab/getenregEleves}" 
+											role="button" th:inline="text">
+								<span class="glyphicon glyphicon-erase"></span> [[#{enregelv.bouton_initform}]]
+					</a>
+			</form>
+		
+</div>
+<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/adminlayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Année: Configuration</title>
+</head>
+<body>
+<div layout:fragment="formactionadmin">
+<!-- debut du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-8  col-md-offset-2  reculeverticalementmodifpasswordform">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4>Enregistrement ou mise à jour des différentes années scolaires</h4>
+		</div>
+		<div class="panel-body">
+		<div class="col-md-4">
+			<form action="#" th:action="@{/logesco/admin/postupdatePeriodesAn}"
+						th:object="${updatePeriodesAnForm}" method="post">
+						
+					<div th:if="${param.updateperiodesanssuccess}">
+						<h4 align="justify" class="alert alert-success">Année scolaire enregistré avec succès.</h4>
+					</div>
+					
+					<div th:if="${param.updateperiodesanserrorIntitule}">
+						<h4 align="justify" class="alert alert-danger">Cette année scolaire a déjà été enregistrée .</h4>
+					</div>
+					
+					<div th:if="${param.updateperiodesanserrorDate}">
+						<h4 align="justify" class="alert alert-danger">Les dates spécifiées pour la période ne sont pas conforme .</h4>
+					</div>
+					
+					<fieldset>
+						<legend class="text-primary">Enregistrement des années scolaires</legend>
+						
+						<div class="form-group">
+								<label for="intituleAnnee"> Code: <span
+									class="redcolor">*</span></label> <input type="text" name="intituleAnnee"
+									id="intituleAnnee" class="form-control" th:value="*{intituleAnnee}" th:field="*{intituleAnnee}"
+									placeholder="Intitulé de l'année scolaire" />
+						</div>
+						<div th:if="${#fields.hasErrors('intituleAnnee')}"
+								th:errors="*{intituleAnnee}" class="redcolor">Erreur sur l'intitulé de l'année scolaire
+						</div>
+						
+						<div class="form-group">
+								<label for="datedebutPeriodes"> Date de rentrée du personnel dans l'année scolaire: <span
+									class="redcolor">*</span></label> <input type="date" name="datedebutPeriodes"
+									id="datedebutPeriodes" class="form-control" th:value="*{datedebutPeriodes}" th:field="*{datedebutPeriodes}"
+									placeholder="Date de rentrée scolaire(année-mois-jour)" />
+						</div>
+						<div th:if="${#fields.hasErrors('datedebutPeriodes')}"
+								th:errors="*{datedebutPeriodes}" class="redcolor">Erreur de date de rentrée
+						</div>
+						
+						<div class="form-group">
+								<label for="datefinPeriodes"> Date de départ en vacances du personnel: <span
+									class="redcolor">*</span></label> <input type="date" name="datefinPeriodes"
+									id="datefinPeriodes" class="form-control" th:value="*{datefinPeriodes}" th:field="*{datefinPeriodes}"
+									placeholder="Date de départ en vacance(année-mois-jour)" />
+						</div>
+						<div th:if="${#fields.hasErrors('datefinPeriodes')}"
+								th:errors="*{datefinPeriodes}" class="redcolor">Erreur de date de fin
+						</div>
+						
+					</fieldset>
+					
+					<button type="submit" class="btn btn-primary  pull-right">
+						<span class="glyphicon glyphicon-save"></span> Envoyer
+					</button>
+					<button type="reset" class="btn btn-danger">
+						<span class="glyphicon glyphicon-erase"></span> Effacer
+					</button>
+					
+			</form>
+		</div>
+		<div class="col-md-8">
+		
+			<div th:if="${param.supprimAnneeerrorTrimestres}">
+				<h4 align="justify" class="alert alert-danger">Impossible de supprimer une année qui englobe des trimestres.</h4>
+			</div>
+			
+			<div th:if="${param.supprimanneesuccess}">
+				<h4 align="justify" class="alert alert-success">Suppression réalisée avec succès: Elle ne contenait ni trimestre ni séquence.</h4>
+			</div>
+			
+			<!-- ici on va placer le tableau qui affiche la liste des sections dèjà enregistré -->
+			<table class="table table-bordered">
+				<caption>Liste des Années enregistrées</caption>
+				<thead>
+				 		<tr>
+						 	<th scope="col">Année scolaire</th>
+						 	<th scope="col">Date début</th>
+						 	<th scope="col">Date fin</th>
+					      	<th class="text-center" scope="col">Action</th>
+				      	</tr>
+			      	</thead>
+			      	<tbody>
+			      		<tr th:each="a:${listofAnnee}">
+			      			<td th:text="${a.intituleAnnee}"></td>
+			      			<td th:text="${#dates.format(a.datedebutPeriodes,'dd-MM-yyyy')}"></td>
+			      			<td th:text="${#dates.format(a.datefinPeriodes,'dd-MM-yyyy')}"></td>
+			      			<td>
+			      				<div>
+			      					
+			      					<!-- <a class="btn btn-primary btn-sm pull-left" href="#" 
+			      						th:href="@{/logesco/admin/getactiverAnnee(idPeriodes=${a.idPeriodes})}" 
+			      						role="button" th:inline="text">[[${a.etatPeriodes == true}?'Désactiver':'Activer']]</a> -->
+			      				
+			      					<a class="btn btn-danger btn-sm pull-right" href="#" 
+			      						th:href="@{/logesco/admin/getsupprimerAnnee(idPeriodes=${a.idPeriodes})}" 
+			      						role="button"><span class="glyphicon glyphicon-trash"></span> Supprimer</a>
+			      				</div>
+			      			</td>
+			      		</tr>
+			      	</tbody>
+			</table>
+			
+		</div>
+		</div>
+	</div>
+</div>
+<!-- fin du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

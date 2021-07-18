@@ -1,0 +1,44 @@
+PVNoteEval.jrxml:
+	*)titre_pv
+	*)label-devoir
+	
+PVSequence.jrxml:
+	*)titre_pv
+
+PVSequence.jrxml:	
+	*)titre_fiche
+
+ListeEleveParClasse:
+	*)titre_liste
+	
+ListeEleveParClasseCritere:
+	*)titre_liste	
+	
+PVTrimestre.jrxml:
+	*)titre_pv	
+	*)label_Seq1
+	*)label_Seq2
+	
+relevedenoteVideParClasse.jrxml
+	*)titre_liste
+	
+BulletinAnnuel.jrxml
+	*)titre_bulletin
+	*)nom_g1
+	*)nom_g2
+	*)nom_g3
+	*)appreciation_
+	
+BulletinTrimAnnuel.jrxml
+	*)titre_bulletin
+	*)nom_g1
+	*)nom_g2
+	*)nom_g3
+	*)appreciation_	
+	
+BulletinSequence.jrxml
+	*)titre_bulletin
+	*)nom_g1
+	*)nom_g2
+	*)nom_g3
+	*)appreciation_		

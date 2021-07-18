@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/rapportlayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Procès verbal séquentiel</title>
+</head>
+<body>
+<div layout:fragment="titre1">
+	<h2 align="center">
+		<span  th:inline="text">
+			Procès verbal  [[${session.evalConcerneListofNotesEvalSeq.typeEval}]]
+			([[${session.evalConcerneListofNotesEvalSeq.typeEval=='DS'}?'Devoir Surveillé':'Contrôle Continue ' ]]) comptant 
+			[[${session.evalConcerneListofNotesEvalSeq.proportionEval}]] de la note finale: 
+			Année Scolaire [[${session.evalConcerneListofNotesEvalSeq.sequence.trimestre.annee.intituleAnnee}]]
+			Trimestre [[${session.evalConcerneListofNotesEvalSeq.sequence.trimestre.numeroTrim}]]
+			Séquence [[${session.evalConcerneListofNotesEvalSeq.sequence.numeroSeq}]]
+			<br/>
+			Classe: [[${session.classeConcerneListofNotesEvalSeq.codeClasses}]] 
+				[[${session.classeConcerneListofNotesEvalSeq.specialite.codeSpecialite}]] 
+				[[${session.classeConcerneListofNotesEvalSeq.numeroClasses}]]([[${session.nbrenoteEvalEnregistre}]]
+			notes enregistrées/ [[${session.effectifclasseConcerneListofNotesEvalSeq}]] élèves)
+			<br/>
+			Cours: [[${session.evalConcerneListofNotesEvalSeq.cours.codeCours}]]
+						([[${session.evalConcerneListofNotesEvalSeq.cours.intituleCours}]])
+		</span>
+	</h2>
+</div>
+
+<div layout:fragment="titre2">
+	
+</div>
+
+<div layout:fragment="titre3">
+	
+</div>
+
+<div layout:fragment="contenurapport">
+	<table class="table table-bordered">
+		<thead class="thead-light">
+			<tr>
+				<th scope="col" >NUMERO</th>
+				<th scope="col" >NOMS ET PRENOMS </th>
+				<th scope="col" >DATE ET LIEU DE NAISSANCE </th>
+				<th scope="col"  >NOTE OBTENU / 20 </th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- <tr th:each="noteEval:${session.listofNotesEvalSeq}" >
+				<td th:inline="text"><b>[[${noteEval.eleve.getNumero(session.listofAllEleveDeClasseConcerne)}]]</b> </td>
+				<td th:inline="text">[[${noteEval.eleve.nomsEleves}]]  [[${noteEval.eleve.prenomsEleves}]]</td>
+				<td th:inline="text">Né le [[${#dates.format(noteEval.eleve.datenaissEleves,"dd-MM-yyyy")}]] 
+						à  [[${noteEval.eleve.lieunaissEleves}]]
+				</td>
+				<td th:inline="text"><b>[[${noteEval.valeurnoteEval}]]</b> </td>
+			</tr> -->
+			<tr th:each="eleve:${session.listofAllEleveDeClasseConcerne}" >
+				<td th:inline="text"><b>[[${eleve.getNumero(session.listofAllEleveDeClasseConcerne)}]]</b> </td>
+				<td th:inline="text">[[${eleve.nomsEleves}]]  [[${eleve.prenomsEleves}]]</td>
+				<td th:inline="text">Né le [[${#dates.format(eleve.datenaissEleves,"dd-MM-yyyy")}]] 
+						à  [[${eleve.lieunaissEleves}]]
+				</td>
+				<td th:inline="text"><b>
+					   [[${eleve.getNotesEvalCoursSeq(session.evalConcerneListofNotesEvalSeq) != null}?
+						${eleve.getNotesEvalCoursSeq(session.evalConcerneListofNotesEvalSeq).valeurnoteEval}:'0']]</b> 
+				 </td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<div layout:fragment="boutondegestion">
+		<a class="btn btn-primary btn-sm pull-right" href="#"  role="button">
+			<span class="glyphicon glyphicon-list-all"></span> Exporter en PDF
+		</a>
+	</div>
+	
+</div>
+
+</body>
+</html>

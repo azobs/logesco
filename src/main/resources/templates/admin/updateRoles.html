@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/adminlayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Roles: Paramétrage</title>
+</head>
+<body>
+<div layout:fragment="formactionadmin">
+<!-- debut du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-8  col-md-offset-2  reculeverticalementmodifpasswordform">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4>Gestion des différents rôles vis à vis du système</h4>
+		</div>
+		<div class="panel-body">
+			<form action="#" th:action="@{/logesco/admin/postupdateRoles}" class="form-inline"
+						th:object="${updateRolesForm}" method="post">
+			
+			<fieldset>
+					<legend class="text-primary">Données d'enregistrement des rôles systèmes</legend>
+					
+					<div class="form-group">
+						<label for="role"> Nom du rôle: <span
+										class="redcolor">*</span></label> 
+						<input type="text" name="role" id="role"
+									class="form-control"  th:value="*{role}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+					</div>
+					<div th:if="${#fields.hasErrors('role')}"
+									th:errors="*{role}" class="redcolor">Erreur de nom de rôle</div>
+									
+					<div class="form-group">
+						<label for="role"> Un alias:</label> 
+						<input type="text" name="aliasRole" id="aliasRole"
+									class="form-control"  th:value="*{aliasRole}"/>&nbsp;&nbsp;
+					</div>
+					<div th:if="${#fields.hasErrors('aliasRole')}"
+									th:errors="*{aliasRole}" class="redcolor">Erreur d'alias de rôle</div>
+									
+					<div class="form-group"> 
+						<input type="hidden" name="enregOrmodif" id="enregOrmodif"
+									class="form-control"  th:value="*{enregOrmodif}"/>
+					</div>
+					
+					<div class="form-group"> 
+						<input type="hidden" name="roleAModif" id="roleAModif"
+									class="form-control"  th:value="*{roleAModif}"/>
+					</div>
+					<button type="submit" class="btn btn-primary  pull-right">
+						<span class="glyphicon glyphicon-save"></span> Envoyer
+					</button>
+			</fieldset>
+			
+			</form>
+			
+			<div th:if="${listofRoles}">
+				<table class="table table-striped">
+					<caption>Liste des rôles existants</caption>
+					<thead class="thead-light">
+						<tr>
+							<th scope="col">NOM DU ROLE</th>
+							<th scope="col">LISTE DES UTILISATEURS</th>
+						     <th class="text-center" scope="col">ACTION</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="r:${listofRoles}">
+							<td th:text="${r.role}"></td>
+							<td>
+								<span th:each="ur:${listofUsersRoles}"  th:inline="text">
+									 [[${ur.roleAssocie.role==r.role}?${ur.users.username}:' ']]
+									 [[${ur.roleAssocie.role==r.role}?',':' ']]  
+								</span>
+							</td>
+							<td>
+			      				<div>
+			      				<span>
+			      					<a class="btn btn-danger btn-sm pull-right" href="#" 
+			      						th:href="@{/logesco/admin/getupdateRoles(role=${r.role},
+			      						numPage=${pageCourante})}" 
+			      						role="button">
+			      						<span class="glyphicon glyphicon-edit"></span> Modifier l'alias</a>
+			      				</span>
+			      				</div>
+			      		</td> 
+						</tr>
+					</tbody>
+				</table>
+				
+				<div class="container">
+					<ul class="pagination"><!-- nav nav-pills -->
+						<li th:each="p,status:${listofPagesRoles}" th:class="${status.index==pageCourante}?active:' ' ">
+							<a th:href="@{/logesco/admin/getupdateRoles(numPage=${status.index})}"
+								 th:text="${status.index+1}"></a>
+						</li>
+					</ul>
+					
+				</div>
+				
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+<!-- fin du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

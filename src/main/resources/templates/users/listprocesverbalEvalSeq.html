@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title th:inline="text">[[#{listpvevalseq.titre_page}]]</title>
+</head>
+<body>
+
+<span layout:fragment="titre_boite">
+        <kbd th:inline="text">[[#{listpvevalseq.titre_boite}]]</kbd>
+</span>
+
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-7  col-md-offset-1">
+	
+		<form action="#" th:action="@{/logesco/users/postlistprocesverbalEvalSeq}" 
+				method="post"   class="form-inline" th:object="${getrapportEvalSeqForm}">
+				
+				<div th:if="${param.listprocesverbalEvalSeqerror}">
+					<h4 align="justify" class="alert alert-danger" th:inline="text">[[#{listpvevalseq.listprocesverbalEvalSeqerror}]]. </h4>
+				</div>
+				
+				<fieldset class="col-md-12" >
+					<legend class="text-primary" th:inline="text">[[#{listpvevalseq.legend_selectclasse}]]</legend>
+					
+					<div class="form-group">
+						<label for="idclasseRapport" th:inline="text">[[#{listpvevalseq.label_selectclasse}]] : <span
+										class="redcolor">*</span></label> 
+						
+						<select class="form-control" name="idclasseRapport"
+									id="idclasseRapport"  th:value="*{idclasseRapport}">
+
+							<optgroup th:label="${session.lang=='fr'}?${n.codeNiveaux}+'/'+${n.codeNiveaux_en}:${n.codeNiveaux_en}+'/'+${n.codeNiveaux}"
+							 th:if="${listofNiveauxForPV}"
+										th:each="n:${listofNiveauxForPV}">
+
+								<option th:each="c:${n.listofClasses}"
+									th:value="${c.idClasses}" th:inline="text">
+									[[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]]
+											[[${c.numeroClasses}]]</option>
+
+							</optgroup>
+							
+						
+							<optgroup th:label="${session.lang=='fr'}?${n.codeNiveaux}+'/'+${n.codeNiveaux_en}:${n.codeNiveaux_en}+'/'+${n.codeNiveaux}" 
+								th:if="${listofNiveauxDirigesForPV}"
+										th:each="n:${listofNiveauxDirigesForPV}">
+										
+								<option th:each="c:${n.listofClasses}" 
+									th:if="${c.estEnseignantTitulaireDeClasse(profConnecte.idUsers)==1}"
+									th:value="${c.idClasses}" th:inline="text">
+									[[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]]
+											[[${c.numeroClasses}]]
+								</option>
+							</optgroup>
+
+						</select>
+						
+						<div class="form-group">
+							<label for="idsequenceRapport" th:inline="text">[[#{listpvevalseq.label_sequence}]] : <span
+								class="redcolor">*</span></label> 
+							
+							<select class="form-control" name="idsequenceRapport"
+									id="idsequenceRapport"  th:value="*{idsequenceRapport}">
+								
+								<option th:each="s:${listofSequence}"
+									th:value="${s.idPeriodes}" th:inline="text">
+									[[${s.numeroSeq}]]</option>
+								
+							</select>
+						</div> 
+						
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		
+						<button type="submit" class="btn btn-primary  pull-right" th:inline="text">
+							<span class="glyphicon glyphicon-send"></span> [[#{listpvevalseq.bouton_envoyer}]]
+						</button>
+					</div>
+					
+				</fieldset>
+			</form>
+				
+			<fieldset  class="col-md-12" th:if="${session.erreurcoursRapportSeq}">
+				<h4 align="justify" class="alert alert-warning" th:inline="text">
+					[[#{listpvevalseq.warning_erreurcoursRapportSeq}]].
+				</h4>
+			</fieldset>
+			
+			<!-- Affichage des cours avec possibilité d'affichage des procès verbaux s'il existe déja ie si une 
+			évaluation est déjà enregistrée dans la séquence pour le cours indiquée -->
+			<fieldset  class="col-md-12" th:if="${session.listcoursofClassesRapportSeq}">
+				<legend class="text-primary" th:inline="text">[[#{listpvevalseq.classeselect}]]: 
+					<span th:inline="text"  class="redcolor">[[${session.classeRapportSeq}]] </span>
+					[[#{listpvevalseq.sequenceselect}]]:  <span th:inline="text"  class="redcolor">[[${session.sequenceRapportSeq}]]</span>
+				</legend>
+				<table class="table table-striped">
+					<caption></caption>
+					<thead class="thead-light">
+						<tr>
+							<th scope="col" th:inline="text">[[#{listpvevalseq.th_matiere}]]</th>
+							<th scope="col" th:inline="text">[[#{listpvevalseq.th_enseignant}]] </th>
+							<th scope="col" th:inline="text">[[#{listpvevalseq.th_pv}]] </th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="cours:${session.listcoursofClassesRapportSeq}">
+							<td th:inline="text">
+								 [[${cours.codeCours}]] ([[${cours.intituleCours}]])
+							</td>
+							<td th:inline="text">
+								 [[${cours.proffesseur.nomsPers}]] ([[${cours.proffesseur.numtel1Pers}]]/[[${cours.proffesseur.numtel2Pers}]])
+							</td>
+							<td th:inline="text">
+								<a class="btn btn-primary btn-sm pull-left" href="#" th:if="${cours.gettailleListEvalSeq(session.numeroseqdeRapportSeq)} != 0"
+										th:href="@{/logesco/users/getprocesverbalfinalNotesSeq(idCours=${cours.idCours},
+										idSequence=${session.numeroseqdeRapportSeq},	
+										idClasse=${session.classeRapport.idClasses})}"
+										role="button" target="_blank" th:inline="text">
+										<span class="glyphicon glyphicon-list-alt"></span>[[#{listpvevalseq.bouton_voirpv}]] 
+								</a>
+								
+								[[${cours.gettailleListEvalSeq(session.numeroseqdeRapportSeq)==0}?#{listpvevalseq.label_pvnondispo}:' ']]
+								
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				
+				
+			</fieldset>
+</div>
+<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

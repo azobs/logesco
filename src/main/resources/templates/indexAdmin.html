@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="adminlayout">
+	
+<head>
+<meta charset="UTF-8"/>
+<title>Administrateurs</title>
+
+</head>
+<body>
+
+<div layout:fragment="formactionadmin">
+
+		
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+		<div class="col-md-6  col-md-offset-3  reculeverticalementmodifpasswordform">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h4>Modification du mot de passe</h4>
+				</div>
+				<div class="panel-body">
+				
+					<div th:if="${param.usernameerreur}">
+						<h4 align="center" class="alert alert-danger">Nom d'utilisateur  invalide.</h4>
+					</div>
+					
+					<div th:if="${param.passwordnotconfirm}">
+						<h4 align="center" class="alert alert-danger">Confirmation de mot de passe invalide.</h4>
+					</div>
+					
+					<div th:if="${param.activepassworderror}">
+						<h4 align="center" class="alert alert-danger">Mot de passe courant  invalide.</h4>
+					</div>
+				
+					<form action="#" th:action="@{/logesco/admin/updatePassword}"
+						th:object="${modifpasswordForm}" method="post">
+						<div class="form-group">
+							<label for="passwordCourant"> Votre mot de passe actuel : <span class="redcolor">*</span></label>
+							<input type="password" name="passwordCourant" id="passwordCourant"
+								class="form-control" />
+						</div>
+						<div th:if="${#fields.hasErrors('passwordCourant')}"
+							th:errors="*{passwordCourant}" class="redcolor">Erreur de mot de passe</div>
+
+						<div class="form-group">
+							<label for="newPassword"> Votre nouveau mot de passe : <span class="redcolor">*</span></label> <input
+								type="password" name="newPassword" id="newPassword"
+								class="form-control" />
+						</div>
+						<div th:if="${#fields.hasErrors('newPassword')}"
+							th:errors="*{newPassword}" class="redcolor">Erreur de nouveau mot de passe</div>
+
+						<div class="form-group">
+							<label for="newPasswordConfirm">Confirmer votre nouveau
+								mot de passe : <span class="redcolor">*</span></label> <input type="password" name="newPasswordConfirm"
+								id="newPasswordConfirm" class="form-control" />
+						</div>
+						<div th:if="${#fields.hasErrors('newPasswordConfirm')}"
+							th:errors="*{newPasswordConfirm}" class="redcolor">Erreur de confirmation</div>
+							
+						<div class="form-group">
+							<input type="hidden" name="username" id="username" th:value="${#httpServletRequest.remoteUser}" 
+								class="form-control" />
+						</div>
+
+						<button type="submit" class="btn btn-primary  pull-right">Envoyer</button>
+					</form>
+				</div>
+			</div>
+		</div>
+<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+
+	</div>
+
+	
+</body>
+</html>

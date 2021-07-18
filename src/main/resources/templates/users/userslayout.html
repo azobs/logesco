@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	
+<head>
+<meta charset="UTF-8"/>
+<title>Insert title here</title>
+
+<link rel="stylesheet" type="text/css"
+	href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+<!-- -->
+<link rel="stylesheet" type="text/css" href="../static/css/myStyle.css"
+	th:href="@{/css/myStyle.css}" />
+
+</head>
+<body>
+
+<!-- debut de la partie entete des pages de toutes session utilisateur -->
+<header> 
+	<div class=" col-md-12">
+		<div class="col-md-4 redcolor"></div>
+		<div class="col-md-4">
+			<div class="col-md-4"></div>
+			<div class="col-md-4 reculelogoverticalementdansuserslayout">
+				<img alt="Ici le logo de l'application"  src="../static/images/logopng.png"  
+				th:src="@{/images/logopng.png}"/>
+			</div>
+			<div class="col-md-4 "></div>	
+		</div>
+	<div class="col-md-4"></div>
+	</div>
+	<div class=" col-md-12">
+		<div class="col-md-3 redcolor "></div>
+		
+		<div class="col-md-6 greencolor ">
+			
+		</div>
+		
+		<div class="col-md-3"></div> 
+	</div>
+</header>
+<!-- fin de la partie entete de toutes session utilisateur -->
+<!-- debut de la partie contenu des pages des sessions users -->
+
+<section>
+
+
+		
+		<!-- Modal de Choix classe à configurer-->
+		<div class="modal fade" id="dialogChoixClasse" tabindex="-1" role="dialog" 
+				aria-labelledby="dialogChoixClasse"  aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+					
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel" th:inline="text">
+								 [[#{boitedialogue_configcours.entete_configureCoursClasse}]]
+							</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							
+							<h4 align="center" th:inline="text">
+								[[#{boitedialogue_configcours.titre_selectClasseCoursParam}]]
+							</h4>
+							
+							<form action="#" th:action="@{/logesco/users/censeur/getupdateCours}" 
+								method="get"  th:if="${session.listofNiveaux}">
+							
+								<div th:if="${session.listofNiveaux}">
+									<div class="form-group  col-md-6">
+										<select class="form-control" name="idClasseAssocie" id="idClasseAssocie">
+											<optgroup  th:each="n:${session.listofNiveaux}" th:label="${n.codeNiveaux}" 
+												th:if="${session.listofNiveaux}" >
+												<option th:each="c:${n.listofClasses}" th:value="${c.idClasses}"
+													th:inline="text">
+													 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+												</option>
+											</optgroup>
+										</select>
+									
+									</div>
+									<button type="submit" class="btn btn-primary  pull-right col-md-2" th:inline="text">
+										<span class="glyphicon glyphicon-wrench"></span> [[#{boitedialogue_configcours.bouton_configurer}]]
+									</button>
+										<br/>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								</div>
+							</form>
+							
+						</div>
+						<div class="modal-footer">
+						
+							<button type="button" class="btn btn-secondary" data-dismiss="modal" th:inline="text">
+								[[#{boitedialogue_configcours.bouton_fermer}]] <span class="glyphicon glyphicon-remove"></span> 
+							</button>
+							
+							
+						</div>
+					</div>
+				</div>
+		</div>
+		<!-- FIN DE Modal de Choix classe à configurer-->
+		
+		<!-- Modal de dialog de saisi du motif de recherche-->
+		<div class="modal fade" id="dialogsendMotifRechElv" tabindex="-1" role="dialog" 
+				aria-labelledby="dialogsendMotifRechElv"  aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+					
+						<div class="modal-body">
+							<h4 align="center" th:inline="text">
+								[[#{boitedialogue_recheleve.entete_motifrecherche}]]
+							</h4>
+							<form action="#" th:action="@{/logesco/users/getrechercheEleve}" method="get">
+								<input type="text" name="motifrechercheEleve"
+									id="motifrechercheEleve" class="form-control" placeholder="Noms de l'élève recherché"  />
+								<br/>
+								<button type="submit" class="btn btn-primary   col-md-3" th:inline="text">
+									<span class="glyphicon glyphicon-search"></span> [[#{boitedialogue_recheleve.bouton_rechercher}]]
+								</button>
+								<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							</form>
+							
+							<div class="modal-footer">
+						
+								<button type="button" class="btn btn-secondary" data-dismiss="modal" th:inline="text">
+									[[#{boitedialogue_recheleve.bouton_fermer}]] <span class="glyphicon glyphicon-remove"></span> 
+								</button>
+							
+							</div>
+							
+						</div>
+					</div>
+				</div>
+		</div>
+		<!-- FIN DE Modal de dialog de saisi du motif de recherche-->
+		
+		<div class="modal fade" id="dialogChoixClasseReleve" tabindex="-1" role="dialog" 
+				aria-labelledby="dialogChoixClasseReleve"  aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+					
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel" th:inline="text">
+								[[#{boitedialogue_choixclassereleve.entete_choixclasse}]]
+							</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							
+							<h4 align="center" th:inline="text">
+								[[#{boitedialogue_selectclasse.label_choixclasse}]]
+							</h4>
+							
+							<form action="#" th:action="@{/logesco/users/getdonneesReleveNotes}" 
+								method="get"  th:if="${session.listofNiveaux}" target="_blank">
+							
+								<div th:if="${session.listofNiveaux}">
+									<div class="form-group  col-md-6">
+										<select class="form-control" name="idClasseSelect" id="idClasseSelect">
+											<optgroup  th:each="n:${session.listofNiveaux}" th:label="${n.codeNiveaux}" 
+												th:if="${session.listofNiveaux}" >
+												<option th:each="c:${n.listofClasses}" th:value="${c.idClasses}"
+													th:inline="text">
+													 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+												</option>
+											</optgroup>
+										</select>
+									
+									</div>
+									<button type="submit" class="btn btn-primary  col-md-4" th:inline="text">
+										<span class="glyphicon glyphicon-print"></span> [[#{boitedialogue_selectclasse.bouton_genererreleve}]]
+									</button>
+										<br/>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								</div>
+							</form>
+							
+						</div>
+						<div class="modal-footer">
+						
+							<button type="button" class="btn btn-secondary" data-dismiss="modal" th:inline="text">
+								[[#{boitedialogue_selectclasse.bouton_fermer}]] <span class="glyphicon glyphicon-remove"></span> 
+							</button>
+							
+							
+						</div>
+					</div>
+				</div>
+		</div>
+		
+		
+		
+<div class="col-md-10   col-md-offset-1 reculeverticalement">
+        
+		<div class="panel panel-info">
+           <div class="panel-heading">
+               <h4 align="center"> 
+                    		<span class="card pull-left">
+                                <img th:src="@{/logesco/users/getphotoPersonnelConnecte}" 
+                                    class="card-img-top img-rounded" width="60" height="40"/>
+                                    <div class="caption" th:inline="text">
+							            <kbd>[[${#httpServletRequest.remoteUser}]]</kbd>
+							          </div>
+                            </span>
+                   <span layout:fragment="titre_boite"></span><!-- <h4>Modification du mot de passe</h4> -->
+                    <a th:href="@{/logout}"  th:inline="text"
+                                    class="btn btn-default btn-sm pull-right" role="button">
+                                [[#{button.deconnecter}]]  <span class="glyphicon glyphicon-log-out"></span> 
+                    </a>
+                </h4>
+				
+				
+			</div>
+			<div class="panel-body">
+                <div class="col-md-3"> 
+             <!-- Insertion des menus verticals des pages  ,'ROLE_SUPERADMIN'-->
+
+                    <div class="panel panel-info panel-menu" 
+                        sec:authorize="hasAnyRole('ROLE_PROVISEUR')">
+                        <div class="panel-heading">
+                            <h3 class="panel-title" th:inline="text">[[#{menu.recrutements}]] &nbsp;</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item" sec:authorize="hasAnyRole('ROLE_PROVISEUR')">
+                                    <a href="#"  th:href="@{/logesco/users/chefetab/getenregEleves}" th:inline="text">
+                                        <span class="glyphicon glyphicon-education"></span> [[#{sousmenu_recrutement.enregEleves}]]
+                                    </a>
+                                </li>
+                               <!--  <li class="divider" sec:authorize="hasAnyRole('ROLE_PROVISEUR')"></li> -->
+
+                                <li class="list-group-item" sec:authorize="hasAnyRole('ROLE_PROVISEUR')">
+                                    <a href="#"  th:href="@{/logesco/users/chefetab/getenregListEleves}" th:inline="text">
+                                        <span class="glyphicon glyphicon-list-alt"></span> [[#{sousmenu_recrutement.enregListEleves}]]
+                                    </a>
+                                </li>
+                                <!-- <li class="divider" sec:authorize="hasAnyRole('ROLE_PROVISEUR')"></li> -->
+
+                                <li class="list-group-item" sec:authorize="hasAnyRole('ROLE_PROVISEUR')">
+                                    <a href="#"  th:href="@{/logesco/users/chefetab/getgestionEleves}" th:inline="text">
+                                      <span class="glyphicon glyphicon-wrench"></span> [[#{sousmenu_recrutement.gestionEleves}]]
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-info panel-menu" 
+                        sec:authorize="hasAnyRole('ROLE_INTENDANT')">
+                        <div class="panel-heading">
+                            <h3 class="panel-title" th:inline="text">[[#{menu.fraisscolarite}]]&nbsp;</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item" sec:authorize="hasAnyRole('ROLE_INTENDANT')">
+                                    <a href="#" th:href="@{/logesco/users/intendant/getconfigClasses}" th:inline="text">
+                                        <span class="glyphicon glyphicon-wrench"></span> [[#{sousmenu_fraisscolarite.configClasses}]]
+                                    </a>
+                                </li>
+						        <!-- <li class="divider" sec:authorize="hasAnyRole('ROLE_INTENDANT')"></li> -->
+                                <li class="list-group-item" sec:authorize="hasAnyRole('ROLE_INTENDANT')">
+                                    <a href="#" th:href="@{/logesco/users/intendant/getinscriptionEleves}" th:inline="text">
+                                       <span class="glyphicon glyphicon-refresh"></span> [[#{sousmenu_fraisscolarite.inscriptionEleves}]]
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-info panel-menu" 
+                        sec:authorize="hasAnyRole('ROLE_PROVISEUR','ROLE_INTENDANT','ROLE_CENSEUR',
+                        'ROLE_SUPERADMIN')" >
+                        <div class="panel-heading">
+                            <h3 class="panel-title" th:inline="text">[[#{menu.listes}]]&nbsp;</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item" >
+                                    <a href="#"  data-toggle="modal" data-target="#dialogsendMotifRechElv" th:inline="text">
+                                        <span class="glyphicon glyphicon-search"></span> [[#{sousmenu_listes.rechEleve}]]
+                                    </a>
+                                </li>
+						        <!-- <li class="divider" sec:authorize="hasAnyRole('ROLE_INTENDANT')"></li> -->
+                                <li class="list-group-item" sec:authorize="hasAnyRole('ROLE_PROVISEUR',
+                                        'ROLE_INTENDANT','ROLE_SUPERADMIN')">
+                                    <a href="#" th:href="@{/logesco/users/getlisteProvEleves}" th:inline="text">
+                                       <span class="glyphicon glyphicon-list-alt"></span> [[#{sousmenu_listes.listprovEleve}]]
+                                    </a>
+                                </li>
+                                <li class="list-group-item" sec:authorize="hasAnyRole('ROLE_PROVISEUR',
+                                         'ROLE_INTENDANT','ROLE_SUPERADMIN')">
+                                    <a href="#" th:href="@{/logesco/users/getlisteDefEleves}" th:inline="text">
+                                       <span class="glyphicon glyphicon-list-alt"></span> [[#{sousmenu_listes.listdefEleve}]]
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+				<div class="panel panel-info panel-menu" 
+                        sec:authorize="hasAnyRole('ROLE_PROVISEUR','ROLE_SUPERADMIN')" >
+                        <div class="panel-heading">
+                            <h3 class="panel-title" th:inline="text">[[#{menu.personnels_enreg}]]&nbsp;</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item" >
+                                    <a href="#" th:href="@{/logesco/users/chefetab/getenregPersonnels}" th:inline="text">
+										<span class="glyphicon glyphicon-save"></span> [[#{sousmenu_personnels.enregPersonnels}]]
+									 </a>
+                                </li>
+						        <!-- <li class="divider" sec:authorize="hasAnyRole('ROLE_INTENDANT')"></li> -->
+                                <li class="list-group-item">
+                                    <a href="#" th:href="@{/logesco/users/chefetab/getenregListPersonnels}" th:inline="text">
+											<span class="glyphicon glyphicon-list-alt"></span> [[#{sousmenu_personnels.enregListPersonnels}]]
+								   </a>
+                                </li>
+                                <li class="list-group-item" sec:authorize="hasAnyRole('ROLE_PROVISEUR')">
+                                    <a href="#" th:href="@{/logesco/users/chefetab/getupdateProviseur}" th:inline="text">
+										<span class="glyphicon glyphicon-edit"></span> [[#{sousmenu_personnels.updatePersonnels}]]
+									</a>
+                                </li>
+                            </ul>
+                        </div>
+                </div>
+				
+				<div class="panel panel-info panel-menu" 
+                        sec:authorize="hasAnyRole('ROLE_PROVISEUR','ROLE_SUPERADMIN')" >
+                        <div class="panel-heading">
+                            <h3 class="panel-title" th:inline="text">[[#{menu.personnels_list}]]&nbsp;</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <a href="#"   th:href="@{/logesco/users/chefetab/getconsulterCenseurs}" th:inline="text">
+										<span class="glyphicon glyphicon-sunglasses"></span>	[[#{sousmenu_personnels.afficherListCenseurs}]]
+									</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="#"   th:href="@{/logesco/users/chefetab/getconsulterEnseignants}" th:inline="text">
+										<span class="glyphicon glyphicon-sunglasses"></span>	[[#{sousmenu_personnels.afficherListEnseignants}]]
+								    </a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="#"   th:href="@{/logesco/users/chefetab/getconsulterIntendants}" th:inline="text">
+										<span class="glyphicon glyphicon-sunglasses"></span>	[[#{sousmenu_personnels.afficherListIntendants}]]
+									 </a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="#"   th:href="@{/logesco/users/chefetab/getconsulterPersonnels}" th:inline="text">
+										<span class="glyphicon glyphicon-sunglasses"></span>	[[#{sousmenu_personnels.consulterPersonnels}]]
+									 </a>
+                                </li>
+                                
+                            </ul>
+                        </div>
+                </div>
+                
+                <div class="panel panel-info panel-menu" sec:authorize="hasRole('ROLE_PROVISEUR')">
+                	<div class="panel-heading">
+                            <h3 class="panel-title" th:inline="text">[[#{menu.periodes}]] &nbsp;</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                    </div>
+                    <div class="panel-body">
+                            <ul class="list-group">
+                            	<li class="list-group-item">
+                                    <a href="#" th:href="@{/logesco/users/censeur/getupdateSequence}" th:inline="text">
+										<span class="glyphicon glyphicon-wrench"></span> [[#{sousmenu_periodes.updateSequence}]]
+									</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="#" th:href="@{/logesco/users/censeur/getupdateTrimestre}" th:inline="text">
+										<span class="glyphicon glyphicon-wrench"></span> [[#{sousmenu_periodes.updateTrimestre}]]
+									</a>
+                                </li>
+                            </ul>
+                        </div>
+                </div>
+				
+				<div class="panel panel-info panel-menu" 
+					sec:authorize="hasAnyRole('ROLE_CENSEUR')">
+					<div class="panel-heading">
+                            <h3 class="panel-title" th:inline="text">[[#{menu.classes}]] &nbsp;</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                    </div>
+                     <div class="panel-body">
+                            <ul class="list-group">
+                            	<li class="list-group-item" 
+                            			sec:authorize="hasAnyRole('ROLE_CENSEUR')">
+                            			<a href="#" th:href="@{/logesco/users/censeur/getupdateTitulaire}" th:inline="text">
+											<span class="glyphicon glyphicon-wrench"></span> [[#{sousmenu_periodes.updateTitulaire}]]
+										</a>
+                            	</li>
+                            	
+                           </ul>
+                     </div>
+				</div>
+
+				<div class="panel panel-info panel-menu" 
+						sec:authorize="hasAnyRole('ROLE_SG')">
+					<div class="panel-heading">
+                            <h3 class="panel-title" th:inline="text">[[#{menu.discipline}]]&nbsp;</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                    </div>
+                     <div class="panel-body">
+                            <ul class="list-group">
+                            	<!-- <li class="list-group-item">
+                            		<a href="#" th:href="@{/logesco/users/sg/getdonneesSaisieRAbsences}" th:inline="text">
+										[[#{sousmenu_discipline.donneessaisieRAbsence}]]
+									</a>
+                            	</li> -->
+                            	<li class="list-group-item">
+                            		<a href="#" th:href="@{/logesco/users/sg/getdonneesSaisieRDiscipline}" th:inline="text">
+										[[#{sousmenu_discipline.donneessaisieRDiscipline}]]
+									</a>
+                            	</li>
+                            </ul>
+                     </div>
+                 </div>
+
+
+		<div class="panel panel-info panel-menu" 
+						sec:authorize="hasAnyRole('ROLE_ENSEIGNANT','ROLE_CENSEUR','ROLE_TITULAIRE')">
+					<div class="panel-heading">
+                            <h3 class="panel-title" th:inline="text">[[#{menu.notes}]]&nbsp;</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                    </div>
+                     <div class="panel-body">
+                            <ul class="list-group">
+                            	<li class="list-group-item" sec:authorize="hasAnyRole('ROLE_CENSEUR')">
+                            		<a href="#"  
+										data-toggle="modal" data-target="#dialogChoixClasseReleve" th:inline="text">
+										<span class="glyphicon glyphicon-cloud-download"></span>	[[#{sousmenu_notes.releveNote}]]
+									</a>
+                            	</li>
+                            	<!-- <li class="list-group-item" sec:authorize="hasAnyRole('ROLE_ENSEIGNANT')">
+                            		<a href="#" th:href="@{/logesco/users/getdonneesSaisieNotes}" th:inline="text">
+										[[#{sousmenu_notes.gererNote}]]
+									</a>
+                            	</li> -->
+                            	<li class="list-group-item" sec:authorize="hasAnyRole('ROLE_ENSEIGNANT')">
+                            		<a href="#" th:href="@{/logesco/users/getdonneesSaisieNotesV1}" th:inline="text">
+										<span class="glyphicon glyphicon-wrench"></span> [[#{sousmenu_notes.gererNoteV1}]]
+									</a>
+                            	</li>
+                            	<li class="list-group-item" 
+                            			sec:authorize="hasAnyRole('ROLE_TITULAIRE','ROLE_CENSEUR')">
+                            		<a href="#" th:href="@{/logesco/users/getlistprocesverbalEvalSeq}"  th:inline="text">
+										<span class="glyphicon glyphicon-list-alt"></span> [[#{sousmenu_notes.procesverbalEvalSeq}]]
+									</a>
+                            	</li>
+                            	<li class="list-group-item" 
+                            			sec:authorize="hasAnyRole('ROLE_CENSEUR','ROLE_SUPERADMIN')" >
+                            		<a href="#" th:href="@{/logesco/users/censeur/getrapportEvalSeq}" th:inline="text">
+										<span class="glyphicon glyphicon-list-alt"></span>  [[#{sousmenu_notes.rapportEvaluationSequentiel}]]
+									</a>
+                            	</li>
+                            	<li class="list-group-item" 
+                            			sec:authorize="hasAnyRole('ROLE_TITULAIRE','ROLE_CENSEUR','ROLE_SUPERADMIN')"  >
+                            		<a href="#" th:href="@{/logesco/users/getlistprocesverbalEvalTrim}" th:inline="text">
+										<span class="glyphicon glyphicon-list-alt"></span> [[#{sousmenu_notes.procesverbalTrimNotes}]]
+								  	</a>
+                            	</li>
+                            	
+                            	<li class="list-group-item" 
+                            			sec:authorize="hasAnyRole('ROLE_ENSEIGNANT','ROLE_SUPERADMIN')" >
+                            		<a href="#" data-toggle="modal" data-target="#dialogsendMotifRechElv" th:inline="text">
+										<span class="glyphicon glyphicon-search"></span> [[#{sousmenu_notes.rechercheEleve}]]
+									</a>
+                            	</li>
+                           </ul>
+                     </div>
+             </div>
+             
+             <div class="panel panel-info panel-menu" 
+						sec:authorize="hasAnyRole('ROLE_CENSEUR','ROLE_TITULAIRE','ROLE_SUPERADMIN')">
+					<div class="panel-heading">
+                            <h3 class="panel-title" th:inline="text">[[#{menu.bulletins}]]&nbsp;</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+                    </div>
+                     <div class="panel-body">
+                            <ul class="list-group">
+                            	<li class="list-group-item">
+                            		<a href="#"  th:href="@{/logesco/users/bulletins/getdonneesEditionsBulletinsSeq}"  
+										th:inline="text" >
+										<span class="glyphicon glyphicon-cloud-download"></span> [[#{sousmenu_bulletins.genererBulletinSequentiel}]]
+									</a>
+                            	</li>
+                            	<li class="list-group-item">
+                            		<a href="#" th:href="@{/logesco/users/bulletins/getdonneesEditionsBulletinsTrim}"
+										th:inline="text">
+										<span class="glyphicon glyphicon-cloud-download"></span> [[#{sousmenu_bulletins.genererBulletinTrimestriel}]]
+									</a>
+                            	</li>
+                            	<li class="list-group-item">
+                            		<a href="#" th:href="@{/logesco/users/bulletins/getdonneesEditionsBulletinsTrimAn}"
+										th:inline="text">
+										<span class="glyphicon glyphicon-cloud-download"></span> [[#{sousmenu_bulletins.genererBulletinTrimestrielAvecRapportAnnuel}]]
+									</a>
+                            	</li>
+                            	<li class="list-group-item">
+                            		<a href="#" th:href="@{/logesco/users/bulletins/getdonneesEditionsBulletinsAn}"
+										th:inline="text">
+										<span class="glyphicon glyphicon-cloud-download"></span> [[#{sousmenu_bulletins.genererBulletinAnnuel}]]
+									</a>
+                            	</li>
+                            	
+                           </ul>
+                     </div>
+             </div>
+            
+             <!-- Fin de l'insertion des menus de l'application -->
+        </div>
+                <div  layout:fragment="formactionusers">
+
+                </div>
+			</div>
+			<div class="panel-footer">
+				<p>&copy;<small th:text="#{label.confiance}"> 
+					 kiadjeu 2019 (678470262 / 695093228) merci de la confiance en nous accordée
+				</small>
+				<span  class="badge badge-light pull-right">
+				    <span th:text="${session.dfNameJour}">Nom du jour</span>&nbsp;
+				</span></p>
+            </div>
+            
+        </div>
+        
+	</div>
+		
+</section>
+
+
+<!-- fin de la partie contenu de la page d'indexAdmin -->
+
+
+<!-- debut de la partie pied de la page d'index -->	
+	<footer class=" navbar-fixed-bottom col-md-12">
+		<small th:inline="text">
+			[[#{footer.footer_copyright}]]
+		</small>
+	</footer>
+<!-- fin de la partie pied de la page d'index -->
+
+
+
+<!-- zone d'insertion des fichiers javascript -->
+<script src="webjars/jquery/1.11.1/jquery.min.js" 
+	th:src="@{/webjars/jquery/1.11.1/jquery.min.js}" ></script>
+<script src="webjars/bootstrap/3.3.7/js/bootstrap.min.js" 
+	th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}" ></script>
+
+<script src="../static/js/myScript.js" 
+	th:src="@{/js/myScript.js}" ></script>	
+	
+<script>
+/* $('.dropdown-toggle').mouseover(function() {
+	$(this).dropdown('toggle');
+});  */
+</script>
+
+<script type="text/javascript">
+//alert("dd");
+	function donneFocus(){
+		//alert("donne focus");
+		document.getElementById('passwordCourant').focus();
+	}
+</script>
+
+</body>
+</html>

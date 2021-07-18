@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Mise à jour de mes données personnelles</title>
+</head>
+<body>
+<span layout:fragment="titre_boite">
+     <kbd> Formulaire de mise à jour des données du chef d'établissement</kbd>
+</span>
+
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-9"
+			sec:authorize="hasAnyRole('ROLE_PROVISEUR')">
+	
+	<form action="#" th:action="@{/logesco/users/chefetab/postupdateProviseur}"
+				th:object="${updateProviseurForm}" method="post" enctype="multipart/form-data">
+						
+					<div th:if="${param.updateproviseursuccess}">
+							<h4 align="justify" class="alert alert-success">Vos paramètres ont été mis à jour avec succès.</h4>
+					</div>
+					
+					<div th:if="${param.updateproviseurerrorNumerocni}">
+							<h4 align="justify" class="alert alert-danger">Le numéro de carte spécifié correspond à un autre utilisateur</h4>
+					</div>
+					
+					<div th:if="${param.updateproviseurerrorNomsPrenomsDatenaiss}">
+							<h4 align="justify" class="alert alert-danger">Le triplet (noms, prénoms, date de naissance) 
+							doit être unique. </h4>
+					</div>
+					
+					<div th:if="${param.updateproviseurerrorUsername}">
+							<h4 align="justify" class="alert alert-danger">Le nom d'utilisateur doit être unique. </h4>
+					</div>
+					
+					<input type="hidden"
+							name="idProviseur" id="idProviseur" class="form-control" th:field="*{idProviseur}" th:value="*{idProviseur}" />
+					
+					<div class="col-md-4">
+					<fieldset>
+						<legend class="text-primary">Paramètres utilisateurs</legend>
+						
+							<div class="form-group">
+								<label for="username"> Noms d'utilisateur: <span
+									class="redcolor">*</span></label> <input type="text" name="username"
+									id="username" class="form-control" th:value="*{username}" th:field="*{username}"
+									placeholder="Login de connexion" />
+							</div>
+							<div th:if="${#fields.hasErrors('username')}"
+								th:errors="*{username}" class="redcolor">Erreur de noms
+								d'utilisateur</div>
+								
+							<div class="form-group">
+								<label for="password"> Mot de passe utilisateur: <span
+									class="redcolor">*</span></label> <input type="password" name="password"
+									id="password" class="form-control"  th:field="*{password}"
+									placeholder="password de connexion" />
+							</div>
+							<div th:if="${#fields.hasErrors('password')}"
+								th:errors="*{password}" class="redcolor">Erreur de mot de passe
+								utilisateur</div>
+								
+					</fieldset>
+					
+					<fieldset>
+						<legend class="text-primary">Paramètres personnels</legend>
+						
+						<div class="form-group">
+								<label for="numcniPers"> Numéro de CNI: <span
+									class="redcolor">*</span></label> <input type="text" name="numcniPers"
+									id="numcniPers" class="form-control" th:value="*{numcniPers}" th:field="*{numcniPers}"
+									placeholder="Numéro de carte d'identité" />
+						</div>
+						<div th:if="${#fields.hasErrors('numcniPers')}"
+								th:errors="*{numcniPers}" class="redcolor">Erreur de numéro de CNI
+						</div>
+						
+						<div class="form-group">
+								<label for="nomsPers"> Noms: <span
+									class="redcolor">*</span></label> <input type="text" name="nomsPers"
+									id="nomsPers" class="form-control" th:value="*{nomsPers}" th:field="*{nomsPers}"
+									placeholder="Vos noms" />
+						</div>
+						<div th:if="${#fields.hasErrors('nomsPers')}"
+								th:errors="*{nomsPers}" class="redcolor">Erreur de noms
+						</div>
+						
+						<div class="form-group">
+								<label for="prenomsPers"> Prénoms: <span
+									class="redcolor">*</span></label> <input type="text" name="prenomsPers"
+									id="prenomsPers" class="form-control" th:value="*{prenomsPers}" th:field="*{prenomsPers}"
+									placeholder="Vos prénoms" />
+						</div>
+						<div th:if="${#fields.hasErrors('prenomsPers')}"
+								th:errors="*{prenomsPers}" class="redcolor">Erreur de prénoms
+						</div>
+						
+						<div class="form-group">
+								<label for="datenaissPers"> Date de naissance: <span
+									class="redcolor">*</span></label> <input type="date" name="datenaissPers"
+									id="datenaissPers" class="form-control" th:value="*{datenaissPers}" th:field="*{datenaissPers}"
+									placeholder="Date de naissance(année-mois-jour)" min="1960-01-01" max="2000-01-01" />
+						</div>
+						<div th:if="${#fields.hasErrors('datenaissPers')}"
+								th:errors="*{datenaissPers}" class="redcolor">Erreur de date de naissance
+						</div>
+						
+						<div class="form-group">
+								<label for="lieunaissPers"> Lieu de naissance: <span
+									class="redcolor">*</span></label> <input type="text" name="lieunaissPers"
+									id="lieunaissPers" class="form-control" th:value="*{lieunaissPers}" th:field="*{lieunaissPers}"
+									placeholder="Votre lieu de naissance" />
+						</div>
+						<div th:if="${#fields.hasErrors('lieunaissPers')}"
+								th:errors="*{lieunaissPers}" class="redcolor">Erreur de lieu de naissance
+						</div>
+						
+						<div class="form-group">
+								<label for="nationalitePers"> Nationalité: <span
+									class="redcolor">*</span></label> <input type="text" name="nationalitePers"
+									id="nationalitePers" class="form-control" th:value="*{nationalitePers}" th:field="*{nationalitePers}"
+									placeholder="Votre nationalité" />
+						</div>
+						<div th:if="${#fields.hasErrors('nationalitePers')}"
+								th:errors="*{nationalitePers}" class="redcolor">Erreur de nationalité
+						</div>
+						
+						<div class="form-group">
+								<label for="sexePers" class="control-label  text-left"> Sexe: <span
+									class="redcolor">*</span></label> 
+									
+									<span class="radio">
+									    <label><input type="radio" name="sexePers" id="sexePers" class="radio-inline"
+									    				 th:field="*{sexePers}" value="masculin" checked="checked"/>Masculin</label>
+									    <label><input type="radio" name="sexePers" id="sexePers" class="radio-inline"
+									      				th:field="*{sexePers}" value="féminin"/>Féminin</label>
+									 </span>
+						</div>
+						
+						<div class="form-group col-md-8">
+								<label for="picturephotoPers"> Photo: </label> <input type="file"
+									name="picturephotoPers" id="picturephotoPers" class="form-control-file" 
+									placeholder="Envoyer votre photo" accept="image/*" />
+						</div>
+						<div class="card col-md-4"> 
+										<img th:src="@{/logesco/users/getphotoPers(idPers=*{idProviseur})}" 
+											class="card-img-top" width="100" height="100"/>
+											<div class="card-body">
+											    <p class="card-text">Profil utilisateur enregistré</p>
+											 </div>
+						</div>
+						<div th:if="${#fields.hasErrors('photoPers')}"
+								th:errors="*{photoPers}" class="redcolor">Erreur de photo
+						</div>
+					</fieldset>
+					</div>
+					<div class="col-md-4">
+					<fieldset>
+						<legend class="text-primary">Compétences</legend>
+						
+						<div class="form-group">
+								<label for="diplomePers"> Diplôme  le plus élevé: <span
+									class="redcolor">*</span></label> <input type="text" name="diplomePers"
+									id="diplomePers" class="form-control" th:value="*{diplomePers}" th:field="*{diplomePers}"
+									placeholder="Diplôme le plus élevé" />
+						</div>
+						<div th:if="${#fields.hasErrors('diplomePers')}"
+								th:errors="*{diplomePers}" class="redcolor">Erreur de diplome
+						</div>
+						
+						<div class="form-group">
+								<label for="gradePers"> Grade dans le corps associé à la fonction: <span
+									class="redcolor">*</span></label> <input type="text" name="gradePers"
+									id="gradePers" class="form-control" th:value="*{gradePers}" th:field="*{gradePers}"
+									placeholder="Votre grade" />
+						</div>
+						<div th:if="${#fields.hasErrors('gradePers')}"
+								th:errors="*{gradePers}" class="redcolor">Erreur de grade
+						</div>
+						
+						<div class="form-group">
+								<label for="statutPers"> Statut: <span
+									class="redcolor">*</span></label> 
+									
+									<select class="form-control" id="statutPers" name="statutPers" th:field="*{statutPers}">
+								        <option value="fonctionnaire">Fonctionnaire</option>
+								        <option value="vacataire">Vacataire</option>
+								        <option value="ECI">ECI</option>
+								     </select>
+						</div>
+						
+						<div class="form-group">
+								<label for="specialiteProf"> Spécialité: </label> <span
+									class="redcolor">*</span>
+								<input type="text" name="specialiteProf"
+									id="specialiteProf" class="form-control" th:value="*{specialiteProf}" th:field="*{specialiteProf}"
+									placeholder="Votre domaine de competence" />
+						</div>
+						<div th:if="${#fields.hasErrors('specialiteProf')}"
+								th:errors="*{specialiteProf}" class="redcolor">Erreur de spécialité
+						</div>
+						
+				    </fieldset>
+				    </div>
+				    <div class="col-md-4">
+				    <fieldset>	
+						<legend class="text-primary">Adresses</legend>
+						<div class="form-group">
+								<label for="emailPers"> Adresse email: <span
+									class="redcolor">*</span></label> <input type="text" name="emailPers"
+									id="emailPers" class="form-control" th:value="*{emailPers}" th:field="*{emailPers}"
+									placeholder="Votre adresse email" />
+						</div>
+						<div th:if="${#fields.hasErrors('emailPers')}"
+								th:errors="*{emailPers}" class="redcolor">Erreur d'adresse email
+						</div>
+						
+						<div class="form-group">
+								<label for="numtel1Pers"> Numéro de téléphone N°1: <span
+									class="redcolor">*</span></label> <input type="text" name="numtel1Pers"
+									id="numtel1Pers" class="form-control" th:value="*{numtel1Pers}" th:field="*{numtel1Pers}"
+									placeholder="Un premier numéro de téléphone" />
+						</div>
+						<div th:if="${#fields.hasErrors('numtel1Pers')}"
+								th:errors="*{numtel1Pers}" class="redcolor">Erreur de numéro de téléphone
+						</div>
+						
+						<div class="form-group">
+								<label for="numtel2Pers"> Numéro de téléphone N°2: </label> <input type="text" name="numtel2Pers"
+									id="numtel2Pers" class="form-control" th:value="*{numtel2Pers}" th:field="*{numtel2Pers}"
+									placeholder="Un second numéro de téléphone" />
+						</div>
+						<div th:if="${#fields.hasErrors('numtel2Pers')}"
+								th:errors="*{numtel2Pers}" class="redcolor">Erreur de numéro de téléphone
+						</div>
+						
+						<div class="form-group">
+								<label for="quartierPers"> Quartier: </label> <input type="text" name="quartierPers"
+									id="quartierPers" class="form-control" th:value="*{quartierPers}" th:field="*{quartierPers}"
+									placeholder="Noms de votre quartier d'habitation" />
+						</div>
+						<div th:if="${#fields.hasErrors('quartierPers')}"
+								th:errors="*{quartierPers}" class="redcolor">Erreur de quartier
+						</div>
+						
+						<div class="form-group">
+								<label for="villePers"> Ville d'habitation: </label> <input type="text" name="villePers"
+									id="villePers" class="form-control" th:value="*{villePers}" th:field="*{villePers}"
+									placeholder="Noms de votre ville d'habitation" />
+						</div>
+						<div th:if="${#fields.hasErrors('villePers')}"
+								th:errors="*{villePers}" class="redcolor">Erreur de ville
+						</div>
+						
+					</fieldset>
+					
+					<button type="submit" class="btn btn-primary  pull-right">
+					<span class="glyphicon glyphicon-save"></span> Envoyer</button>
+					<button type="reset" class="btn btn-danger">
+					<span class="glyphicon glyphicon-erase"></span> Effacer</button>		
+					</div>
+				</form>
+		</div>
+<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title th:inline="text">[[#{rapportevalseq.titrepage}]]</title>
+</head>
+<body>
+
+<span layout:fragment="titre_boite">
+        <kbd th:inline="text">[[#{rapportevalseq.titreboite}]]</kbd>
+</span>
+
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-9">
+		
+		<form action="#" th:action="@{/logesco/users/censeur/postrapportEvalSeq}" 
+				method="post"   class="form-inline col-md-offset-2" th:object="${getrapportEvalSeqForm}">
+				
+				
+				
+				<fieldset class="col-md-12" >
+					<legend class="text-primary" th:inline="text">[[#{rapportevalseq.legend_choixclasse}]]</legend>
+					
+					<div class="form-group">
+						<label for="idclasseRapport" th:inline="text">[[#{rapportevalseq.label_choixclasse}]] : <span
+										class="redcolor">*</span></label> 
+						
+						<select class="form-control" name="idclasseRapport"
+									id="idclasseRapport"  th:value="*{idclasseRapport}">
+
+							<optgroup th:label="${session.lang=='fr'}?${n.codeNiveaux}+'/'+${n.codeNiveaux_en}:${n.codeNiveaux_en}+'/'+${n.codeNiveaux}"
+							
+							 th:if="${listofNiveaux}"
+										th:each="n:${listofNiveaux}">
+
+								<option th:each="c:${n.listofClasses}"
+									th:value="${c.idClasses}" th:inline="text">
+									[[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]]
+											[[${c.numeroClasses}]]</option>
+
+							</optgroup>
+
+						</select>
+						
+						<div class="form-group">
+							<label for="idsequenceRapport" th:inline="text">[[#{rapportevalseq.label_sequence}]] : <span
+								class="redcolor">*</span></label> 
+							
+							<select class="form-control" name="idsequenceRapport"
+									id="idsequenceRapport"  th:value="*{idsequenceRapport}">
+								
+								<option th:each="s:${listofSequence}"
+									th:value="${s.idPeriodes}" th:inline="text">
+									[[${s.numeroSeq}]]</option>
+								
+							</select>
+						</div> 
+						
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		
+						<button type="submit" class="btn btn-primary  pull-right" th:inline="text">
+							<span class="glyphicon glyphicon-send"></span> [[#{rapportevalseq.bouton_envoyer}]]
+						</button>
+					</div>
+					
+				</fieldset>
+			</form>
+				
+			<fieldset  class="col-md-12" th:if="${session.erreurcoursRapportEvalSeq}">
+				<hr/>
+				<h4 align="justify" class="alert alert-warning" th:inline="text">
+					[[#{rapportevalseq.warning_coursinexistant}]].
+				</h4>
+			</fieldset>
+			
+			<!-- Affichage de la liste des classes pages par pages en indiquant pour chacune le montant de la scolarité spécifié -->
+			<fieldset  class="col-md-12" th:if="${session.listcoursofClassesRapportEvalSeq}">
+				<table class="table table-striped">
+					<caption th:inline="text">[[#{rapportevalseq.caption_listcours}]]</caption>
+					<thead class="thead-light">
+						<tr>
+							<th scope="col" th:inline="text">[[#{rapportevalseq.th_cours}]]</th>
+							<th scope="col" th:inline="text">[[#{rapportevalseq.th_enseignant}]] </th>
+							<th scope="col" th:inline="text">[[#{rapportevalseq.th_evalpasse}]] </th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="cours:${session.listcoursofClassesRapportEvalSeq}">
+							<td th:inline="text">
+								[[${cours.matiere.codeMatiere}]] [[${cours.codeCours}]] 
+							</td>
+							<td th:inline="text">
+								 [[${cours.proffesseur.nomsPers}]] ([[${cours.proffesseur.numtel1Pers}]]/[[${cours.proffesseur.numtel2Pers}]])
+							</td>
+							<td>
+								<table class="table table-bordered">
+									<tbody>
+										<tr th:each="eval:${session.listofEvalSeqRapportEvalSeq}" th:if="${eval.cours.idCours == cours.idCours}">
+											<td th:inline="text">[[${eval.typeEval =='CC'?(session.lang=='fr'?'D1':'E1'):(session.lang=='fr'?'D2':'E2')}]] </td>
+											<td th:inline="text">[[${eval.proportionEval}]] </td>
+											<td th:inline="text">[[${#dates.format(eval.dateenregEval,"dd-MM-yyyy")}]] </td>
+											<td th:inline="text">
+												<a class="btn btn-primary btn-sm pull-left" href="#" 
+													th:href="@{/logesco/users/getprocesverbalNotes(idEval=${eval.idEval})}"
+													 role="button" th:inline="text">
+													 <span class="glyphicon glyphicon-list-all"></span> [[#{rapportevalseq.bouton_voirpv}]]
+												</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				
+			</fieldset>
+</div>
+<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

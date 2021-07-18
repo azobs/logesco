@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title th:inline="text">[[#{formsaisienote.titre_page}]]</title>
+</head>
+<body onload="donneFocus()">
+
+<span layout:fragment="titre_boite">
+        <kbd th:inline="text">[[#{formsaisienote.titre_boite}]] </kbd> 
+	<span th:inline="text" class="alert alert-warning"> 
+		<kbd>[[#{formsaisienote.label_sequence}]]  [[${sequenceConcerne.numeroSeq}]]: [[${coursConcerne.codeCours}]]
+			[[${coursConcerne.intituleCours}]]</kbd>
+	</span>
+</span>
+
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE   col-md-offset-1-->
+	<div class="col-md-9">
+		<form action="#" class="form-inline"
+				th:action="@{/logesco/users/getUpdateNoteSaisieV1}" method="get">
+					
+					<input type="hidden" name="effectifclasse" id="effectifclasse" 
+						class="form-control" th:value="${effectifclasse}"/>
+					
+					<div th:if="${param.updatenotesaisiErrorsaveEval}">
+						<h4 align="justify" class="alert alert-danger" th:inline="text">
+							[[#{formsaisienote.labelerreur_updatenotesaisiErrorsaveEval}]].
+						</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisierrorNote}">
+						<h4 align="justify" class="alert alert-danger" th:inline="text">[[#{formsaisienote.labelerreur_updatenotesaisierrorNote}]].</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisiError}">
+						<h4 align="justify" class="alert alert-danger" th:inline="text">[[#{formsaisienote.labelerreur_updatenotesaisiError}]].</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisiError1}">
+						<h4 align="justify" class="alert alert-danger" th:inline="text">
+							[[#{formsaisienote.labelerreur_updatenotesaisiError1}]].
+						</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisiwarningElv}">
+						<h4 align="justify" class="alert alert-warning" th:inline="text">
+							[[#{formsaisienote.labelwarning_updatenotesaisiwarningElv}]].
+						</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisiwarningElvPre}">
+						<h4 align="justify" class="alert alert-warning"  th:inline="text"> 
+							[[#{formsaisienote.labelwarning_updatenotesaisiwarningElvPre}]].
+						</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisiSucces}">
+						<h4 align="justify" class="alert alert-success" th:inline="text">
+							[[#{formsaisienote.label_updatenotesaisiSucces}]].
+						</h4>
+					</div>
+					
+					<div th:if="${param.numeroElvErrone}">
+						<h4 align="justify" class="alert alert-danger" th:inline="text">
+							[[#{formsaisienote.label_numeroElvErrone}]]
+						</h4>
+					</div>
+					
+					<div th:if="${param.rechEleveNull}">
+						<h4 align="justify" class="alert alert-success" th:inline="text">
+							[[#{formsaisienote.label_rechEleveNull}]]
+						</h4>
+					</div>
+					
+					<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>
+										<div class="form-group" th:if="${evaluationConcerne}">
+											<label th:inline="text"> Evaluation: <span
+												class="redcolor"><!-- [[${evaluationConcerne.typeEval}]] -->
+													[[${evaluationConcerne.typeEval=='DS'}?(${session.lang=='fr'}?'Devoir 2':'Test 2'):(${session.lang=='fr'}?'Devoir 1':'Test 1') ]]</span></label>
+											
+											<input type="hidden" name="idEval" id="idEval" 
+												class="form-control" th:value="${evaluationConcerne.idEval}" />
+											
+											<input type="hidden" name="lang" id="lang" 
+												class="form-control" th:value="${session.lang}" />
+											
+										</div>
+									</th>
+									<th>
+										<div class="form-group" th:if="${evaluationConcerne}">
+											<label th:inline="text"> [[#{formsaisienote.label_comptantpour}]]: &nbsp;&nbsp;&nbsp;</label>
+											<input type="number" name="proportionEval" id="proportionEval" min="0" max="100" step="5"
+												class="form-control redcolor" th:value="${evaluationConcerne.proportionEval}" />
+											
+											<button type="button" class="btn btn-success" onclick="call_enreg_prop()">
+												<span class="glyphicon glyphicon-ok"></span>
+											</button>
+												
+										</div>
+									</th>
+									<th>
+										<div>
+											<label th:inline="text" th:if="${evaluationAssocie}"> 
+												[[#{formsaisienote.label_donc}]] <span class="redcolor" id="proportionAssocie">
+												[[${evaluationAssocie.proportionEval}]]%</span>  
+												[[#{formsaisienote.label_pour}]] <span class="redcolor">
+													[[${evaluationAssocie.typeEval=='DS'}?(${session.lang=='fr'}?'Devoir 2':'Test 2'):(${session.lang=='fr'}?'Devoir 1':'Test 1') ]]
+												 <!-- [[${evaluationAssocie.typeEval}]] --></span> </label>
+												 
+											<label th:inline="text" th:if="${default_proportion!=null and evaluationConcerne!=null}"> 
+												Donc <span class="redcolor" id="proportionAssocie">
+												[[${default_proportion}]]%</span>  
+												pour <span class="redcolor">
+													[[${evaluationConcerne.typeEval=='DS'}?(${session.lang=='fr'}?'Devoir 1':'Test 1'):(${session.lang=='fr'}?'Devoir 2':'Test 2') ]]
+												 <!-- [[${evaluationAssocie.typeEval}]] --></span> </label>
+												 
+										</div>
+									</th>
+								</tr>
+								
+								<tr>
+									<th th:inline="text">[[#{formsaisienote.th_numero}]]</th>
+									<th th:inline="text">[[#{formsaisienote.th_nomsprenoms}]] </th>
+									<th th:inline="text">Note/20</th>
+									<th>Appreciation</th>
+								</tr>
+							</thead>
+							<tbody th:if="${listofAllEleve}">
+							
+								<tr th:each="eleve:${listofAllEleve}" >
+									
+									<td th:inline="text"><b>[[${eleve.getNumero(listofAllEleve)}]]</b> </td>
+							
+									<td th:inline="text"><b>[[${#strings.capitalize(eleve.nomsEleves)}]] [[${eleve.prenomsEleves}]]</b> </td>
+									
+									<td th:inline="text">
+										
+										<input type="text" th:name="noteSaisi+${eleve.idEleves}+${evaluationConcerne.idEval}"  
+											th:id="noteSaisi+${eleve.idEleves}+${evaluationConcerne.idEval}"   
+											th:onblur="'javascript:enreg('+${eleve.idEleves}+','+${evaluationConcerne.idEval}+')'"
+											th:tabindex="${eleve.getNumero(listofAllEleve)}"
+											onkeyup="enterTab(this,event)"
+												class="form-control" th:value="${eleve.getNotesEvalCoursSeq(coursConcerne.idCours,sequenceConcerne.idPeriodes,typeEval) != null}?
+										${eleve.getNotesEvalCoursSeq(coursConcerne.idCours,sequenceConcerne.idPeriodes,typeEval).valeurnoteEval}:'0'" />
+										
+										<input type="hidden" name="lang" id="lang" th:value="${session.lang}" />
+									
+									</td>
+									
+									<td>
+										<!-- <img alt="Ici le logo de l'application"  src="../static/images/logopng.png"  /> -->
+										<label th:id="reponseServeur+${eleve.idEleves}+${evaluationConcerne.idEval}"></label> 
+									</td>
+									
+								</tr>
+								
+							</tbody>
+						</table>
+						<!-- <input type="text" id="valeurSaisi" />
+						<button type="submit" class="btn btn-primary btn-sm  pull-right">Valider l'enregistrer</button>--> 
+				</form>
+				
+				<br/><br/>
+				
+				<a class="btn btn-default btn-sm pull-left" href="#" 
+						th:href="@{/logesco/users/getNotesEvalClasse(idClasseConcerne=${evaluationConcerne.cours.classe.idClasses}, 
+						idEvalConcerne=${evaluationConcerne.idEval})}" role="button" target="_blank" th:inline="text">
+						<span class="glyphicon glyphicon-cloud-download"></span> [[#{formsaisienote.bouton_affichereleve}]]
+				</a>
+				
+				
+				<a class="btn btn-default btn-sm pull-right" href="#" 
+						th:href="@{/logesco/users/getNotesFinaleClasse(idClasse=${evaluationConcerne.cours.classe.idClasses}, 
+						idCours=${evaluationConcerne.cours.idCours},idSequence=${sequenceConcerne.idPeriodes})}" 
+						role="button" target="_blank" th:inline="text">
+					<span class="glyphicon glyphicon-cloud-download"></span> [[#{formsaisienote.bouton_affichereleveseq}]] 
+				</a>
+			
+				<br/><br/>
+				<a class="btn btn-default btn-sm pull-left" href="#" title="Retourner à la page précédente"
+						th:href="@{/logesco/users/getdonneesSaisieNotesV1(idClassesConcerne=${evaluationConcerne.cours.classe.idClasses}, 
+						idAnneeActive=${sequenceConcerne.trimestre.annee.idPeriodes})}" role="button" th:inline="text">
+						<span class="glyphicon glyphicon-menu-left"></span> [[#{formsaisienote.bouton_retourner}]]
+					</a>
+				
+				
+	</div>
+	
+	
+	
+	
+<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<!-- On peut inserer du javascript ici ie le javascript qui concerne exclusivement cette page. -->
+
+<script type="text/javascript">
+//alert("dd");
+	function donneFocus(){
+		//alert("donne focus");
+		document.getElementById('noteSaisi').focus();
+	}
+	
+	function call_enreg_prop(){
+		var proportionEval =  $('#proportionEval').val();
+		var idEval = $('#idEval').val();
+		//alert("Allons enregistrer la nouvelle proportion du devoir "+proportionEval+" et l'id de l'eval est "+idEval);
+		$.ajax({
+			type: 'GET',
+			url: '/logesco/users/ajaxrestusers/enregProportionEval/'+idEval+"/"+proportionEval,
+			success: function(result){
+				//alert(""+result);
+				//$('#'+idresult).text(result);
+				if(result == "-1"){
+					if($('#lang').val() == "fr"){
+						alert("Vérifier que la proportion saisie est nombre inférieur ou égale à 100");
+					}
+					else{
+						alert("Check weither the proportion typed is lower or equal to 100");
+					}
+				}
+				else{
+					var tex = result+"%"
+					$('#proportionAssocie').text(tex);
+				}  
+			}
+		});
+		
+	}
+	
+	function enreg(idEleve, idEval){
+		//alert(idEleve+" "+idEval);
+		var idInput = "noteSaisi"+idEleve+""+idEval;
+		var idresult = "reponseServeur"+idEleve+""+idEval;
+		//alert(idInput);
+		//var valeurSaisi = document.getElementById(idInput).val();
+		var valeurSaisi =  $('#'+idInput).val();
+		var proportionEval =  $('#proportionEval').val();
+		var lang = $('#lang').val();
+		
+		//alert(valeurSaisi);proportionEval
+		/* $('#valeurSaisi').val(valeurSaisi); */
+		//var parametres="idEleves="+idEleve;
+		$.ajax({
+			type: 'GET',
+			url: '/logesco/users/ajaxrestusers/enregNote/'+idEleve+"/"+idEval+"/"+proportionEval+"/"+valeurSaisi+"/"+lang,
+			success: function(result){
+				//alert(""+result);
+				$('#'+idresult).text(result);
+				/* if(result == "1"){
+					//alert('#'+idresult);
+					//$('#'+idresult).text("EXCELLENT");
+					$('#'+idresult).text(mention(valeurSaisi));
+				}
+				else{
+					$('#'+idresult).text("KO");
+				}  */
+			}
+		});
+		
+	}
+	
+	function enterTab(input,event){
+		//alert("autre test");
+		if( event.which == 13 ){
+			var tab = parseInt(input.getAttribute("tabindex"));
+			var tabp=tab;
+			var tab = tab+1;
+			var effectifclasse =  $('#effectifclasse').val();
+			//alert("autre test "+effectifclasse);
+			if(tabp == effectifclasse){
+				tab = 1;
+			}
+			
+			 var allFields = document.getElementsByTagName("input");
+			 //alert("les input "+allFields.length);
+		        for (var i=0; i!=allFields.length; i++) {
+		        	//alert("un de ces input "+parseInt(allFields[i].getAttribute("tabindex")));
+		            if (parseInt(allFields[i].getAttribute("tabindex")) == tab) {
+		            	//alert("le input qui doit prendre le focus "+allFields[i]);
+		                allFields[i].focus();
+		                allFields[i].select(); 
+		                //if (!undoSelect) { allFields[i].select(); }
+		            }
+		        }
+			}
+	}
+	
+	function enterpress(idEleve, idEval, event){
+		//alert("enter press in this input text");
+		if( event.which == 13 ){
+	        //On va au serveur chercher l'id de l'elve suivant
+	        
+			var idInput = "noteSaisi"+idEleve+""+idEval;
+			 document.getElementById(idInput).blur();
+	    }
+	}	
+</script>
+</div>
+</body>
+</html>

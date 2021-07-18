@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/adminlayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Trimestre: Configuration</title>
+</head>
+<body>
+<div layout:fragment="formactionadmin">
+<!-- debut du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-8  col-md-offset-2  reculeverticalementmodifpasswordform">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4>Enregistrement ou mise à jour des différents trimestres d'une année scolaire</h4>
+		</div>
+		<div class="panel-body">
+		<div class="col-md-4">
+			<form action="#" th:action="@{/logesco/admin/postupdatePeriodesTrim}"
+						th:object="${updatePeriodesTrimForm}" method="post">
+						
+					<div th:if="${param.updateperiodestrimsuccess}">
+						<h4 align="justify" class="alert alert-success">Trimestre de l'année scolaire enregistré avec succès.</h4>
+					</div>
+					
+					<div th:if="${param.updateperiodestrimerrorTrimestreAnnee}">
+						<h4 align="justify" class="alert alert-danger">L'année choisi contient déjà 3 trimestres.</h4>
+					</div>
+					
+					<div th:if="${param.updateperiodestrimerrorNumeroTrimAnnee}">
+						<h4 align="justify" class="alert alert-danger">L'année choisi contient déjà un trimestre de ce numéro.</h4>
+					</div>
+					
+					<div th:if="${param.updateperiodestrimerrorDateTrim1Annee}">
+						<h4 align="justify" class="alert alert-danger">Les dates spécifiées pour la période ne sont pas conforme
+							à ceux de l'année scolaire indiquée.</h4>
+					</div>
+					
+					<div th:if="${param.updateperiodestrimerrorTrim1AnneeNotExist}">
+						<h4 align="justify" class="alert alert-danger">On ne peut enregistré le trimestre 2 avant le trimestre 1.</h4>
+					</div>
+					
+					<div th:if="${param.updateperiodestrimerrorDateTrim2Annee}">
+						<h4 align="justify" class="alert alert-danger">Les dates spécifiées pour la période ne sont pas conforme
+							à ceux du trimestre 1 de l'année scolaire indiquée.</h4>
+					</div>
+					
+					<div th:if="${param.updateperiodestrimerrorTrim2AnneeNotExist}">
+						<h4 align="justify" class="alert alert-danger">On ne peut enregistré le trimestre 3 avant le trimestre 2.</h4>
+					</div>
+					
+					<div th:if="${param.updateperiodestrimerrorDateTrim3Annee}">
+						<h4 align="justify" class="alert alert-danger">Les dates spécifiées pour la période ne sont pas conforme
+							à ceux du trimestre 2 de l'année scolaire indiquée.</h4>
+					</div>
+					
+					<div th:if="${param.updateperiodestrimerrorDate}">
+						<h4 align="justify" class="alert alert-danger">Les dates spécifiées pour la période ne sont pas conforme.</h4>
+					</div>
+					
+					
+					<fieldset>
+						<legend class="text-primary">Paramètres des trimestres</legend>
+						
+						<div class="form-group">
+								<label for="intituleAnneeTrim"> Année scolaire: <span
+									class="redcolor">*</span></label>
+									<select class="form-control" name="intituleAnneeTrim"  th:field="*{intituleAnneeTrim}"
+										 id="intituleAnneeTrim" >
+										 
+										 	<option th:each="a:${listofAnnee}" th:value="${a.intituleAnnee}"
+										 		 th:inline="text">[[${a.intituleAnnee}]] (de [[${#dates.format(a.datedebutPeriodes,"dd-MM-yyyy")}]]
+										 		   à  [[${#dates.format(a.datefinPeriodes,"dd-MM-yyyy")}]])</option>
+										 
+									</select><!-- th:inline="text">[[${t.numeroTrim}]]:[[${t.annee?.intituleAnnee}]] -->
+							</div>
+							<div th:if="${#fields.hasErrors('intituleAnneeTrim')}"
+								th:errors="*{intituleAnneeTrim}" class="redcolor">Erreur d'intitule annee</div>
+								
+						<div class="form-group">
+								<label for="numeroTrim">Trimestre N°: <span
+									class="redcolor">*</span></label>
+								<select class="form-control" name="numeroTrim"  th:field="*{numeroTrim}"
+										 id="numeroTrim" >
+										 
+										 	<option value="1">1</option>
+										 	<option value="2">2</option>
+										 	<option value="3">3</option>
+										 
+								</select>
+						</div>
+						<div th:if="${#fields.hasErrors('numeroTrim')}"
+								th:errors="*{numeroTrim}" class="redcolor">Erreur de numero trimestre</div>
+						
+						<div class="form-group">
+								<label for="datedebutPeriodes"> Date de rentrée du trimestre: <span
+									class="redcolor">*</span></label> <input type="date" name="datedebutPeriodes"
+									id="datedebutPeriodes" class="form-control" th:value="*{datedebutPeriodes}" th:field="*{datedebutPeriodes}"
+									placeholder="Date de rentrée scolaire(année-mois-jour)" />
+						</div>
+						<div th:if="${#fields.hasErrors('datedebutPeriodes')}"
+								th:errors="*{datedebutPeriodes}" class="redcolor">Erreur de date de rentrée
+						</div>
+						
+						<div class="form-group">
+								<label for="datefinPeriodes"> Date de départ en congés du personnel: <span
+									class="redcolor">*</span></label> <input type="date" name="datefinPeriodes"
+									id="datefinPeriodes" class="form-control" th:value="*{datefinPeriodes}" th:field="*{datefinPeriodes}"
+									placeholder="Date de départ en vacance(année-mois-jour)" />
+						</div>
+						<div th:if="${#fields.hasErrors('datefinPeriodes')}"
+								th:errors="*{datefinPeriodes}" class="redcolor">Erreur de date de fin
+						</div>
+						
+						<button type="submit" class="btn btn-primary  pull-right">
+							<span class="glyphicon glyphicon-save"></span> Envoyer
+						</button>
+						<button type="reset" class="btn btn-danger">
+							<span class="glyphicon glyphicon-erase"></span> Effacer
+						</button>
+						
+					</fieldset>
+					
+			</form>
+		</div>
+		<div class="col-md-8">
+			<div th:if="${param.supprimTrimestreserrorSequences}">
+				<h4 align="justify" class="alert alert-danger">Impossible de supprimer un trimestre qui englobe des séquences.</h4>
+			</div>
+			<div th:if="${param.supprimTrimestreserrorNumTrim}">
+				<h4 align="justify" class="alert alert-danger">Un trimestre de numéro supérieur existe dans l'année.</h4>
+			</div>
+			<!-- ici on va placer le tableau qui affiche la liste des sections dèjà enregistré -->
+			<table class="table table-bordered">
+				<caption>Liste des trimestres enregistrés</caption>
+				<thead>
+					<tr>
+						
+						<th scope="col">Trimestre N°</th>
+						<th scope="col">Date début</th>
+						<th scope="col">Date fin</th>
+					     <th class="text-center" scope="col">Action</th>
+				    </tr>
+				</thead>
+				<tbody>
+					<tr th:each="t:${listofTrimestres}" >
+									<!-- th:text="${t.annee?.intituleAnnee}" th:class="${t.etatPeriodes == true}?'bg-info':' ' "-->
+						<td  th:inline="text"><kbd>[[${t.numeroTrim}]]</kbd>: [[${t.annee?.intituleAnnee}]]</td>
+						<td th:text="${#dates.format(t.datedebutPeriodes,'dd-MM-yyyy')}"></td>
+						<td th:text="${#dates.format(t.datefinPeriodes,'dd-MM-yyyy')}"></td>
+						<td>
+			      				<div>
+			      					<!-- <a class="btn btn-primary btn-sm pull-left" href="#" 
+			      						th:href="@{/logesco/admin/getactiverTrimestre(idPeriodes=${t.idPeriodes})}" 
+			      						role="button" th:inline="text">[[${t.etatPeriodes == true}?'Désactiver':'Activer']]</a> -->
+			      					
+			      					<a class="btn btn-danger btn-sm pull-right" href="#" 
+			      						th:href="@{/logesco/admin/getsupprimerTrimestre(idPeriodes=${t.idPeriodes})}" 
+			      						role="button">
+			      							<span class="glyphicon glyphicon-trash"></span> Supprimer
+			      					</a>
+			      				</div>
+			      			</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		</div>
+	</div>
+</div>
+<!-- fin du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

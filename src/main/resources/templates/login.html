@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>page de connexion</title>
+
+<link rel="stylesheet" type="text/css"
+	href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+<!-- -->
+<link rel="stylesheet" type="text/css" href="../static/css/myStyle.css"
+	th:href="@{/css/myStyle.css}" />
+
+</head>
+<body onload="donneFocus()">
+
+	<!-- debut de la partie entete de la page d'index -->
+<header>
+<div class=" col-md-12 ">
+	<div class="col-md-4 redcolor">
+		
+	</div>
+	<div class="col-md-4">
+		<div class="col-md-4">
+		
+		</div>
+		<div class="col-md-4 reculelogoverticalement">
+			<img alt="Ici le logo de l'application"  src="../static/images/logopng.png"  
+			th:src="@{/images/logopng.png}"/>
+		</div>
+		<div class="col-md-4 ">
+		
+		</div>
+		
+	</div>
+	<div class="col-md-4">
+		
+	</div>
+		
+</div> 
+</header>
+	<!-- fin de la partie entete de la page d'index -->
+
+
+	<!-- debut de la partie contenu de la page d'index -->
+	<section>
+		<div th:if="${param.logout}" class="greencolor">
+			<h4 align="center" class="alert-success">Vous vous êtes déconnecté avec succès.</h4>
+		</div>
+		
+		
+
+		<div class="col-md-4  col-md-offset-4 reculeverticalementformlogin">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h4 align="center"><kbd>Authentification</kbd></h4>
+				</div>
+				<div class="panel-body">
+
+					<div th:if="${param.error}">
+						<h4 align="center" class="alert alert-danger">Nom d'utilisateur ou password invalide.</h4>
+					</div>
+					
+					<div th:if="${param.updatepassword}" >
+						<h4 align="center" class="alert alert-success">Votre mot de passe a été modifié avec succès.</h4>
+					</div>
+					
+					<div th:if="${param.updateusername}" >
+						<h4 align="center" class="alert alert-success">Votre nom d'utilisateur a été modifié avec succès.</h4>
+					</div>
+
+					<form th:action="@{/login}" method="post">
+						
+						<div class="form-group">
+							<label for="username" th:inline="text"> [[${session.lang == 'fr'?"Nom d'utilisateur:":'User name:'}]]
+							<span class="glyphicon glyphicon-user"></span></label> 
+							<input
+								type="text" name="username" id="username" class="form-control" /> 
+						</div>
+						<div class="form-group">
+							<label for="password" th:inline="text"> [[${session.lang == 'fr'?'Mot de passe:':'Password:'}]] 
+							<span class="glyphicon glyphicon-pencil"></span></label> 
+							<input type="password"
+								name="password" id="password" class="form-control" />
+						</div>
+						<button type="submit" class="btn btn-primary  pull-right" th:inline="text">
+							[[${session.lang == 'fr'?"S'authentifier":'Authenticate'}]] <span class="glyphicon glyphicon-log-in"></span>
+						</button>
+						<!-- <div class="form-group">
+		            	<input type="submit" value="Sign In"/>
+		            </div> -->
+					</form>
+				</div>
+			</div>
+		</div>
+
+	</section>
+	<!-- fin de la partie contenu de la page d'index -->
+
+	<!-- debut de la partie footer de la page d'index -->
+
+	<!-- fin de la partie footer de la page d'index -->
+	
+<script type="text/javascript">
+//alert("dd");
+	function donneFocus(){
+		//alert("donne focus");
+		document.getElementById('username').focus();
+	}
+</script>
+
+</body>
+</html>

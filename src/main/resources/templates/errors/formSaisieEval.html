@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Paramètres de saisie des notes</title>
+</head>
+<body>
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div
+			class="col-md-9  col-md-offset-1  reculeverticalementmodifpasswordform">
+			
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+					<h4>Paramètres de l'évaluation</h4>
+				</div>
+				<div class="panel-body">
+					<form action="#" th:action="@{/logesco/users/getformSaisieEval}"
+						  method="get" id="form">
+						
+						<div th:if="${classeConcerne != null and seqConcerne != null and coursConcerne != null}">
+							<h3 align="center"><span th:inline="text">Notes de la Séquence N°<span class="redcolor">[[${seqConcerne.numeroSeq}]]</span></span>
+							&nbsp;
+							<span th:inline="text">de la  <span class="redcolor">[[${classeConcerne.codeClasses}]] 
+							[[${classeConcerne.specialite.codeSpecialite}]] 	[[${classeConcerne.numeroClasses}]]</span></span>
+							&nbsp;
+							<span th:inline="text">en  <span class="redcolor">[[${coursConcerne.codeCours}]]</span></span> </h3>
+						</div>
+						
+						<table class="table table-striped table-hover">
+							<thead>
+								<tr>
+									<th>Type d'évaluation</th>
+									<th>Pourcentage dans la note finale</th>
+								</tr>
+							</thead>
+							<tbody>
+							
+								<tr>
+									<td>
+										Devoir Surveillé (DS)
+									</td>
+									<td>
+										<div class="form-group">
+											<input type="text" name="proportionEval1"
+													id="proportionEval1" class="form-control" th:value="${proportionEval1}" 
+													placeholder="80" />
+										</div>
+									</td>
+									<td>
+										<span>
+											<a th:if="${classeConcerne != null and seqConcerne != null and coursConcerne != null}"
+												class="btn btn-primary btn-sm" href="#" 
+												th:href="@{/logesco/users/getformSaisieNotes(
+																idSequenceConcerne=${seqConcerne.idPeriodes}, 
+																idClassesConcerne=${classeConcerne.idClasses}, 
+																typeEval='DS', 
+																idCoursConcerne=${coursConcerne.idCours})}" role="button">Editer les notes de DS
+										  </a>
+									</span>
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
+										Contrôle Continu (CC)
+									</td>
+									<td>
+										<div class="form-group">
+											<input type="text" name="proportionEval2"
+													id="proportionEval2" class="form-control" th:value="${proportionEval2}" 
+													placeholder="20" />
+										</div>
+										
+									</td>
+									<td>
+										<span>
+											<a th:if="${classeConcerne != null and seqConcerne != null and coursConcerne != null}"
+												class="btn btn-primary btn-sm" href="#" 
+												th:href="@{/logesco/users/getformSaisieNotes(
+																idSequenceConcerne=${seqConcerne.idPeriodes}, 
+																idClassesConcerne=${classeConcerne.idClasses}, 
+																typeEval='CC', 
+																idCoursConcerne=${coursConcerne.idCours})}" role="button">Editer les notes de CC
+										  </a>
+									</span>
+									</td>
+								</tr>
+							
+								
+							</tbody>
+						</table>
+						
+					</form>
+				</div>
+		</div>
+			
+</div>
+<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

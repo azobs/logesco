@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Actualiser les séquences</title>
+</head>
+<body>
+
+<span layout:fragment="titre_boite">
+       <kbd>Actualiser les périodes (séquence)</kbd>
+</span>
+
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-9">
+			<div th:if="${param.actualiserSeqerror}">
+				<h4 align="justify" class="alert alert-danger">Erreur de changement d'état: On ne peut
+				avoir qu'une seule séquence active à la fois. Désactiver les autres et recommencer.</h4>
+			</div>
+			
+			<div th:if="${param.actualiserSeqerrorTrim}">
+				<h4 align="justify" class="alert alert-danger">Erreur de changement d'état: Activer d'abord 
+				le trimestre correspondant.</h4>
+			</div>
+			
+			<div th:if="${param.actualiserSeqsuccessFalse}">
+				<h4 align="justify" class="alert alert-success">La séquence est désormais désactivée</h4>
+			</div>
+			
+			<div th:if="${param.actualiserSeqsuccessTrue}">
+				<h4 align="justify" class="alert alert-success">La séquence est désormais activée</h4>
+			</div>
+		
+			<table class="table table-striped">
+				<thead class="thead-light">
+					<tr>
+						<th scope="col">N° Séquence</th>
+						<th scope="col">Date début</th>
+						<th scope="col">Date fin</th>
+						<th scope="col">Activée?</th>
+					     <th class="text-center" scope="col">Action</th>
+					</tr>
+				</thead>
+			</table>
+			<table class="table table-striped" th:each="t:${listofTrimestres}">
+				<thead class="thead-light">
+					<tr>
+						<th th:inline="text" > 
+							Année <span class="badge badge-light">[[${t.annee?.intituleAnnee}]]</span>
+							Trimestre <span class="badge badge-light"> [[${t.numeroTrim}]]</span>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="s:${t.listofsequence}">
+					
+						<td  th:inline="text"><kbd>Seq<span class="redcolor"> [[${s.numeroSeq}]]</span></kbd></td>
+						
+						<td th:text="${#dates.format(s.datedebutPeriodes,'dd-MM-yyyy')}"></td>
+						 
+						<td th:text="${#dates.format(s.datefinPeriodes,'dd-MM-yyyy')}"></td>
+						 
+						 <td th:text="${s.etatPeriodes==false}?'Non':'Oui'"></td>
+						 
+						 <td>
+			      				<div>
+			      					<a class="btn btn-primary btn-sm" href="#" 
+			      						th:href="@{/logesco/users/censeur/getactualiserSequence(idPeriodes=${s.idPeriodes}, 
+											numPageTrim=${pageCouranteTrimestre})}" 
+			      						role="button" th:inline="text">
+			      						[[${s.etatPeriodes==false}?'Activer': 'Desactiver']]
+			      						
+			      						
+			      					</a>
+			      				</div>
+			      		</td>
+						
+					</tr>
+				</tbody>
+				
+			</table>
+			
+			<div class="container">
+					<ul class="pagination"><!-- nav nav-pills -->
+						<li th:each="p,status:${listofPagesSequence}" th:class="${status.index==pageCouranteTrimestre}?active:' ' ">
+							<a th:href="@{/logesco/users/censeur/getupdateSequence(numPageTrim=${status.index})}"
+									th:text="${status.index+1}"></a>
+						</li>
+					</ul>
+			</div> 
+			
+</div>
+<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

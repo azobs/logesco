@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Importer une liste d'élève</title>
+</head>
+<body>
+<div layout:fragment="formactionusers">
+    <!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+    <div class="col-md-6  col-md-offset-3  reculeverticalementmodifpasswordform">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+					<h4>Importer une liste d'élève à partir d'un fichier Excel </h4>
+			</div>
+			<div class="panel-body">
+                    
+					<form action="#"  th:action="@{/logesco/users/chefetab/postenregListEleves}" 
+						method="post" enctype="multipart/form-data" 
+						th:object="${enregListElevesForm}">
+						
+						<fieldset th:if="${erreurDansFichier}" class="alert alert-danger">
+							<legend class="text-primary">Le fichier envoyé contient des erreurs</legend>
+							<label th:inline="text">[[${erreurDansFichier}]]</label>
+						</fieldset>
+						
+						<fieldset th:if="${listofErrorEnreg}" class="alert alert-danger">
+							<legend class="text-primary">Le fichier envoyé contient des erreurs</legend>
+							les élèves suivant sont déjà enregistrés dans la base de données.
+							<ul th:each="error:${listofErrorEnreg}">
+								<li  th:inline="text">[[${error}]]</li>
+							</ul>
+						</fieldset>
+						
+						<fieldset th:if="${enregListSucces}" class="alert alert-success">
+							<legend class="text-primary">Enregistrement effectué avec succès</legend>
+							<label th:inline="text">Les élèves de la liste spécifiées ont été enregistré dans la 
+								classe de [[${classeenregListSucces}]] avec succès.</label>
+						</fieldset>
+						
+						<fieldset >
+							NB: Le fichier excel doit être rempli selon le modèle ci-joint 
+							<a class="btn btn-default btn-sm pull-right" href="modeles/modele recrutement.xlsx" 
+				      			role="button" target="_blank"
+				      			th:href="@{/modeles/modele recrutement.xlsx}">Télécharger le modèle(.xlsx)</a>
+						</fieldset>
+						<fieldset class="col-md-6">
+							<legend class="text-primary">Classe concernée</legend>
+								
+							<select class="form-control" name="idClasseConcerne"  
+									th:field="*{idClasseConcerne}"  id="idClasseConcerne" >
+									
+									<optgroup th:label="${n.codeNiveaux}" 
+										th:if="${listofNiveaux}" th:each="n:${listofNiveaux}">
+										<option th:each="c:${n.listofClasses}" th:value="${c.idClasses}"
+											th:inline="text">
+											 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+										</option>
+									</optgroup>
+								
+								</select>
+							</fieldset>
+							
+							<fieldset class="col-md-6">
+								<legend class="text-primary">Modèle rempli</legend>
+								<div class="form-group">
+									<label for="filecheminFichier"> Uploader le fichier: </label> 
+									<input type="file" name="filecheminFichier" id="filecheminFichier" 
+										class="form-control-file" placeholder="Envoyer le fichier" 
+										accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"/>
+								</div>
+							</fieldset>
+							
+							<button type="submit" class="btn btn-primary  pull-right">Envoyer</button>
+							
+						</form>
+                </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

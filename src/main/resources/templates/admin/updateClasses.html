@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/adminlayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Configuration des salles de classe</title>
+</head>
+<body>
+<div layout:fragment="formactionadmin">
+<!-- debut du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-12    reculeverticalementmodifpasswordform">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4>Enregistrement des salles de classe de l'établissement selon leurs configurations</h4>
+		</div>
+		<div class="panel-body">
+			<form action="#" th:action="@{/logesco/admin/postupdateClasses}" class="form-inline"
+						th:object="${updateClassesForm}" method="post">
+				
+				<div th:if="${param.updateclasseserrorClasseExist}">
+					<h4 align="justify" class="alert alert-danger">La classe indiquée est déjà enregistrée dans le système.</h4>
+				</div>
+				
+				<div th:if="${param.updateclassessuccess}">
+					<h4 align="justify" class="alert alert-success">Classe enregistrée avec succès.</h4>
+				</div>
+				
+				<div th:if="${param.supprimClasseerrorEleves}">
+					<h4 align="justify" class="alert alert-danger">Erreur de suppression: Plusieurs élèves 
+					sont enregistrés dans cette classe.</h4>
+				</div>
+				
+				<div th:if="${param.supprimClasseerrorCours}">
+					<h4 align="justify" class="alert alert-danger">Erreur de suppression: Plusieurs cours 
+					sont enseignés dans cette classe.</h4>
+				</div>
+					
+				<fieldset>
+					<legend class="text-primary">Données d'enregistrement des salles de classes</legend>
+					
+					<div class="form-group">
+						<label for="codeClasse"> Code : <span
+										class="redcolor">*</span></label> 
+						<input type="text" name="codeClasse" id="codeClasse"
+									class="form-control"  th:value="*{codeClasse}"/>&nbsp;
+					</div>
+					<div th:if="${#fields.hasErrors('codeClasse')}"
+								th:errors="*{codeClasse}" class="redcolor">Erreur de code classe</div>
+								
+					<div class="form-group">
+						<label for="numeroClasse"> Numéro : <span
+										class="redcolor">*</span></label> 
+						<input type="text" name="numeroClasse" id="numeroClasse"
+									class="form-control"  th:value="*{numeroClasse}"/>&nbsp;
+					</div>
+					<div th:if="${#fields.hasErrors('numeroClasse')}"
+								th:errors="*{numeroClasse}" class="redcolor">Erreur de numero classe</div>
+								
+					<div class="form-group">
+						<label for="codeSpecialiteClasse"> Specialité: <span
+										class="redcolor">*</span></label> 
+						<select class="form-control" name="codeSpecialiteClasse"  th:field="*{codeSpecialiteClasse}"
+										 id="codeSpecialiteClasse" >
+										 
+							<option th:each="s:${listofSpecialite}" th:value="${s.codeSpecialite}"
+										 		th:text="${s.codeSpecialite}">1</option>
+										 
+						</select>&nbsp;
+					</div>
+					<div th:if="${#fields.hasErrors('codeSpecialiteClasse')}"
+								th:errors="*{codeSpecialiteClasse}" class="redcolor">Erreur de code specialite classe</div>
+								
+					<div class="form-group">
+						<label for="numeroOrdreNiveauClasse"> Niveau: <span
+										class="redcolor">*</span></label> 
+						<select class="form-control" name="numeroOrdreNiveauClasse"  th:field="*{numeroOrdreNiveauClasse}"
+										 id="numeroOrdreNiveauClasse" >
+										 
+							<option th:each="n:${listofNiveau}" th:value="${n.numeroOrdreNiveaux}"
+										 		th:text="${n.numeroOrdreNiveaux}">1</option>
+										 
+						</select>&nbsp;
+					</div>
+					<div th:if="${#fields.hasErrors('numeroOrdreNiveauClasse')}"
+								th:errors="*{numeroOrdreNiveauClasse}" class="redcolor">Erreur de niveau niveau classe</div>
+								
+					<div class="form-group">
+						<label for="codeSectionClasse"> Section: <span
+										class="redcolor">*</span></label> 
+						<select class="form-control" name="codeSectionClasse"  th:field="*{codeSectionClasse}"
+										 id="codeSectionClasse" >
+										 
+							<option th:each="s:${listofsection}" th:value="${s.codeSections}"
+										 		th:text="${s.codeSections}">1</option>
+										 
+						</select>&nbsp;
+					</div>
+					<div th:if="${#fields.hasErrors('codeSectionClasse')}"
+								th:errors="*{codeSectionClasse}" class="redcolor">Erreur de code section classe</div>
+								
+					<!-- debut des Ajouts du 19-08-2018 concernant la premiere langue de la classe -->
+					<div class="form-group">
+						<label for="langueClasses"> Langue: <span
+										class="redcolor">*</span></label> 
+						<select class="form-control" name="langueClasses"  th:field="*{langueClasses}"
+										 id="langueClasses" >
+										 
+							<option value="fr">Français</option>
+							<option value="en">Anglais</option>
+										 
+						</select>&nbsp;
+					</div>
+					<div th:if="${#fields.hasErrors('langueClasses')}"
+								th:errors="*{langueClasses}" class="redcolor">Erreur de seconde langue classe</div>
+					<!-- fin des Ajouts du 19-08-2018 concernant la premiere langue de la classe -->
+								
+						<div class="form-group"> 
+						<input type="hidden" name="enregOrmodif" id="enregOrmodif"
+									class="form-control"  th:value="*{enregOrmodif}"/>
+					</div>
+				
+					<div class="form-group"> 
+						<input type="hidden" name="codeClasseAModif" id="codeClasseAModif"
+									class="form-control"  th:value="*{codeClasseAModif}"/>
+					</div>
+					
+					<div class="form-group"> 
+						<input type="hidden" name="numeroClasseAModif" id="numeroClasseAModif"
+									class="form-control"  th:value="*{numeroClasseAModif}"/>
+					</div>
+					
+					<div class="form-group"> 
+						<input type="hidden" name="idSpecialiteAModif" id="idSpecialiteAModif"
+									class="form-control"  th:value="*{idSpecialiteAModif}"/>
+					</div>
+					<br/><br/>
+					<button type="submit" class="btn btn-primary  pull-right">
+						<span class="glyphicon glyphicon-save"></span> Envoyer
+					</button>
+				</fieldset>
+					
+			</form>
+			
+			<div th:if="${listofClasses}">
+				<table class="table table-striped">
+					<caption>Liste des classes existantes</caption>
+					<thead class="thead-light">
+						<tr>
+							<th scope="col">CODE</th>
+							<th scope="col">NUM</th>
+							<th scope="col">SPECIALITE</th>
+							<th scope="col">NIVEAU</th>
+							<th scope="col">SECTION</th>
+							<th scope="col">LANGUE</th>
+						     <th class="text-center" scope="col">ACTION</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="c:${listofClasses}">
+							<td th:text="${c.codeClasses}"></td>
+							<td th:text="${c.numeroClasses}"></td>
+							<td th:text="${c.specialite.codeSpecialite}"></td>
+							<td th:text="${c.niveau.numeroOrdreNiveaux}"></td>
+							<td th:text="${c.section.codeSections}"></td>
+							<td th:text="${c.langueClasses == 'fr'?'Français':'Anglais'}"></td>
+							<td>
+			      				<div>
+			      				<span>
+			      					<a class="btn btn-primary btn-sm pull-left" href="#"  
+			      						th:href="@{/logesco/admin/getupdateClasses(idClasses=${c.idClasses},
+			      						numPage=${pageCourante})}" 
+			      						role="button"><span class="glyphicon glyphicon-edit"></span> Modifier
+			      					</a>
+			      				</span>
+			      				<span>
+			      					<a class="btn btn-danger btn-sm pull-right" href="#" 
+			      						th:href="@{/logesco/admin/getsupprimerClasses(idClasses=${c.idClasses})}" 
+			      						role="button">
+			      						<span class="glyphicon glyphicon-trash"></span>
+			      						Supprimer
+			      					</a>
+			      				</span>
+			      				</div>
+			      			</td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<div class="container">
+					<ul class="pagination"><!-- nav nav-pills -->
+						<li th:each="p,status:${listofPagesClasses}" th:class="${status.index==pageCourante}?active:' ' ">
+							<a th:href="@{/logesco/admin/getupdateClasses(numPage=${status.index})}"
+								 th:text="${status.index+1}"></a>
+						</li>
+					</ul>
+					
+				</div> 
+				
+				<a class="btn btn-primary btn-lg pull-right" href="#" 
+			      						th:href="@{/logesco/admin/exportlistClasses}" 
+			      						role="button">
+			      						<span class="glyphicon glyphicon-list"></span> 
+			      						Exporter la liste des classes
+			     </a>
+				
+			</div>
+			
+		</div>
+	</div>
+</div>
+<!-- fin du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

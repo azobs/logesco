@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title th:text="#{listeProvEleves.titre_page}">Listes provisoires</title>
+</head>
+<body>
+<span layout:fragment="titre_boite">
+       <kbd>Affichage des listes provisoires des différentes classes</kbd>
+</span>
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-9">
+			<p class="alert alert-warning">
+				<span style="text-decoration: underline;" th:text="#{listeProvEleves.label_important}">
+					IMPORTANT:
+				</span> 
+				<span th:text="#{listeProvEleves.label_selectclasseaafficher}">
+					Sélectionner la classe et cliquer sur Afficher. Une fois la liste affichée cliquer Exporter 
+					pour l'imprimer dans un fichier pdf qui peut être par la suite transporté ou imprimé. 
+				</span>
+			</p>
+			
+		<div class="col-md-12">
+			<form action="#" th:action="@{/logesco/users/getlisteProvEleves}" method="get"  
+				th:if="${listofClasses}" class="form-inline" >
+					
+					<div class="form-group">
+						<label for="idClasseSelect" th:text="#{listeProvEleves.label_classe}"> Sélectionner la classe : <span
+										class="redcolor">*</span></label> 
+						<select class="form-control" name="idClasseSelect" id="idClasseSelect" >
+							
+							<optgroup th:label="${session.lang=='fr'}?${n.codeNiveaux}+'/'+${n.codeNiveaux_en}:${n.codeNiveaux_en}+'/'+${n.codeNiveaux}"
+							 th:if="${listofNiveaux}" th:each="n:${listofNiveaux}">
+											
+								<option th:each="c:${n.listofClasses}" th:value="${c.idClasses}"
+										th:inline="text">
+										 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+								</option>
+												
+							</optgroup>
+										 
+						</select>
+						</div>
+						<button type="submit" class="btn btn-primary  pull-right" 
+							th:text="#{listeProvEleves.bouton_envoyer}">
+							<span class="glyphicon glyphicon-send"></span> Envoyer
+						</button>
+					
+					
+				</form>
+		</div>
+		
+		&nbsp;
+			
+				<form action="#" th:action="@{/logesco/users/getlisteProvEleves}" method="get"  
+						th:if="${listofClasses}">
+				<fieldset  class="col-md-12" th:if="${classeSelect}">
+					<legend class="text-primary" th:inline="text"> [[#{listeProvEleves.label_listeleve}]]
+					<span th:inline="text" th:if="${classeSelect}" class="greencolor"> [[${classeSelect.codeClasses}]] 
+					[[${classeSelect.specialite.codeSpecialite}]] [[${classeSelect.numeroClasses}]]</span> (Total:
+						<span th:text="${effectifprovClasse}" class="redcolor"></span>)
+					</legend>
+					
+					<div th:if="${listprovofEleves}" >
+						<table class="table table-striped">
+							<thead class="thead-light">
+								<tr>
+									<!-- <th scope="col" th:text="#{listeProvEleves.th_matricule}">MATRICULE</th> -->
+									<th scope="col" th:text="#{listeProvEleves.th_nomsprenoms}">NOMS ET PRENOMS</th>
+									<th scope="col" th:text="#{listeProvEleves.th_datenaissance}">DATE ET LIEU DE NAISSANCE</th>
+									<th scope="col" th:text="#{listeProvEleves.th_numtel}">N° TEL PARENT/TUTEUR</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="eleve:${listprovofEleves}">
+									<!-- <td th:inline="text">[[${eleve.matriculeEleves}]] </td> -->
+								
+									<td th:inline="text">[[${#strings.capitalize(eleve.nomsEleves)}]] [[${eleve.prenomsEleves}]] </td>
+									
+									<td th:inline="text">
+										[[#{listeProvEleves.label_nele}]] 
+										[[${eleve.datenaissEleves}]] [[#{listeProvEleves.label_a}]] 
+										[[${eleve.lieunaissEleves}]]
+									</td>
+									
+									<td th:inline="text">[[${eleve.numtel1Parent}]]</td>
+								</tr>
+							</tbody>
+						</table>
+						
+						<div class="container">
+							<ul class="pagination"><!-- nav nav-pills -->
+								<li th:each="p,status:${listprovofPagesEleves}" th:class="${status.index==pageprovCouranteEleves}?active:' ' ">
+									<a th:href="@{/logesco/users/getlisteProvEleves(idClasseSelect=${idClasseSelect},
+											numPageprovEleves=${status.index})}"
+											 th:text="${status.index+1}"></a>
+								</li>
+							</ul>
+							
+						</div> 
+						
+					</div>
+					
+				</fieldset>
+				
+				<a class="btn btn-primary btn-sm pull-right" href="#" th:if="${classeSelect}"
+			      		th:href="@{/logesco/users/exportlistprovEleves(idClasseSelect=${idClasseSelect})}" 
+			      		role="button" target="_blank" th:text="#{listeProvEleves.bouton_export}">
+			      		<span class="glyphicon glyphicon-list-all"></span> Exporter la liste en PDF
+			     </a>
+				
+			</form>
+			
+</div>
+<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+
+<head>
+<meta charset="UTF-8"/>
+<title>Accueil LOGESCO</title>
+
+</head>
+<body onload="donneFocus()">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+    <span layout:fragment="titre_boite">
+         <kbd th:inline="text">[[#{indexusers.titre}]]</kbd>
+    </span>
+
+    <div layout:fragment="formactionusers">
+        <div class="col-md-2"></div> 
+        <div class="col-md-6">
+            <div th:if="${param.usernameerreur}">
+                <h4 align="center" class="alert alert-danger" th:inline="text">[[#{indexusers.labelerreurnomuser}]]
+                        </h4>
+            </div>
+            <div th:if="${param.passwordnotconfirm}">
+                <h4 align="center" class="alert alert-danger" th:inline="text">[[#{indexusers.labelerreurconfirmpassword}]].</h4>
+            </div>
+
+            <div th:if="${param.activepassworderror}">
+                <h4 align="center" class="alert alert-danger" th:inline="text">[[#{indexusers.labelerreurpassword}]].</h4>
+            </div>
+
+            <form action="#" th:action="@{/logesco/users/postupdatePassword}"
+                    th:object="${modifpasswordForm}" method="post">
+                <div class="form-group">
+                        <label for="passwordCourant" th:inline="text">[[#{label.currentpassword}]]  :
+                            <span class="redcolor">*</span>
+                        </label> <input type="password" name="passwordCourant"
+                                id="passwordCourant" class="form-control" />
+                </div>
+                <div th:if="${#fields.hasErrors('passwordCourant')}"
+                        th:errors="*{passwordCourant}" class="redcolor" th:inline="text">[[#{labelerror.password}]]</div>
+
+                    <div class="form-group">
+                        <label for="newPassword" th:inline="text">[[#{label.newpassword}]]  : <span
+                                class="redcolor">*</span></label> <input type="password"
+                                name="newPassword" id="newPassword" class="form-control" />
+                    </div>
+                    <div th:if="${#fields.hasErrors('newPassword')}"
+                        th:errors="*{newPassword}" class="redcolor" th:inline="text">[[#{labelerror.newpassword}]]</div>
+
+                    <div class="form-group">
+                        <label for="newPasswordConfirm" th:inline="text">[[#{label.confirmpassword}]] :
+                        <span class="redcolor">*</span>
+                            </label> <input type="password" name="newPasswordConfirm"
+                                        id="newPasswordConfirm" class="form-control" />
+                    </div>
+                    <div th:if="${#fields.hasErrors('newPasswordConfirm')}"
+                            th:errors="*{newPasswordConfirm}" class="redcolor" th:inline="text">[[#{labelerror.confirmerror}]]Erreur
+                            de confirmation</div>
+
+                    <div class="form-group">
+                            <input type="hidden" name="username" id="username"
+                                th:value="${#httpServletRequest.remoteUser}"
+                                        class="form-control" />
+                    </div>
+
+                <button type="submit" class="btn btn-primary  pull-right" th:inline="text">
+                	[[#{bouton_envoyer}]] <span class="glyphicon glyphicon-save"></span>
+                </button>
+            </form>
+            </div>
+             <div class="col-md-4"></div> 
+
+</div>
+
+<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+
+	
+</body>
+</html>

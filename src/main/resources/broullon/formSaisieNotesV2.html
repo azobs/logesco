@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Saisie des notes</title>
+</head>
+<body onload="donneFocus()">
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE   col-md-offset-1-->
+	<div class="col-md-7  col-md-offset-3  reculeverticalementmodifpasswordform">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+					<h4 align="center">Formulaire de saisie des notes de  
+						<span th:inline="text" class="alert alert-warning"> Séquence  [[${sequenceConcerne.numeroSeq}]]: [[${coursConcerne.codeCours}]]
+							[[${coursConcerne.intituleCours}]].
+						</span>
+					</h4>
+			</div>
+			<div class="panel-body">
+				<form action="#" class="form-inline"
+						th:action="@{/logesco/users/getUpdateNoteSaisieV1}" method="get">
+					
+					<div th:if="${param.updatenotesaisiErrorsaveEval}">
+						<h4 align="justify" class="alert alert-danger">
+							Vérifier que la proportion saisie est comprise entre 0 et  100 et si c'est le cas contacter l'administrateur.
+						</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisierrorNote}">
+						<h4 align="justify" class="alert alert-danger">Erreur système lors de l'enregistrement de la notes d'évaluation.</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisiError}">
+						<h4 align="justify" class="alert alert-danger">Valeur de note ou de proportion érronée.</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisiwarningElv}">
+						<h4 align="justify" class="alert alert-warning">Note enregistrée avec succès. Il y a pas d'élève suivant dans la liste.</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisiwarningElvPre}">
+						<h4 align="justify" class="alert alert-warning"> Il y a pas d'élève précédent dans la liste.</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisiSucces}">
+						<h4 align="justify" class="alert alert-success">Note enregistrée avec succès. Vous pouvez continuer</h4>
+					</div>
+					
+					<div th:if="${param.numeroElvErrone}">
+						<h4 align="justify" class="alert alert-danger">Saisir un numéro valide</h4>
+					</div>
+					
+					<div th:if="${param.rechEleveNull}">
+						<h4 align="justify" class="alert alert-success">Saisir un numéro valide</h4>
+					</div>
+					
+					<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>
+										<div class="form-group" th:if="${evaluationConcerne}">
+											<label th:inline="text"> Type d'évaluation: <span
+												class="redcolor">[[${evaluationConcerne.typeEval}]]
+													([[${evaluationConcerne.typeEval=='DS'}?'Devoir Surveillé':'Contrôle Continue ' ]])</span></label>
+											
+											<input type="hidden" name="idEval" id="idEval" 
+												class="form-control" th:value="${evaluationConcerne.idEval}" />
+											
+										</div>
+									</th>
+									<th>
+										<div class="form-group" th:if="${evaluationConcerne}">
+											<label th:inline="text"> Comptant pour: &nbsp;&nbsp;&nbsp;</label>
+											<input type="text" name="proportionEval" id="proportionEval" 
+												class="form-control redcolor" th:value="${evaluationConcerne.proportionEval}" />
+												
+										</div>
+									</th>
+									<th>
+										<div>
+											<label th:inline="text" th:if="${evaluationAssocie}"> 
+												Donc <span class="redcolor">[[${evaluationAssocie.proportionEval}]]%</span>  
+												pour <span class="redcolor"> [[${evaluationAssocie.typeEval}]]</span> </label>
+										</div>
+									</th>
+								</tr>
+								
+								<tr>
+									<th>Numéro</th>
+									<th>Noms et prénoms</th>
+									<th th:inline="text">Note([[${evaluationConcerne.typeEval}]])/20</th>
+								</tr>
+							</thead>
+							<tbody th:if="${listofAllEleve}">
+							
+								<tr th:each="eleve:${listofAllEleve}" >
+									
+									<td th:inline="text"><b>[[${eleve.getNumero(listofAllEleve)}]]</b> </td>
+							
+									<td th:inline="text"><b>[[${#strings.capitalize(eleve.nomsEleves)}]] [[${eleve.prenomsEleves}]]</b> </td>
+									
+									<td th:inline="text">
+										<!-- <span class="badge badge-light">
+											[[${eleve.getNotesEvalCoursSeq(coursConcerne.idCours,sequenceConcerne.idPeriodes,typeEval) != null}?
+											${eleve.getNotesEvalCoursSeq(coursConcerne.idCours,sequenceConcerne.idPeriodes,typeEval).valeurnoteEval}:'0']]
+										</span>    
+																	th:id="noteSaisi+${eleve.idEleves}"-->
+										
+										<!-- <input type="text" name="noteSaisi[]" id="noteSaisi[]" 
+												class="form-control" th:value="${eleve.getNotesEvalCoursSeq(coursConcerne.idCours,sequenceConcerne.idPeriodes,typeEval) != null}?
+										${eleve.getNotesEvalCoursSeq(coursConcerne.idCours,sequenceConcerne.idPeriodes,typeEval).valeurnoteEval}:'0'" /> -->
+										
+										<input type="text" th:name="noteSaisi+${eleve.idEleves}+${evaluationConcerne.idEval}"  
+																		th:id="noteSaisi+${eleve.idEleves}+${evaluationConcerne.idEval}"   
+																		th:onblur="'javascript:enreg('+${eleve.idEleves}+','+${evaluationConcerne.idEval}+')'"
+												class="form-control" th:value="${eleve.getNotesEvalCoursSeq(coursConcerne.idCours,sequenceConcerne.idPeriodes,typeEval) != null}?
+										${eleve.getNotesEvalCoursSeq(coursConcerne.idCours,sequenceConcerne.idPeriodes,typeEval).valeurnoteEval}:'0'" />
+									
+										
+									
+									</td>
+									
+								</tr>
+								
+							</tbody>
+						</table>
+						<input type="text" id="valeurSaisi" />
+						<button type="submit" class="btn btn-primary btn-sm  pull-right">Enregistrer</button>
+				</form>
+				
+				<br/><br/>
+				
+				<a class="btn btn-primary btn-sm pull-left" href="#" 
+						th:href="@{/logesco/users/getNotesEvalClasse(idClasseConcerne=${evaluationConcerne.cours.classe.idClasses}, 
+						idEvalConcerne=${evaluationConcerne.idEval})}" role="button">Afficher le relevé</a>
+				
+				<a class="btn btn-primary btn-sm pull-right" href="#" 
+						th:href="@{/logesco/users/getNotesFinaleClasse(idClasseConcerne=${evaluationConcerne.cours.classe.idClasses}, 
+						idCoursConcerne=${evaluationConcerne.cours.idCours},idSequenceConcerne=${sequenceConcerne.idPeriodes})}" 
+						role="button">Relevé de note séquentiel</a>
+			
+				<br/><br/>
+				<a class="btn btn-default btn-sm pull-left" href="#" title="Retourner à la page précédente"
+						th:href="@{/logesco/users/getdonneesSaisieNotesV1(idClassesConcerne=${evaluationConcerne.cours.classe.idClasses}, 
+						idAnneeActive=${sequenceConcerne.trimestre.annee.idPeriodes})}" role="button">Retourner</a>
+				
+				
+				
+			</div>
+		</div>
+	</div>
+	
+	
+	
+	
+<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<!-- On peut inserer du javascript ici ie le javascript qui concerne exclusivement cette page. -->
+
+<script type="text/javascript">
+//alert("dd");
+	function donneFocus(){
+		//alert("donne focus");
+		document.getElementById('noteSaisi').focus();
+	}
+	
+	function enreg(idEleve, idEval){
+		//alert(idEleve+" "+idEval);
+		var idInput = "noteSaisi"+idEleve+""+idEval;
+		//alert(idInput);
+		//var valeurSaisi = document.getElementById(idInput).val();
+		var valeurSaisi =  $('#'+idInput).val();
+		//alert(valeurSaisi);
+		$('#valeurSaisi').val(valeurSaisi);
+		
+		//On va fabriquer les parametres a envoyer au serveur
+		//var parametres = "parametre";
+		//parametres = parametres+"idEleve="+idEleve+" &&idEval= "+idEval;
+		
+		//On va donc essayer de realiser un appel ajax
+		$.ajax({
+			type: 'GET',
+			url: '/logesco/users/ajaxrestusers/testAjax',
+			success: function(result){
+				alert("le resultat de la requete ajax est "+result);
+			}
+		});
+		
+	}
+	
+</script>
+
+</div>
+</body>
+</html>

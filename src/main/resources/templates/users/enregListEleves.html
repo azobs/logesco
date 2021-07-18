@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title th:inline="text">[[#{enreglistelv.titre_page}]]</title>
+</head>
+<body>
+	<span layout:fragment="titre_boite">
+        <kbd th:inline="text">[[#{enreglistelv.titre_boite}]]</kbd> 
+    </span>
+<div layout:fragment="formactionusers">
+    <!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+    <div class="col-md-6">
+        <form action="#"  th:action="@{/logesco/users/chefetab/postenregListEleves}" 
+						method="post" enctype="multipart/form-data" 
+						th:object="${enregListElevesForm}">
+						
+						<fieldset th:if="${erreurDansFichier}" class="alert alert-danger">
+							<legend class="text-primary" th:inline="text">[[#{enreglistelv.legend_erreurdsfichier}]]</legend>
+							<label th:inline="text">[[${erreurDansFichier}]]</label>
+						</fieldset>
+						
+						<fieldset th:if="${listofErrorEnreg}" class="alert alert-danger" >
+							<legend class="text-primary" th:inline="text">[[#{enreglistelv.legend_erreurdsfichier}]]</legend>
+							<span th:inline="text">[[#{enreglistelv.label_erreurelvexist}]].</span>
+							<ul th:each="error:${listofErrorEnreg}">
+								<li  th:inline="text">[[${error}]]</li>
+							</ul>
+						</fieldset>
+						
+						<fieldset th:if="${enregListSucces}" class="alert alert-success">
+							<legend class="text-primary" th:inline="text"> [[#{enreglistelv.legend_enregsuccess}]]</legend>
+							<label th:inline="text" th:inline="text">
+								[[#{enreglistelv.label_enregsuccess}]]  [[${classeenregListSucces}]] [[#{enreglistelv.label_enregsuccesssuite}]].
+							</label>
+						</fieldset>
+						
+						<fieldset >
+							<span th:inline="text">[[#{enreglistelv.label_modelefichier}]] </span>
+							<a class="btn btn-default btn-sm pull-right" href="modeles/modele recrutement.xlsx" 
+				      			role="button" target="_blank" th:inline="text"
+				      			th:href="@{/modeles/modele recrutement.xlsx}">
+				      			<span class="glyphicon glyphicon-cloud-download"></span>[[#{enreglistelv.bouton_telechargermodele}]]
+				      		</a>
+						</fieldset>
+						<fieldset class="col-md-6">
+							<legend class="text-primary" th:inline="text">[[#{enreglistelv.legend_classeconcerne}]]</legend>
+								
+							<select class="form-control" name="idClasseConcerne"  
+									th:field="*{idClasseConcerne}"  id="idClasseConcerne" >
+									
+									<optgroup th:label="${session.lang=='fr'}?${n.codeNiveaux}+'/'+${n.codeNiveaux_en}:${n.codeNiveaux_en}+'/'+${n.codeNiveaux}"
+										th:if="${listofNiveaux}" th:each="n:${listofNiveaux}">
+										<option th:each="c:${n.listofClasses}" th:value="${c.idClasses}"
+											th:inline="text">
+											 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+										</option>
+									</optgroup>
+								
+								</select>
+							</fieldset>
+							
+							<fieldset class="col-md-6">
+								<legend class="text-primary" th:inline="text">[[#{enreglistelv.legend_modelerempli}]]</legend>
+								<div class="form-group">
+									<label for="filecheminFichier" th:inline="text"> [[#{enreglistelv.label_uploadfichier}]]: </label> 
+									<input type="file" name="filecheminFichier" id="filecheminFichier" 
+										class="form-control-file" th:placeholder="#{enreglistelv.placeholder_envoifichier}" 
+										accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"/>
+								</div>
+							</fieldset>
+							
+							<button type="submit" class="btn btn-primary  pull-right" th:inline="text">
+								<span class="glyphicon glyphicon-save"></span> [[#{enreglistelv.bouton_envoyer}]]
+							</button>
+							
+			</form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta charset="UTF-8"/>
+<title>Erreur d'authentification</title>
+
+<link rel="stylesheet"  type="text/css"  href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"  
+ 	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" /><!-- -->
+<link rel="stylesheet"  type="text/css"  href="../static/css/myStyle.css"  
+ 	th:href="@{/css/myStyle.css}"/>
+
+</head>
+<body>
+Vous ne disposez pas du role necessaire pour se connecter à la page demandée
+
+<div class="starter-template">
+        <h1>403 - Access is denied</h1>
+        <div th:inline="text">Hello '[[${#httpServletRequest.remoteUser}]]', you do not have permission to access this page.</div>
+    </div>
+    <p>Click <a th:href="@{/logesco/index}">here</a> to  reconnect.</p><br/>
+     <p>Or <a th:href="@{/logesco/index}">here</a> to  recomence.</p><br/>
+</body>
+</html>

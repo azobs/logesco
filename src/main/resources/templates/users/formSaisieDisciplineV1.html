@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Saisie des rapports de discipline</title>
+</head>
+<body>
+
+<span layout:fragment="titre_boite">
+    <kbd> Formulaire des rapports de discipline </kbd> 
+	<span th:inline="text" class="alert alert-warning" th:if="${affichechoixclasse=='oui'}"> 
+		<kbd>Séquence  [[${sequenceConcerneRabs.numeroSeq}]].</kbd>
+	</span>
+</span>
+
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE   col-md-offset-1-->
+<div class="col-md-9">
+
+		<div th:if="${affichechoixclasse=='non'}">
+			<h4 align="justify" class="alert alert-danger">Aucune séquence n'est encore active ou 
+						alors aucune classe n'est enregistré: Contacter 
+						l'administrateur si l'inquiétude persiste. </h4>
+		</div>
+
+		<form action="#" class="form-inline" th:if="${affichechoixclasse=='oui'}"
+				th:action="@{/logesco/users/sg/getUpdateRDiscipline}" method="get">
+						
+						<div th:if="${param.updaterabssaisiError}">
+							<h4 align="justify" class="alert alert-danger">Erreur système lors de l'enregistrement des heures d'absences
+							ligne 252 de SGController.</h4>
+						</div>
+					
+					<div th:if="${param.updaterabssaisiErrorNH}">
+						<h4 align="justify" class="alert alert-danger">Erreur de saisi du nombre d'heure.</h4>
+					</div>
+					
+					<div th:if="${param.updaterabssaisiwarningElv}">
+						<h4 align="justify" class="alert alert-warning">Rapport d'absence enregistrée avec succès. 
+							Il y a pas d'élève suivant dans la liste.</h4>
+					</div>
+					
+					<div th:if="${param.updaterabsSucces}">
+						<h4 align="justify" class="alert alert-success">Rapport d'absence enregistrée avec succès. 
+						Vous pouvez continuer</h4>
+					</div>
+					
+					<div th:if="${param.updateRDisciplineSuccess}">
+						<h4 align="justify" class="alert alert-success">
+							Les rapports de discipline ont été enregistrés avec succès.
+						</h4>
+					</div>
+					
+					<div th:if="${param.numeroElvErrone}">
+						<h4 align="justify" class="alert alert-danger">Saisir un numéro valide</h4>
+					</div>
+					
+					<div th:if="${param.rechEleveNull}">
+						<h4 align="justify" class="alert alert-success">Saisir un numéro valide</h4>
+					</div>
+					
+					<input type="hidden" name="idSequenceConcerne" id="idSequenceConcerne" 
+						class="form-control" 
+						th:value="${sequenceConcerneRabs.idPeriodes}" />
+					
+					<input type="hidden" name="idClassesConcerne" id="idClassesConcerne" 
+						class="form-control" 
+						th:value="${classeConcerne.idClasses}" />
+									
+				
+					<input type="hidden" name="idClassesConcerne" id="idClassesConcerne" 
+						class="form-control" 
+						th:value="${sequenceConcerneRabs.idPeriodes}" />
+				
+					<table class="table table-striped">
+						
+						<thead>
+							<tr>
+								<th>Numéro</th>
+								<th>Noms et prénoms</th>
+								<th >Nbre Abs J</th>
+								<th>Nbre Abs NJ</th>
+								
+							</tr>
+						</thead>
+						<tbody th:if="${listofAllEleve}">
+							<button type="submit" class="btn btn-primary btn-sm  pull-right">
+								<span class="glyphicon glyphicon-save"></span> Enregistrer 
+							</button>
+							<tr th:each="eleve:${listofAllEleve}" >
+								<td th:inline="text">
+									<b>[[${eleve.getNumero(listofAllEleve)}]]</b> 
+									<input type="hidden" name="idEleves[]" id="idEleves[]" 
+											class="form-control" th:value="${eleve.idEleves}"/>
+								</td>
+							
+								<td th:inline="text"><b>[[${#strings.capitalize(eleve.nomsEleves)}]] [[${eleve.prenomsEleves}]]</b> </td>
+								
+									
+								<td class="col-md-1"> 
+									<input type="text" name="nbreheureJustifie[]" id="nbreheureJustifie[]" 
+										class="form-control" 
+										th:value="${eleve.getRapportDAbsenceSeq(sequenceConcerneRabs.idPeriodes) != null}
+											?${eleve.getRapportDAbsenceSeq(sequenceConcerneRabs.idPeriodes).nbreheureJustifie}:0" />
+									
+								</td>
+								<td class="col-md-1"> 
+									<input type="text" name="nbreheureNJustifie[]" id="nbreheureNJustifie[]" 
+										class="form-control" 
+										th:value="${eleve.getRapportDAbsenceSeq(sequenceConcerneRabs.idPeriodes) != null}
+											?${eleve.getRapportDAbsenceSeq(sequenceConcerneRabs.idPeriodes).nbreheureNJustifie}:0" />
+								</td>
+								
+									
+							</tr>
+						</tbody>
+					</table>
+					
+					<button type="submit" class="btn btn-primary btn-sm  pull-right">
+						<span class="glyphicon glyphicon-save"></span> Enregistrer 
+					</button>
+				</form>
+</div>
+<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE   col-md-offset-1-->
+</div>
+</body>
+</html>

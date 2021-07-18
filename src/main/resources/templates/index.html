@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta charset="UTF-8"/>
+<title th:text="#{greeting}">Accueil LOGESCO</title><!--  -->
+
+<link rel="stylesheet"  type="text/css"  href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"  
+ 	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+<link rel="stylesheet"  type="text/css"  href="../static/css/myStyle.css"  
+ 	th:href="@{/css/myStyle.css}"/>
+
+</head>
+<body onload="donneFocus()" >
+<!-- debut de la partie entete de la page d'index class="jumbotron" -->
+<header> 
+ <div class=" col-md-12 ">
+	<div class="col-md-4 redcolor">
+		
+	</div>
+	<div class="col-md-4">
+		<div class="col-md-4">
+		
+		</div>
+		<div class="col-md-4 reculelogoverticalement">
+			<img alt="Ici le logo de l'application"  src="../static/images/logopng.png"  
+			th:src="@{/images/logopng.png}"/>
+		</div>
+		<div class="col-md-4 ">
+		
+		</div>
+		
+	</div>
+	<div class="col-md-4">
+		
+	</div>
+		
+</div> 
+</header>
+<!-- fin de la partie entete de la page d'index -->
+
+
+<!-- debut de la partie contenu de la page d'index -->
+	<section> 
+		
+	<div class="col-md-6  col-md-offset-3 reculeverticalement">
+		<div class=" panel  panel-primary" >
+			<div class="panel-heading">
+				<p align="center" th:inline="text"> 
+					<!-- Bienvennue sur LOGESCO: Logiciel de Gestion Scolaire -->
+					<kbd>[[#{titre_fen.titre_accueil}]]</kbd>
+					<a th:href="@{/logesco/admin/index}" 
+							class="btn btn-default btn-sm pull-right" role="button">
+						Administrer l'application <span class="glyphicon glyphicon-lock"></span>
+					</a>
+					<span class="btn-group pull-left">
+					<a th:href="@{/logesco/index?lang=fr}" 
+						class="btn btn-default btn-sm" role="button">
+						Français
+					</a>
+					<a th:href="@{/logesco/index?lang=en}" 
+						class="btn btn-default btn-sm" role="button">
+								English
+					</a>
+					</span>
+				</p>
+				
+			</div>
+			<div class="panel-body">
+				
+				<div th:if="${param.logout}" class="greencolor alert alert-success">
+		            <h4 align="center" th:text="#{message.deconnexion}">
+		            	Vous vous êtes déconnecté avec succès.
+		            </h4>
+		        </div>
+				<br/><br/>
+				<p align="center">
+					<a th:href="@{/logesco/users/index}" 
+						class="btn btn-primary btn-lg" role="button" id="ouvrirlapplication" 
+						th:inline="text">
+						[[#{button.open}]] <span class="glyphicon glyphicon-hand-right"></span>
+					</a>
+				</p> 
+				<br/><br/>
+			</div>
+			<div class="panel-footer">
+				<p>&copy;<small th:text="#{label.confiance}"> 
+					 kiadjeu 2019 (678470262 / 695093228) merci de la confiance en nous accordée
+				</small>
+				<span  class="badge badge-light pull-right">
+				    <span th:text="${dfNameJour}">Nom du jour</span>&nbsp;
+					<span th:text="${dfheure}">Heure dans la journée</span>
+				</span></p>
+			</div>
+		</div>
+		</div>
+		
+	</section>
+<!-- fin de la partie contenu de la page d'index -->
+	
+<!-- debut de la partie pied de la page d'index -->	
+	<footer>
+		<div class="navbar-fixed-bottom">
+			<small class="text-center">&nbsp; &copy; KiadjMind 2019 (678470262 / 695093228) kiadjeuc@gmail.com</small>
+		</div>
+	</footer>
+<!-- fin de la partie pied de la page d'index -->
+
+
+ <script src="webjars/jquery/1.11.1/jquery.min.js"></script>
+ <script src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+//alert("dd");
+	function donneFocus(){
+		//alert("donne focus");
+		document.getElementById('ouvrirlapplication').focus();
+	}
+</script>
+</body>
+</html>

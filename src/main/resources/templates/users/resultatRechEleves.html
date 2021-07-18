@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title th:inline="text">[[#{resultrech.titre_page}]]</title>
+</head>
+<body>
+<span layout:fragment="titre_boite">
+       <kbd th:inline="text">[[#{resultrech.titre_boite}]]</kbd>
+</span>
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-9 ">
+		
+		<p class="alert alert-warning">
+			<span style="text-decoration: underline;">IMPORTANT:</span> 
+			<span th:inline="text">[[#{resultrech.labelimportant}]] </span>
+		</p>
+			
+			<fieldset  class="col-md-12" >
+				<legend class="text-primary" th:inline="text">[[#{resultrech.legend_listofelevetrouve}]]</legend>
+				<div th:if="${listdefofEleves}" >
+					<table class="table table-striped table-hover">
+						<!-- <caption><h3></h3></caption> -->
+						<thead class="thead-light">
+								<tr>
+									<th scope="col" th:inline="text">[[#{resultrech.th_nomprenoms}]]</th>
+									<th scope="col" th:inline="text">[[#{resultrech.th_datenaiss}]]</th>
+									<th scope="col" th:inline="text">[[#{resultrech.th_classe}]]</th>
+								    <th class="text-center" scope="col">ACTION</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="eleve:${listdefofEleves}">
+								
+									<td th:inline="text">[[${#strings.capitalize(eleve.nomsEleves)}]] [[${eleve.prenomsEleves}]] </td>
+									
+									<td th:inline="text">Né le [[${#dates.format(eleve.datenaissEleves,"dd-MM-yyyy")}]] à [[${eleve.lieunaissEleves}]]</td>
+									
+									<td th:inline="text">
+										<!-- <div class="card col-md-4"> 
+											<img th:src="@{/logesco/users/getphotoEleve(idEleves=${eleve.idEleves})}" 
+												class="card-img-top img-rounded" width="100" height="100"/>
+											<div class="card-body">
+											    <p class="card-text" th:inline="text">[[${eleve.numtel1Parent}]]</p>
+											 </div>	
+										</div> -->
+										
+										[[${eleve.classe.codeClasses}]] [[${eleve.classe.specialite.codeSpecialite}]] 
+										[[${eleve.classe.numeroClasses}]]
+										
+									</td>
+									
+									<td>
+										<div>
+											<span class="col-md-4">
+												<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" 
+													th:attr="data-target='#'+${eleve.idEleves}" th:inline="text">
+												 <span class="glyphicon glyphicon-eye-open"></span> [[resultrech.bouton_afficher]]
+												</button>
+											</span>
+										</div>
+									</td>
+									
+									<!-- Modal Division concernant la boite de dialogue d'affichage-->
+									<div class="modal fade" th:id="${eleve.idEleves}"  tabindex="-1" role="dialog" 
+												aria-labelledby="affichage" aria-hidden="true">
+										<div class="modal-dialog modal-dialog-centered" role="document">
+											<div class="modal-content">
+											
+												<div class="modal-header">
+											        <h3 class="modal-title" id="affichage" th:inline="text">[[#{resultrech.label_titrebadge}]]</h3>
+											        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											          <span aria-hidden="true">&times;</span>
+											        </button>
+											     </div>
+											     
+											     <div class="modal-body">
+											     
+											     	<h4 th:inline="text"><b>[[#{resultrech.label_matricule}]] :</b> <span th:text="${eleve.matriculeEleves}"></span></h4>
+											     	
+											     	<h4 th:inline="text"><b>[[#{resultrech.label_nomsprenoms}]] :</b> <span th:inline="text">[[${#strings.capitalize(eleve.nomsEleves)}]]  
+									        			[[${eleve.prenomsEleves}]]</span></h4>
+									        			
+									        		<h4 th:inline="text"><b>[[#{resultrech.label_dateetlieunaiss}]] :</b> <span th:inline="text">[[${#dates.format(eleve.datenaissEleves,"dd-MM-yyyy")}]] à 
+									        			[[${eleve.lieunaissEleves}]]</span></h4>
+									        			
+									        		<h4 th:inline="text"><b>[[#{resultrech.label_sexeetnat}]] :</b> <span th:inline="text"> [[${eleve.nationaliteEleves}]] [[${eleve.sexeEleves}]]</span></h4>
+									        		
+									        		<h4 th:inline="text"><b>[[#{resultrech.label_statut}]] :</b> <span th:inline="text">[[${eleve.statutEleves}]]  Redoublant?: 
+									        			[[${eleve.redoublant}]]</span></h4>
+									        		
+									        		<h4 th:inline="text"><b>[[#{resultrech.label_classe}]] :</b> <span th:inline="text">[[${eleve.classe.codeClasses}]] 
+									        			[[${eleve.classe.specialite.codeSpecialite}]] [[${eleve.classe.numeroClasses}]]</span></h4>
+									        			
+									        		<h4 th:inline="text"><b>[[#{resultrech.label_specialite}]] :</b> <span th:inline="text">[[${eleve.classe.specialite.libelleSpecialite}]]</span></h4>
+									        		
+									        		<h4 th:inline="text"><b>[[#{resultrech.label_adresse}]] :</b> <span th:inline="text">[[${eleve.numtel1Parent}]] 
+									        			/ [[${eleve.emailParent}]]</span></h4>
+											     	
+											     	<h4 th:inline="text"><b>[[#{resultrech.label_domicile}]] :</b> <span th:inline="text">[[${eleve.villeEleves}]] plus précisément au quartier  
+									        			[[${eleve.quartierEleves}]]</span></h4>
+									        			
+									        		<span class="card col-md-4"> 
+														<img th:src="@{/logesco/users/getphotoEleve(idEleves=${eleve.idEleves})}" 
+																class="card-img-top img-rounded" width="100" height="100"/>
+															
+													</span>
+											     	
+											     	<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+													<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+													<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+											     	
+											     </div>
+											     <div class="modal-footer">
+											        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:inline="text">
+											        	[[#{resultrech.bouton_fermer}]] <span class="glyphicon glyphicon-remove"></span> 
+											        </button>
+											        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+											        <a class="btn btn-primary btn-sm" href="#" 
+															th:href="@{/logesco/users/getimprimerEleves(idEleves=${eleve.idEleves})}" 
+															role="button" th:inline="text">
+															<span class="glyphicon glyphicon-print"></span>[[#{resultrech.bouton_imprimer}]]</a>
+											      </div>
+											</div>
+										</div>
+									</div>
+									<!-- Modal Fin de la Division concernant la boite de dialogue -->
+									
+								</tr>
+							</tbody>
+					</table>
+					
+					<div class="container">
+							<ul class="pagination"><!-- nav nav-pills -->
+								<li th:each="p,status:${listdefofPagesEleves}" th:class="${status.index==pagedefCouranteEleves}?active:' ' ">
+									<a th:href="@{/logesco/users/getrechercheEleve(motifrechercheEleve=${motifrechercheEleve},
+											numPageEleves=${status.index})}"
+											 th:text="${status.index+1}"></a>
+								</li>
+							</ul>
+					</div> 
+					
+				</div>
+			</fieldset>
+			
+</div>
+<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

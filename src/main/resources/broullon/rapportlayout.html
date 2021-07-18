@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8"/>
+<title>Insert title here</title>
+
+<link rel="stylesheet" type="text/css"
+	href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+<!-- -->
+<link rel="stylesheet" type="text/css" href="../static/css/myStyle.css"
+	th:href="@{/css/myStyle.css}" />
+</head>
+<body>
+<header> 
+<!-- debut de la partie entete des pages de rapport de la session utilisateur -->
+	<div class=" col-md-12 div-header">
+	
+		<div class="col-md-1" id="espacegauche">
+			
+		</div>
+	
+		<div class="col-md-3" id="donneeEtabEnFrancais">
+			donneeEtabEnFrancais
+		</div>
+		
+		<div class="col-md-4" id="logoEtab">
+			<span class="card">
+					<img th:src="@{/logesco/users/getphotoPersonnelConnecte}" 
+						class="card-img-top" width="80" height="60"/>
+				</span>
+			<p layout:fragment="dateeditiondujour">
+				
+			</p>
+		</div>
+		
+		<div class="col-md-3" id="donneeEtabEnAnglais">
+			donneeEtabEnAnglais
+		</div>
+		
+		<div class="col-md-1" id="espacegauche">
+			
+		</div>
+	</div>
+<!-- fin de la partie entete de rapport de la session utilisateur -->
+</header>
+
+<!-- debut de la partie contenu de rapport de la session utilisateur -->
+<section>
+
+	<div class="col-md-2" >
+			
+	</div>
+
+	<div class="container col-md-10">
+		<div class="col-md-12" id="titre1" layout:fragment="titre1">
+			Titre1xxx
+		</div>
+		<div class="col-md-12" id="titre2" layout:fragment="titre2">
+			Titre2xxx
+		</div>
+		<div class="col-md-12" id="titre3" layout:fragment="titre3">
+			Titre3xxx
+		</div>
+		<div class="col-md-12" id="contenurapport" layout:fragment="contenurapport">
+			Contenu du rapportxxx
+			<div class="col-md-12" id="boutondegestion" layout:fragment="boutondegestion">
+				Bouton de retour sur la page précédente et bouton d'impression du rapport en PDF   
+			</div>
+		</div>
+	</div>
+</section>
+<!-- fin de la partie contenu de rapport de la session utilisateur -->
+
+<!-- debut de la partie pied de la page d'index -->	
+	<footer class=" navbar-fixed-bottom col-md-12">
+		<small>CopyRight SoftMind appeler le 678470262 en cas de souci</small>
+	</footer>
+<!-- fin de la partie pied de la page d'index -->
+
+<!-- zone d'insertion des fichiers javascript -->
+<script src="webjars/jquery/1.11.1/jquery.min.js" 
+	th:src="@{/webjars/jquery/1.11.1/jquery.min.js}" ></script>
+<script src="webjars/bootstrap/3.3.7/js/bootstrap.min.js" 
+	th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}" ></script>
+
+<script src="../static/js/myScript.js" 
+	th:src="@{/js/myScript.js}" ></script>	
+	
+<script>
+/* $('.dropdown-toggle').mouseover(function() {
+	$(this).dropdown('toggle');
+});  */
+</script>
+
+</body>
+</html>

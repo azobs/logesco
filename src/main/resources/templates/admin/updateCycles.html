@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/adminlayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Cycles: paramétrage</title>
+</head>
+<body>
+<div layout:fragment="formactionadmin">
+<!-- debut du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-6  col-md-offset-3  reculeverticalementmodifpasswordform">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4>Enregistrement ou mise à jour des cycles d'étude</h4>
+		</div>
+		<div class="panel-body">
+		
+	<!--debut du tableau des cycles déjà enregistrés avec possibilité de choisir un cycle à modifier ou à supprimer -->
+					<div th:if="${param.supprimCycleserror}">
+							<h4 align="justify" class="alert alert-danger">Erreur de suppression de cycle.</h4>
+					</div>
+	<table class="table table-bordered">
+	 	<caption>Liste des cycles existants</caption>
+	 	<thead>
+	 		<tr>
+			 	<th scope="col">Numéro</th>
+		      	<th scope="col">Code FR</th>
+		      	<th scope="col">Code EN</th>
+		      	<th class="text-center" scope="col">Action</th>
+	      	</tr>
+      	</thead>
+      	<tbody>
+      		<tr th:each="c:${listofCycles}">
+      			<td th:text="${c.numeroOrdreCycles}"></td>
+      			<td th:text="${c.codeCycles}"></td>
+      			<td th:text="${c.codeCycles_en}"></td>
+      			<td>
+      				<div>
+      					<a class="btn btn-primary btn-sm" href="#" 
+      						th:href="@{/logesco/admin/getupdateCycles(idCycles=${c.idCycles})}" role="button">
+      						 <span class="glyphicon glyphicon-edit"></span> Modifier</a>
+      						
+      					<a class="btn btn-danger btn-sm pull-right" href="#" 
+      						th:href="@{/logesco/admin/getsupprimerCycle(idCycles=${c.idCycles})}" role="button">
+      						<span class="glyphicon glyphicon-trash"></span> Supprimer</a>
+      				</div>
+      			</td>
+      		</tr>
+      	</tbody>
+	</table>
+	<!--fin du tableau des cycles déjà enregistrés avec possibilité de choisir un cycle à modifier ou à supprimer -->
+			
+			<form action="#" th:action="@{/logesco/admin/postupdateCycles}"
+						th:object="${updateCyclesForm}" method="post">
+						
+					<div th:if="${param.updatecyclessuccess}">
+							<h4 align="justify" class="alert alert-success">Cycle enregistré avec succès.</h4>
+					</div>
+					
+					<div th:if="${param.updatecycleserrorNumeroOrdre}">
+							<h4 align="justify" class="alert alert-danger">Un cycle existe déjà avec ce numéro d'ordre .</h4>
+					</div>
+					
+					<div th:if="${param.updatecycleserrorCode}">
+							<h4 align="justify" class="alert alert-danger">Un cycle existe déjà avec ce code .</h4>
+					</div>
+					
+					<div th:if="${param.updatecycleserrormodif}">
+							<h4 align="justify" class="alert alert-danger">Echec de modification: verifier vos données .</h4>
+					</div>
+					
+			
+				<fieldset class="col-md-6">
+						<legend class="text-primary">Enregistrement des cycles</legend>
+						
+							<div class="form-group">
+								<label for="numeroOrdreCycles"> Numéro d'ordre: <span
+									class="redcolor">*</span></label>
+									<select class="form-control" name="numeroOrdreCycles"  th:field="*{numeroOrdreCycles}"
+										 id="numeroOrdreCycles">
+										 <optgroup label="Sous système francophone">
+										 	<option value="1">1</option>
+								      		<option value="2">2</option>
+										 </optgroup>
+								    </select> 
+							</div>
+							<div th:if="${#fields.hasErrors('numeroOrdreCycles')}"
+								th:errors="*{numeroOrdreCycles}" class="redcolor">Erreur de numero d'ordre</div>
+								
+							<div class="form-group">
+								<label for="codeCycles"> Libellé: <span
+									class="redcolor">*</span></label> <input type="text" name="codeCycles"
+									id="codeCycles" class="form-control" th:value="*{codeCycles}" th:field="*{codeCycles}"
+									placeholder="Code du cycle" />
+							</div>
+							<div th:if="${#fields.hasErrors('codeCycles')}"
+								th:errors="*{codeCycles}" class="redcolor">Erreur de code cycle
+							</div>
+							
+							<div class="form-group">
+								<label for="codeCycles_en"> Wording: <span
+									class="redcolor">*</span></label> <input type="text" name="codeCycles_en"
+									id="codeCycles_en" class="form-control" th:value="*{codeCycles_en}" th:field="*{codeCycles_en}"
+									placeholder="Cycle code" />
+							</div>
+							<div th:if="${#fields.hasErrors('codeCycles_en')}"
+								th:errors="*{codeCycles_en}" class="redcolor">Code cycle error
+							</div>
+						
+						<div class="form-group"> 
+							<input type="hidden" name="codeCyclesAModif" id="codeCyclesAModif"
+										class="form-control"  th:value="*{codeCyclesAModif}"/>
+						</div>
+						
+						<div class="form-group"> 
+							<input type="hidden" name="enregOrmodif" id="enregOrmodif"
+										class="form-control"  th:value="*{enregOrmodif}"/>
+						</div>
+						
+				</fieldset>
+				
+				<fieldset class="col-md-6">
+						<legend class="text-primary">IMPORTANT</legend>
+						<p class="text-justify alert alert-warning">
+							Un cycle correspond à un numéro d'ordre et un code unique.
+							<u>Exemple</u>:numero d'ordre=1 et code=Premier cycle
+							<br/>
+							A cycle must have an unique order number and unique code. 
+							<u>Example</u>:order number=1 et code=first cycle
+						</p>
+			    </fieldset>
+				
+				<button type="submit" class="btn btn-primary  pull-right">
+					<span class="glyphicon glyphicon-save"></span> Envoyer
+				</button>
+				<button type="reset" class="btn btn-danger">
+					<span class="glyphicon glyphicon-erase"></span> Effacer
+				</button>
+				
+			</form>
+		</div>
+	</div>
+</div>
+<!-- fin du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/adminlayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Séquence: Configuration</title>
+</head>
+<body>
+<div layout:fragment="formactionadmin">
+<!-- debut du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-10  col-md-offset-1  reculeverticalementmodifpasswordform">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4>Enregistrement ou mise à jour des différentes séquences d'une année scolaire</h4>
+		</div>
+		<div class="panel-body">
+		<div class="col-md-3">
+			<form action="#" th:action="@{/logesco/admin/postupdatePeriodesSeq}"
+						th:object="${updatePeriodesSeqForm}" method="post">
+				
+				<div th:if="${param.updateperiodesseqsuccess}">
+					<h4 align="justify" class="alert alert-success">Séquence de l'année scolaire enregistrée avec succès.</h4>
+				</div>
+				
+				<div th:if="${param.updateperiodesseqerrorTrimContent2Seq}">
+					<h4 align="justify" class="alert alert-danger">Le trimestre ne peut contenir plus de 2 séquences.</h4>
+				</div>
+				
+				<div th:if="${param.updateperiodesseqerrorNumeroSeqExist}">
+					<h4 align="justify" class="alert alert-danger">Une séquence de même numéro existe 
+					déjà dans le trimestre.</h4>
+				</div>
+				
+				<div th:if="${param.updateperiodesseqerrorDateSeqNonConforme}">
+					<h4 align="justify" class="alert alert-danger">Les dates de début et de fin de la séquence 
+					sont non conformes.</h4>
+				</div>
+				
+				<div th:if="${param.updateperiodesseqerrorTrimNotExistInAnnee}">
+					<h4 align="justify" class="alert alert-danger">Le trimestre de numéro choisi est inexistant dans l'année.</h4>
+				</div>
+				
+				<div th:if="${param.updateperiodesseqerrorSeq1NotExistInTrim}">
+					<h4 align="justify" class="alert alert-danger">On ne peut enregistrer une séquence paire  quand
+					la séquence impair n'existe pas encore dans le trimestre indiqué.</h4>
+				</div>
+				
+				<div th:if="${param.updateperiodesseqerrorDateSeq1NonConformeInTrim1}">
+					<h4 align="justify" class="alert alert-danger">Les dates de début et de fin  de la séquence 1  
+					 ne sont pas conformes avec les dates de début et de fin du trimestre 1 de l'année.</h4>
+				</div>
+				
+				<div th:if="${param.updateperiodesseqerrorDateSeq2NonConformeInTrim1}">
+					<h4 align="justify" class="alert alert-danger">Les dates de début et de fin de la séquence 2 
+					ne sont pas conformes avec les dates de début et de fin du trimestre 1 de l'année.</h4>
+				</div>
+				
+				<div th:if="${param.updateperiodesseqerrorDateSeq3NonConformeInTrim2}">
+					<h4 align="justify" class="alert alert-danger">Les dates de début et de fin de la séquence 3
+					ne sont pas conformes avec les dates de début et de fin du trimestre 2 de l'année.</h4>
+				</div>
+				
+				<div th:if="${param.updateperiodesseqerrorDateSeq4NonConformeInTrim2}">
+					<h4 align="justify" class="alert alert-danger">Les dates de début et de fin de la séquence 4
+					ne sont pas conformes avec les dates de début et de fin du trimestre 2 de l'année.</h4>
+				</div>
+				
+				<div th:if="${param.updateperiodesseqerrorDateSeq5NonConformeInTrim3}">
+					<h4 align="justify" class="alert alert-danger">Les dates de début et de fin de la séquence 5
+					ne sont pas conformes avec les dates de début et de fin du trimestre 3 de l'année.</h4>
+				</div>
+				
+				<div th:if="${param.updateperiodesseqerrorDateSeq6NonConformeInTrim3}">
+					<h4 align="justify" class="alert alert-danger">Les dates de début et de fin de la séquence 6
+					ne sont pas conformes avec les dates de début et de fin du trimestre 3 de l'année.</h4>
+				</div>
+					
+				<fieldset>
+					<legend class="text-primary">Paramètres des séquences</legend>
+					<div class="form-group">
+						<label for="intituleAnneeSeq"> Année scolaire: <span
+									class="redcolor">*</span></label>
+									<select class="form-control" name="intituleAnneeSeq"  th:field="*{intituleAnneeSeq}"
+										 id="intituleAnneeSeq" >
+										 
+										 	<option th:each="a:${listofAnnee}" th:value="${a.intituleAnnee}"
+										 		 th:inline="text">[[${a.intituleAnnee}]] (de [[${#dates.format(a.datedebutPeriodes,"dd-MM-yyyy")}]] 
+										 		  à  [[${#dates.format(a.datefinPeriodes,"dd-MM-yyyy")}]])</option>
+										 
+									</select><!-- th:inline="text">[[${t.numeroTrim}]]:[[${t.annee?.intituleAnnee}]] -->
+					</div>
+					<div th:if="${#fields.hasErrors('intituleAnneeSeq')}"
+								th:errors="*{intituleAnneeSeq}" class="redcolor">Erreur d'intitule annee</div>
+								
+					<div class="form-group">
+							<label for="numeroTrim">Trimestre N°: <span
+									class="redcolor">*</span></label>
+							<select class="form-control" name="numeroTrim"  th:field="*{numeroTrim}"
+										 id="numeroTrim" >
+										 
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+										 
+							</select>
+					</div>
+					<div th:if="${#fields.hasErrors('numeroTrim')}"
+								th:errors="*{numeroTrim}" class="redcolor">Erreur de numero trimestre</div>
+								
+					<div class="form-group">
+							<label for="numeroSeq">Numéro séquence dans le trimestre: <span
+									class="redcolor">*</span></label>
+							<select class="form-control" name="numeroSeq"  th:field="*{numeroSeq}"
+										 id="numeroSeq" >
+										 
+									<option value="1">1</option>
+									<option value="2">2</option>
+										 
+							</select>
+					</div>
+					<div th:if="${#fields.hasErrors('numeroSeq')}"
+								th:errors="*{numeroSeq}" class="redcolor">Erreur de numero séquence</div>
+								
+					<div class="form-group">
+								<label for="datedebutPeriodes"> Date de début de la séquence: <span
+									class="redcolor">*</span></label> <input type="date" name="datedebutPeriodes"
+									id="datedebutPeriodes" class="form-control" th:value="*{datedebutPeriodes}" th:field="*{datedebutPeriodes}"
+									placeholder="Date de rentrée scolaire(année-mois-jour)" />
+						</div>
+						<div th:if="${#fields.hasErrors('datedebutPeriodes')}"
+								th:errors="*{datedebutPeriodes}" class="redcolor">Erreur de date de rentrée
+						</div>
+						
+						<div class="form-group">
+								<label for="datefinPeriodes"> Date de fin de la séquence: <span
+									class="redcolor">*</span></label> <input type="date" name="datefinPeriodes"
+									id="datefinPeriodes" class="form-control" th:value="*{datefinPeriodes}" th:field="*{datefinPeriodes}"
+									placeholder="Date de départ en vacance(année-mois-jour)" />
+						</div>
+						<div th:if="${#fields.hasErrors('datefinPeriodes')}"
+								th:errors="*{datefinPeriodes}" class="redcolor">Erreur de date de fin
+						</div>
+					
+					<button type="submit" class="btn btn-primary  pull-right">
+						<span class="glyphicon glyphicon-save"></span> Envoyer
+					</button>
+					<button type="reset" class="btn btn-danger">
+						<span class="glyphicon glyphicon-erase"></span> Effacer
+					</button>
+					
+				</fieldset>
+				
+			</form>
+		</div>
+		<div class="col-md-9">
+			<!-- ici on va placer le tableau qui affiche la liste des séquences dèjà enregistré -->
+			
+			<div th:if="${param.supprimSeqerrorSeqActive}">
+					<h4 align="justify" class="alert alert-danger">On ne peut supprimer une séquence active</h4>
+			</div>
+			
+			<div th:if="${param.supprimSeqerrorSeqContentEval}">
+					<h4 align="justify" class="alert alert-danger">Des évaluations ont déjà été passées dans la séquence</h4>
+			</div>
+			
+			<div th:if="${param.supprimSeqerrorSeqContentRabs}">
+					<h4 align="justify" class="alert alert-danger">Des rapports d'absence ont déjà été enregistré
+					 dans la séquence</h4>
+			</div>
+			
+			<div th:if="${param.supprimSeqerrorNumSeq}">
+					<h4 align="justify" class="alert alert-danger">Une séquence de numéro supérieur existe dans le trimestre.</h4>
+			</div>
+			
+			<table class="table table-bordered table-striped">
+				<caption>Liste des séquences enregistrées</caption>
+				<thead class="thead-light">
+					<tr>
+						<th scope="col">N° Séquence: N° Trim: Année Scolaire</th>
+						<th scope="col">Date début</th>
+						<th scope="col">Date fin</th>
+					     <th class="text-center" scope="col">Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="s:${listofSequences}" >
+					<!-- th:text="${s.annee?.intituleAnnee}" th:class="${s.etatPeriodes == true}?'bg-info':' ' "-->
+						<td  th:inline="text">Seq <kbd>[[${s.numeroSeq}]]</kbd>: 
+						Trim<kbd> [[${s.trimestre.numeroTrim}]]</kbd>:
+						 Année <kbd>[[${s.trimestre.annee?.intituleAnnee}]]</kbd></td>
+						<td th:text="${#dates.format(s.datedebutPeriodes,'dd-MM-yyyy')}"></td>
+						<td th:text="${#dates.format(s.datefinPeriodes,'dd-MM-yyyy')}"></td>
+						<td>
+			      				<div>
+			      				
+			      					<!-- <a class="btn btn-primary btn-sm pull-left" href="#" 
+			      						th:href="@{/logesco/admin/getactiverSequence(idPeriodes=${s.idPeriodes})}" 
+			      						role="button" th:inline="text">[[${s.etatPeriodes == true}?'Désactiver':'Activer']]</a> -->
+			      				
+			      					<a class="btn btn-danger btn-sm pull-right" href="#" 
+			      						th:href="@{/logesco/admin/getsupprimerSequence(idPeriodes=${s.idPeriodes})}" 
+			      						role="button">
+			      						<span class="glyphicon glyphicon-trash"></span> Supprimer
+			      					</a>
+			      				</div>
+			      		</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		</div>
+	</div>
+</div>
+<!-- fin du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

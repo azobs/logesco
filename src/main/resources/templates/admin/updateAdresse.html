@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/adminlayout">
+	
+<head>
+<meta charset="UTF-8"/>
+<title>Mise à jour de l'adresse</title>
+ 	
+
+</head>
+<body>
+
+
+
+
+<div layout:fragment="formactionadmin">
+			
+
+<!-- DEBUT FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+		<div class="col-md-6  col-md-offset-3  reculeverticalementmodifpasswordform">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h4>Modification des coordonnées d'un administrateur</h4>
+				</div>
+				<div class="panel-body">
+				
+					<div th:if="${param.usernameerreur}">
+						<h4 align="center" class="alert alert-danger">Nom d'utilisateur  invalide.</h4>
+					</div>
+
+
+					<form action="#" th:action="@{/logesco/admin/postupdateAdresse}"
+						th:object="${modifadressForm}" method="post">
+						<div class="form-group">
+						
+							<div th:if="${param.updatesuccess}">
+								<h4 align="center" class="alert alert-success">Adresses modifiées avec succès.</h4>
+							</div>
+						
+							<label for="emailAdmin"> Votre adresse email valide :<span
+								class="redcolor">*</span></label> <input type="text" name="emailAdmin"
+								id="emailAdmin" class="form-control" th:value="*{emailAdmin}"/>
+						</div>
+						<div th:if="${#fields.hasErrors('emailAdmin')}"
+							th:errors="*{emailAdmin}" class="redcolor">Erreur de saisie</div>
+
+						<div class="form-group">
+							<label for="numtel1Admin"> Votre principal numéro de
+								téléphone :<span class="redcolor">*</span>
+							</label> <input type="text" name="numtel1Admin" id="numtel1Admin"
+								class="form-control"  th:value="*{numtel1Admin}"/>
+						</div>
+						<div th:if="${#fields.hasErrors('numtel1Admin')}"
+							th:errors="*{numtel1Admin}" class="redcolor">Erreur de
+							saisie</div>
+
+						<div class="form-group">
+							<label for="numtel2Admin">Votre second numéro de
+								téléphone: mot de passe :</label> <input type="text"
+								name="numtel2Admin" id="numtel2Admin" class="form-control"  th:value="*{numtel2Admin}"/>
+						</div>
+						<div th:if="${#fields.hasErrors('numtel2Admin')}"
+							th:errors="*{numtel2Admin}" class="redcolor">Erreur de
+							saisie</div>
+
+						<div class="form-group">
+							<input type="hidden" name="username" id="username"
+								th:value="${#httpServletRequest.remoteUser}"
+								class="form-control" />
+						</div>
+
+						<button type="submit" class="btn btn-primary  pull-right">
+							<span class="glyphicon glyphicon-save"></span> Envoyer
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+<!-- FIN FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+
+	</div>
+
+
+</body>
+</html>

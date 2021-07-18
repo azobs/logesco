@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title th:inline="text">[[#{enreglistpers.titre_page}]]</title>
+</head>
+<body>
+<span layout:fragment="titre_boite">
+      <kbd th:inline="text"> [[#{enreglistpers.titre_boite}]] </kbd>
+</span>
+<div layout:fragment="formactionusers">
+	<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+	<div class="col-md-9">
+				<form action="#"  th:action="@{/logesco/users/chefetab/postenregListPersonnels}" 
+						method="post" enctype="multipart/form-data" >
+				
+						<fieldset th:if="${erreurDansFichier}" class="alert alert-danger">
+							<legend class="text-primary" th:inline="text">[[#{enreglistpers.legenderreur_fichier}]]</legend>
+							<label th:inline="text">[[${erreurDansFichier}]]</label>
+						</fieldset>
+						
+						<fieldset th:if="${listofErrorEnreg}" class="alert alert-danger">
+							<legend class="text-primary" th:inline="text">[[#{enreglistpers.legenderreur_fichiererreur}]]</legend>
+							<span th:inline="text">[[#{enreglistpers.labelerreur_persconflit}]].</span>
+							<ul th:each="error:${listofErrorEnreg}">
+								<li  th:inline="text">[[${error}]]</li>
+							</ul>
+						</fieldset>
+						
+						<fieldset th:if="${enregListSucces}" class="alert alert-success">
+							<legend class="text-primary" th:inline="text">[[#{enreglistpers.label_success}]]</legend>
+							<label th:inline="text" >[[#{enreglistpers.label_success}]] .</label>
+						</fieldset>
+				
+					<fieldset >
+							<span th:inline="text">[[#{enreglistpers.label_NB}]] </span>
+						<a class="btn btn-default btn-sm pull-right" href="modeles/personnels enseignants.xlsx" 
+				      			role="button" target="_blank"
+				      			th:href="@{/modeles/personnels enseignants.xlsx}"  th:inline="text">
+				      			<span class="glyphicon glyphicon-cloud-download"></span>
+				      			  [[#{enreglistpers.bouton_download}]]
+				      	</a>
+					</fieldset>
+					
+					<fieldset class="col-md-12">
+							<legend class="text-primary" th:inline="text">[[#{enreglistpers.legend_modelrempli}]]</legend>
+							<div class="form-group">
+									<label for="filecheminFichier" th:inline="text"> [[#{enreglistpers.label_upload}]]: </label> 
+									<input type="file" name="filecheminFichier" id="filecheminFichier" 
+										class="form-control-file" placeholder="Envoyer le fichier" 
+										accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"/>
+								</div>
+					</fieldset>
+					<button type="submit" class="btn btn-primary  pull-right" th:inline="text">
+						<span class="glyphicon glyphicon-save"></span>  [[#{enreglistpers.bouton_envoyer}]]
+					</button>
+				</form>
+	</div>
+	<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

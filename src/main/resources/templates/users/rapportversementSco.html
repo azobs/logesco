@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/rapportlayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Rapport des versements</title>
+</head>
+<body>
+<div layout:fragment="titre1">
+	<h2 align="center">
+		<span  th:inline="text">
+			RAPPORT DES VERSEMENTS POUR LA CLASSE [[${session.classeConcerne.codeClasses}]] 
+						[[${session.classeConcerne.specialite.codeSpecialite}]] [[${session.classeConcerne.numeroClasses}]]:
+			MONTANT DE LA SCOLARITE = [[${session.classeConcerne.montantScolarite}]]
+		</span>
+	</h2>
+</div>
+
+<div layout:fragment="titre2">
+	
+</div>
+
+<div layout:fragment="titre3">
+	
+</div>
+
+<div layout:fragment="contenurapport">
+
+	<div layout:fragment="boutondegestion">
+		<a class="btn btn-primary btn-sm pull-right" href="#"  role="button">Exporter en PDF</a>
+	</div>
+
+	<table class="table table-bordered">
+		<caption>
+			
+		</caption>
+		<thead class="thead-light">
+			<tr>
+				<th scope="col" >NUMERO</th>
+				<th scope="col" >NOMS ET PRENOMS </th>
+				<th scope="col" >DATE ET LIEU DE NAISSANCE </th>
+				<th scope="col" >ADRESSE </th>
+				<th scope="col"  >MONTANT VERSE</th>
+				<th scope="col"  >RESTE A VERSE</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="eleve:${session.listofElevesDeClasse}" >
+				<td th:inline="text"><b>[[${eleve.getNumero(session.listofElevesDeClasse)}]]</b> </td>
+				<td th:inline="text">[[${eleve.nomsEleves}]]  [[${eleve.prenomsEleves}]]</td>
+				<td th:inline="text">Né le [[${#dates.format(eleve.datenaissEleves,"dd-MM-yyyy")}]] 
+						à  [[${eleve.lieunaissEleves}]]
+				</td>
+				<td th:inline="text">[[${eleve.numtel1Parent}]]</td>
+				<td th:inline="text">[[${eleve.compteInscription.montant}]]</td>
+				<td th:inline="text">[[${session.classeConcerne.montantScolarite - eleve.compteInscription.montant}]]</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<div layout:fragment="boutondegestion">
+		<a class="btn btn-primary btn-sm pull-right" href="#"  role="button">
+			<span class="glyphicon glyphicon-list-all"></span> Exporter en PDF</a>
+	</div>
+	
+</div>
+
+</body>
+</html>

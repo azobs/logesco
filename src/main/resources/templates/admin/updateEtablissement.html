@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/adminlayout">
+<head>
+<meta charset="UTF-8"/>
+<title> Etablissement: Enregistrement</title>
+</head>
+<body>
+<div layout:fragment="formactionadmin">
+<!-- debut du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+	<div class="col-md-6  col-md-offset-3  reculeverticalementmodifpasswordform">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h4>Enregistrement ou mise à jour de l'établissement</h4>
+			</div>
+			<div class="panel-body">
+				
+				<form action="#" th:action="@{/logesco/admin/postupdateEtablissement}"
+						th:object="${updateEtablissementForm}" method="post" enctype="multipart/form-data">
+
+						<div th:if="${param.updateetabsuccess}">
+								<h4 align="justify" class="alert alert-success">Paramètres
+								 de l'établissement mis à jour avec succès.</h4>
+						</div>
+
+						<fieldset>
+							<legend class="text-primary">Dénomination de l'établissement</legend>
+							
+							<div class="form-group">
+								<label for="nomsEtab"> Noms de l'établissement: <span
+									class="redcolor">*</span></label> <input type="text" name="nomsEtab"
+									id="nomsEtab" class="form-control" th:value="*{nomsEtab}" th:field="*{nomsEtab}"
+									placeholder="Nom complet de l'établissement" />
+							</div>
+							<div th:if="${#fields.hasErrors('nomsEtab')}"
+								th:errors="*{nomsEtab}" class="redcolor">Erreur de nom
+								d'établissement</div>
+
+							<div class="form-group">
+								<label for="aliasEtab"> Alias du nom de l'établisement (Abbréviations du nom):
+									<span class="redcolor">*</span>
+								</label> <input type="text" name="aliasEtab" id="aliasEtab"
+									class="form-control" th:value="*{aliasEtab}" th:field="*{aliasEtab}"
+									placeholder="Abbréviation du nom d'établissement" />
+							</div>
+							<div th:if="${#fields.hasErrors('aliasEtab')}"
+								th:errors="*{aliasEtab}" class="redcolor">Erreur de nom
+								d'établissement</div>
+								
+							<div class="form-group">
+								<label for="nomsanglaisEtab"> Noms de l'établissement en anglais: <span
+									class="redcolor">*</span></label> <input type="text" name="nomsanglaisEtab"
+									id="nomsanglaisEtab" class="form-control" th:value="*{nomsanglaisEtab}" th:field="*{nomsanglaisEtab}"
+									placeholder="Nom complet de l'établissement en anglais" />
+							</div>
+							<div th:if="${#fields.hasErrors('nomsanglaisEtab')}"
+								th:errors="*{nomsanglaisEtab}" class="redcolor">Erreur de nom
+								d'établissement en anglais</div>
+
+							<div class="form-group">
+								<label for="aliasanglaisEtab"> Alias du nom de l'établisement en anglais (Abbréviations du nom):
+									<span class="redcolor">*</span>
+								</label> <input type="text" name="aliasanglaisEtab" id="aliasanglaisEtab"
+									class="form-control" th:value="*{aliasanglaisEtab}" th:field="*{aliasanglaisEtab}"
+									placeholder="Abbréviation du nom d'établissement en anglais" />
+							</div>
+							<div th:if="${#fields.hasErrors('aliasanglaisEtab')}"
+								th:errors="*{aliasanglaisEtab}" class="redcolor">Erreur de nom
+								d'établissement en anglais</div>
+
+							<div class="form-group">
+								<label for="matriculeEtab"> Matricule de l'établissement: <span
+									class="redcolor">*</span></label> <input type="text"
+									name="matriculeEtab" id="matriculeEtab" class="form-control" th:field="*{matriculeEtab}"
+									placeholder="Abréviation du nom d'établissement" th:value="*{matriculeEtab}" />
+							</div>
+							<div th:if="${#fields.hasErrors('matriculeEtab')}"
+								th:errors="*{matriculeEtab}" class="redcolor">Erreur de
+								matricule d'établissement</div>
+								
+						<div class="form-group">
+								<label for="codeMatriculeEtab"> Code Etablissement: <span
+									class="redcolor">*</span></label> <input type="text"
+									name="codeMatriculeEtab" id="codeMatriculeEtab" class="form-control" th:field="*{codeMatriculeEtab}"
+									placeholder="Code de l'établissement" th:value="*{codeMatriculeEtab}" />
+							</div>
+							<div th:if="${#fields.hasErrors('codeMatriculeEtab')}"
+								th:errors="*{codeMatriculeEtab}" class="redcolor">Erreur de code
+								matricule d'établissement</div>
+								
+								<input type="hidden"
+									name="idEtab" id="idEtab" class="form-control" th:field="*{idEtab}" th:value="*{idEtab}" />
+						
+						</fieldset>
+						
+						<fieldset>
+							<legend class="text-primary">Adresse de l'établissement</legend>
+							
+							<div class="form-group">
+								<label for="ministeretuteleEtab"> Ministère de tutelle: <span
+									class="redcolor">*</span></label> <input type="text" name="ministeretuteleEtab"
+									id="ministeretuteleEtab" class="form-control" th:field="*{ministeretuteleEtab}"
+									placeholder="Ministère de tutelle de l'établissement" th:value="*{ministeretuteleEtab}" />
+							</div>
+							<div th:if="${#fields.hasErrors('ministeretuteleEtab')}"
+								th:errors="*{ministeretuteleEtab}" class="redcolor">Erreur de ministère de tutelle</div>
+								
+						 <div class="form-group">
+								<label for="aliasministeretuteleEtab"> Alias ministère de tutelle (Abbréviation): <span
+									class="redcolor">*</span></label> <input type="text" name="aliasministeretuteleEtab"
+									id="aliasministeretuteleEtab" class="form-control" th:field="*{aliasministeretuteleEtab}"
+									placeholder="Abbreviation Ministère de tutelle de l'établissement" th:value="*{aliasministeretuteleEtab}" />
+							</div>
+							<div th:if="${#fields.hasErrors('aliasministeretuteleEtab')}"
+								th:errors="*{aliasministeretuteleEtab}" class="redcolor">Erreur de ministère de tutelle</div>
+								
+						
+						<div class="form-group">
+								<label for="ministeretuteleanglaisEtab"> Ministère de tutelle (en anglais): <span
+									class="redcolor">*</span></label> <input type="text" name="ministeretuteleanglaisEtab"
+									id="ministeretuteleanglaisEtab" class="form-control" th:field="*{ministeretuteleanglaisEtab}"
+									placeholder="Ministère de tutelle de l'établissement en anglais" th:value="*{ministeretuteleanglaisEtab}" />
+							</div>
+							<div th:if="${#fields.hasErrors('ministeretuteleanglaisEtab')}"
+								th:errors="*{ministeretuteleanglaisEtab}" class="redcolor">Erreur de ministère de tutelle en anglais</div>
+								
+						 <div class="form-group">
+								<label for="aliasministeretuteleanglaisEtab"> Abbréviation ministère de tutelle (en anglais): <span
+									class="redcolor">*</span></label> <input type="text" name="aliasministeretuteleanglaisEtab"
+									id="aliasministeretuteleanglaisEtab" class="form-control" th:field="*{aliasministeretuteleanglaisEtab}"
+									placeholder="Abbreviation Ministère de tutelle de l'établissement en anglais" 
+									th:value="*{aliasministeretuteleanglaisEtab}" />
+							</div>
+							<div th:if="${#fields.hasErrors('aliasministeretuteleanglaisEtab')}"
+								th:errors="*{aliasministeretuteleanglaisEtab}" class="redcolor">
+									Erreur d'abbreviation ministère de tutelle en anglais</div>
+									
+						
+							 <div class="form-group">
+								<label for="deleguationregtuteleEtab"> Déléguation régional de tutele: <span
+									class="redcolor">*</span></label> <input type="text" name="deleguationregtuteleEtab"
+									id="deleguationregtuteleEtab" class="form-control" th:field="*{deleguationregtuteleEtab}"
+									placeholder="Déléguation régional de tutele" 
+									th:value="*{deleguationregtuteleEtab}" />
+							</div>
+							<div th:if="${#fields.hasErrors('deleguationregtuteleEtab')}"
+								th:errors="*{deleguationregtuteleEtab}" class="redcolor">
+									Erreur de deleguation regional</div>
+							
+							<div class="form-group">
+								<label for="deleguationregtuteleanglaisEtab"> Déléguation régional de tutele (anglais): <span
+									class="redcolor">*</span></label> <input type="text" name="deleguationregtuteleanglaisEtab"
+									id="deleguationregtuteleanglaisEtab" class="form-control" th:field="*{deleguationregtuteleanglaisEtab}"
+									placeholder="Déléguation régional de tutele en anglais" 
+									th:value="*{deleguationregtuteleanglaisEtab}" />
+							</div>
+							<div th:if="${#fields.hasErrors('deleguationregtuteleanglaisEtab')}"
+								th:errors="*{deleguationregtuteleanglaisEtab}" class="redcolor">
+									Erreur de deleguation regional en anglais</div>
+							
+							
+							<div class="form-group">
+								<label for="deleguationdeptuteleEtab"> Déléguation départemental de tutele: <span
+									class="redcolor">*</span></label> <input type="text" name="deleguationdeptuteleEtab"
+									id="deleguationdeptuteleEtab" class="form-control" th:field="*{deleguationdeptuteleEtab}"
+									placeholder="Déléguation départemental de tutele" 
+									th:value="*{deleguationdeptuteleEtab}" />
+							</div>
+							<div th:if="${#fields.hasErrors('deleguationdeptuteleEtab')}"
+								th:errors="*{deleguationdeptuteleEtab}" class="redcolor">
+									Erreur de deleguation départemental</div>
+									
+							<div class="form-group">
+								<label for="deleguationdeptuteleanglaisEtab"> Déléguation départemental de tutele (anglais): <span
+									class="redcolor">*</span></label> <input type="text" name="deleguationdeptuteleanglaisEtab"
+									id="deleguationdeptuteleanglaisEtab" class="form-control" th:field="*{deleguationdeptuteleanglaisEtab}"
+									placeholder="Déléguation départemental de tutele en anglais" 
+									th:value="*{deleguationdeptuteleanglaisEtab}" />
+							</div>
+							<div th:if="${#fields.hasErrors('deleguationdeptuteleanglaisEtab')}"
+								th:errors="*{deleguationdeptuteleanglaisEtab}" class="redcolor">
+									Erreur de deleguation départemental en anglais</div>
+							
+							<div class="form-group">
+								<label for="bpEtab"> Ville: <span
+									class="redcolor">*</span></label> <input type="text" name="villeEtab"
+									id="villeEtab" class="form-control" th:field="*{villeEtab}"
+									placeholder="Ville de l'établissement"  th:value="*{villeEtab}"/>
+							</div>
+							<div th:if="${#fields.hasErrors('villeEtab')}"
+								th:errors="*{villeEtab}" class="redcolor">Erreur de ville etablissement</div>
+								
+							<div class="form-group">
+								<label for="bpEtab"> Boîte postale: <span
+									class="redcolor">*</span></label> <input type="text" name="bpEtab"
+									id="bpEtab" class="form-control" th:field="*{bpEtab}"
+									placeholder="Boîte postale de l'établissement"  th:value="*{bpEtab}"/>
+							</div>
+							<div th:if="${#fields.hasErrors('bpEtab')}"
+								th:errors="*{bpEtab}" class="redcolor">Erreur de boîte postale</div>
+
+							<div class="form-group">
+								<label for="numtel1Etab"> Numéro de téléphone N°1:
+									<span class="redcolor">*</span>
+								</label> <input type="text" name="numtel1Etab" id="numtel1Etab"
+									class="form-control" th:value="*{numtel1Etab}" th:field="*{numtel1Etab}"
+									placeholder="Numéro de téléphone" />
+							</div>
+							<div th:if="${#fields.hasErrors('numtel1Etab')}"
+								th:errors="*{numtel1Etab}" class="redcolor">Erreur de numéro de téléphone</div>
+
+							<div class="form-group">
+								<label for="numtel2Etab"> Numéro de téléphone N°2: </label> <input type="text"
+									name="numtel2Etab" id="numtel2Etab" class="form-control" th:value="*{numtel2Etab}"
+									placeholder="Numéro de téléphone"  th:field="*{numtel2Etab}"/>
+							</div>
+							<div th:if="${#fields.hasErrors('numtel2Etab')}"
+								th:errors="*{numtel2Etab}" class="redcolor">Erreur de
+								numéro de téléphone</div>
+								
+								<div class="form-group">
+								<label for="emailEtab"> Adresse email: </label> <input type="text"
+									name="emailEtab" id="emailEtab" class="form-control" th:value="*{emailEtab}"
+									placeholder="Une adresse email de l'établissement"  th:field="*{emailEtab}"/>
+							</div>
+							<div th:if="${#fields.hasErrors('emailEtab')}"
+								th:errors="*{emailEtab}" class="redcolor">Erreur d'adresse email</div>
+
+						</fieldset>
+						
+						<fieldset>
+							<legend class="text-primary">Emblèmes de l'établissement</legend>
+							
+							<div class="form-group">
+								<label for="deviseEtab"> Dévise de l'établissement: <span
+									class="redcolor">*</span></label> <input type="text"
+									name="deviseEtab" id="deviseEtab" class="form-control" th:value="*{deviseEtab}"
+									placeholder="Dévise de l'établissement" th:field="*{deviseEtab}" />
+							</div>
+							<div th:if="${#fields.hasErrors('deviseEtab')}"
+								th:errors="*{deviseEtab}" class="redcolor">Erreur de dévise de l'établissement</div>
+								
+							
+							<div class="form-group">
+								<label for="deviseanglaisEtab"> Dévise de l'établissement (en anglais): <span
+									class="redcolor">*</span></label> <input type="text"
+									name="deviseanglaisEtab" id="deviseanglaisEtab" class="form-control" th:value="*{deviseanglaisEtab}"
+									placeholder="Dévise de l'établissement en anglais" th:field="*{deviseanglaisEtab}" />
+							</div>
+							<div th:if="${#fields.hasErrors('deviseanglaisEtab')}"
+								th:errors="*{deviseanglaisEtab}" class="redcolor">Erreur de dévise de l'établissement en anglais</div>
+							
+							
+						</fieldset>
+						
+						<button type="submit" class="btn btn-primary  pull-right">
+							<span class="glyphicon glyphicon-save"></span>Envoyer
+						</button>
+						<button type="reset" class="btn btn-danger">
+							<span class="glyphicon glyphicon-erase"></span> Effacer
+						</button>
+						
+						
+						<fieldset>
+							<legend class="text-primary">Autres emblèmes de l'établissement</legend>
+							<div class="form-group col-md-8">
+								<label for="picturelogoEtab"> Logo de l'établissement: </label> <!-- <input type="file"
+									name="picturelogoEtab" id="picturelogoEtab" class="form-control-file" 
+									placeholder="Envoyer le logo de l'établissement"/> -->
+							</div>
+							
+							<div class="card col-md-4"> 
+										<img th:src="@{/logesco/admin/getLogo(idEtab=*{idEtab})}" 
+											class="card-img-top" width="100" height="100"/>
+											<div class="card-body">
+											    <p class="card-text">Logo enregistré pour l'établissement</p>
+											 </div>
+							</div>
+							
+							<div th:if="${#fields.hasErrors('logoEtab')}"
+								th:errors="*{logoEtab}" class="redcolor">Erreur de logo de l'établissement</div>
+								
+							<div class="form-group col-md-8">
+								<label for="picturebanniereEtab"> Banière de l'établissement: </label> <!-- <input type="file"
+									name="picturebanniereEtab" id="picturebanniereEtab" class="form-control-file" 
+									placeholder="Envoyer la banière de l'établissement" /> -->
+							</div>		
+							<div class="card col-md-4"> 
+								<img th:src="@{/logesco/admin/getBanniere(idEtab=*{idEtab})}" 
+									class="card-img-top" width="100" height="100"/>
+									<div class="card-body">
+									    <p class="card-text">Bannière enregistrée pour l'établissement</p>
+									 </div>
+							</div>
+							
+							<div th:if="${#fields.hasErrors('banniereEtab')}"
+								th:errors="*{banniereEtab}" class="redcolor">Erreur de banière de l'établissement</div>
+							
+						</fieldset>
+						
+						
+
+					</form>
+				
+			</div>
+		</div>
+	</div>
+<!-- fin du FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

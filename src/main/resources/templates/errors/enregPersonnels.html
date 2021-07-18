@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Enregistrer les membres du personnel</title>
+</head>
+<body>
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-12    reculeverticalementmodifdonneepersoform">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4>Formulaire de mise à jour des données du chef d'établissement</h4>
+		</div>
+		<div class="panel-body">
+			<p class="alert alert-warning">
+				<span style="text-decoration: underline;">IMPORTANT:</span> Pour une modification, cliquer sur un des boutons 
+				rechercher après avoir indiquée la valeur demandée permettant d'identifier l'utilisateur dont les données doivent 
+				être modifié.
+			</p>
+			<form action="#" th:action="@{/logesco/users/postupdatePersonnels}"
+						th:object="${updatePersonnelsForm}" method="post" enctype="multipart/form-data">
+						
+						<input type="hidden"
+							name="idPersonnels" id="idPersonnels" class="form-control" th:field="*{idPersonnels}" th:value="*{idPersonnels}" />
+				
+				<div th:if="${param.updatepersonnelserrorNumeroCni}">
+					<h4 align="justify" class="alert alert-danger">Le numéro CNI saisi correspond à un autre utilisateur.</h4>
+				</div>
+				
+				<div th:if="${param.updatepersonnelserrorNomsPrenomsDatenaiss}">
+					<h4 align="justify" class="alert alert-danger">Le triplet (Noms, prénoms et date de naissance) saisi correspond à 
+					un autre utilisateur.</h4>
+				</div>
+				
+				<div th:if="${param.updatepersonnelserrorUsername}">
+					<h4 align="justify" class="alert alert-danger">Le nom d'utilisateur saisi correspond à un autre utilisateur.</h4>
+				</div>
+				
+				<div th:if="${param.updatepersonnelserrorNumeroPers}">
+					<h4 align="justify" class="alert alert-danger">Le numéro d'ordre dans la fonction choisi correspond 
+					à un autre utilisateur.</h4>
+				</div>
+				
+				<div th:if="${param.updatepersonnelserrorUsername}">
+					<h4 align="justify" class="alert alert-danger">Le nom d'utilisateur saisi correspond à un autre utilisateur.</h4>
+				</div>
+				
+						<fieldset class="col-md-4">
+							<legend class="text-primary">Paramètres personnels</legend>
+							
+							<div class="form-group">
+								<label for="numcniPers"> Numéro CNI: <span
+									class="redcolor">*</span></label> <input type="text" name="numcniPers"
+									id="numcniPers" class="form-control" th:value="*{numcniPers}" th:field="*{numcniPers}"
+									placeholder="Numéro de cni" />
+									<!-- <a href="#" th:href="@{/logesco/users/getupdatePersonnels(numcniPers=*{numcniPers})}" class="pull-right">
+										Rechercher</a> -->
+							</div>
+							<div th:if="${#fields.hasErrors('numcniPers')}"
+								th:errors="*{numcniPers}" class="redcolor">Erreur de numero de carte d'identité</div>
+								
+						    <div class="form-group">
+								<label for="nomsPers"> Noms: <span
+									class="redcolor">*</span></label> <input type="text" name="nomsPers"
+									id="nomsPers" class="form-control" th:value="*{nomsPers}" th:field="*{nomsPers}"
+									placeholder="Vos noms" />
+							</div>
+							<div th:if="${#fields.hasErrors('nomsPers')}"
+								th:errors="*{nomsPers}" class="redcolor">Erreur de noms</div>
+						 	
+						 	 <div class="form-group">
+								<label for="prenomsPers"> Prénoms: <span
+									class="redcolor">*</span></label> <input type="text" name="prenomsPers"
+									id="prenomsPers" class="form-control" th:value="*{prenomsPers}" th:field="*{prenomsPers}"
+									placeholder="Vos prénoms" />
+							</div>
+							<div th:if="${#fields.hasErrors('prenomsPers')}"
+								th:errors="*{prenomsPers}" class="redcolor">Erreur de prénoms</div>
+							
+							<div class="form-group">
+								<label for="datenaissPers"> Date de naissance: <span
+									class="redcolor">*</span></label> <input type="date" name="datenaissPers"
+									id="datenaissPers" class="form-control" th:value="*{datenaissPers}" th:field="*{datenaissPers}"
+									placeholder="Date de naissance(année-mois-jour)" />
+							</div>
+							<div th:if="${#fields.hasErrors('datenaissPers')}"
+									th:errors="*{datenaissPers}" class="redcolor">Erreur de date de naissance
+							</div>
+							
+							 <div class="form-group">
+								<label for="lieunaissPers"> Lieu de naissance: <span
+									class="redcolor">*</span></label> <input type="text" name="lieunaissPers"
+									id="lieunaissPers" class="form-control" th:value="*{lieunaissPers}" th:field="*{lieunaissPers}"
+									placeholder="Lieu de naissance" />
+							</div>
+							<div th:if="${#fields.hasErrors('lieunaissPers')}"
+								th:errors="*{lieunaissPers}" class="redcolor">Erreur de lieu de naissance</div>
+								
+							<div class="form-group">
+								<label for="nationalitePers"> Nationalité: <span
+									class="redcolor">*</span></label> <input type="text" name="nationalitePers"
+									id="nationalitePers" class="form-control" th:value="*{nationalitePers}" th:field="*{nationalitePers}"
+									placeholder="Nationalité" />
+							</div>
+							<div th:if="${#fields.hasErrors('nationalitePers')}"
+								th:errors="*{nationalitePers}" class="redcolor">Erreur de nationalite</div>
+							
+							<div class="form-group">
+								<label for="sexePers" class="control-label col-sm-3 text-left"> Sexe: <span
+									class="redcolor">*</span></label> 
+									
+									<div class="radio">
+									    <label><input type="radio" name="sexePers" id="sexePers" class="radio-inline"
+									    				 th:field="*{sexePers}" value="masculin" checked="checked"/>Masculin</label>
+									    <label><input type="radio" name="sexePers" id="sexePers" class="radio-inline"
+									      				th:field="*{sexePers}" value="féminin"/>Féminin</label>
+									 </div>
+							</div>
+							<div th:if="${#fields.hasErrors('sexePers')}"
+									th:errors="*{sexePers}" class="redcolor">erreur sexePers</div>
+							
+							<!-- <div class="card">
+								<img th:src="@{/logesco/users/getphotoPers(idPers=*{idPersonnels})}" 
+										class="card-img-top" width="100" height="100"/>
+										<div class="card-body">
+											 <p class="card-text">Profil utilisateur enregistré</p>
+										</div>
+							</div> -->
+							
+							<div class="form-group col-md-8">
+								<label for="picturephotoPers"> Photo: </label> <input type="file"
+									name="picturephotoPers" id="picturephotoPers" class="form-control-file" 
+									placeholder="Envoyer votre photo"/>
+							</div>
+							
+							<div th:if="${#fields.hasErrors('photoPers')}"
+									th:errors="*{photoPers}" class="redcolor">Erreur de photo
+							</div>
+								
+						</fieldset>
+						
+						<fieldset class="col-md-4">
+							<fieldset>
+								<legend class="text-primary">Paramètres proffessionnels</legend>
+								<div class="form-group">
+									<label for="statutPers" class="control-label col-sm-3 text-left"> Statut: <span
+										class="redcolor">*</span></label> 
+										
+										<div class="radio">
+										    <label><input type="radio" name="statutPers" id="statutPers" class="radio-inline"
+										    				 th:field="*{statutPers}" value="Vacataire" checked="checked"/>Vacataire</label>
+										    <label><input type="radio" name="statutPers" id="statutPers" class="radio-inline"
+										      				th:field="*{statutPers}" value="ECI"/>ECI</label>
+										     <label><input type="radio" name="statutPers" id="statutPers" class="radio-inline"
+										      				th:field="*{statutPers}" value="Fonctionnaire"/>Fonctionnaire</label>
+										 </div>
+								</div>
+								<div th:if="${#fields.hasErrors('statutPers')}"
+									th:errors="*{statutPers}" class="redcolor">erreur statutPers</div>
+								
+								<div class="form-group">
+									<label for="gradePers"> Grade: <span
+										class="redcolor">*</span></label> <input type="text" name="gradePers"
+										id="gradePers" class="form-control" th:value="*{gradePers}" th:field="*{gradePers}"
+										placeholder="PLEG" />
+								</div>
+								<div th:if="${#fields.hasErrors('gradePers')}"
+									th:errors="*{gradePers}" class="redcolor">erreur Grade</div>
+									
+								<div class="form-group">
+									<label for="diplomePers"> Diplôme le plus élevé: <span
+										class="redcolor">*</span></label> <input type="text" name="diplomePers"
+										id="diplomePers" class="form-control" th:value="*{diplomePers}" th:field="*{diplomePers}"
+										placeholder="DIPEG 2" />
+								</div>
+								<div th:if="${#fields.hasErrors('diplomePers')}"
+									th:errors="*{diplomePers}" class="redcolor">erreur de diplome</div>
+									
+							   	<div class="form-group">
+									<label for="specialiteProf"> Specialité : <span
+										class="redcolor">*</span></label> <input type="text" name="specialiteProf"
+										id="specialiteProf" class="form-control" th:value="*{specialiteProf}" th:field="*{specialiteProf}"
+										placeholder="" />
+								</div>
+								<div th:if="${#fields.hasErrors('specialiteProf')}"
+									th:errors="*{specialiteProf}" class="redcolor">erreur de specialité</div>
+								
+								<div class="form-group">
+									<label for="numeroPers"> Numéro d'ordre dans la fonction: <span
+										class="redcolor">*</span></label>
+										<select class="form-control" name="numeroPers"  th:field="*{numeroPers}"
+											 id="numeroPers">
+											 	<option value="1">1</option>
+									      		<option value="2">2</option>
+									      		<option value="3">3</option>
+									      		<option value="4">4</option>
+									      		<option value="5">5</option>
+									      		<option value="6">6</option>
+									      		<option value="7">7</option>
+									      		<option value="8">8</option>
+									      		<option value="9">9</option>
+									      		<option value="10">10</option>
+									    </select> 
+								</div>
+								<div th:if="${#fields.hasErrors('numeroPers')}"
+									th:errors="*{numeroPers}" class="redcolor">Erreur de numero d'ordre</div> 
+								<p class="alert alert-info">Ce numéro concerne toutes les fonctions sauf celle d'enseignant simple. 
+								On a par exemple les censeur N°1, 2 etc.</p>
+							</fieldset>
+							<fieldset>
+								<legend class="text-primary">Rôles vis à vis du système <span
+										class="redcolor">*</span></legend>
+								<div class="form-group">
+									<div class="radio">
+										<table class="table table-bordered">
+											<tbody>
+												<tr>
+												 	<td>
+												 		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											    				 th:field="*{roleCode}" value="1" checked="checked"/>Censeur et enseignant</label>
+												 	</td>
+											      	<td>
+											      		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											      				th:field="*{roleCode}" value="2"/>Censeur uniquement</label>
+											      	</td>
+										      	</tr>
+										      	<tr>
+												 	<td>
+												 		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											      				th:field="*{roleCode}" value="3"/>SG et enseignant</label>
+												 	</td>
+											      	<td>
+											      		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											      				th:field="*{roleCode}" value="4"/>SG uniquement</label>
+											      	</td>
+										      	</tr>
+										      	<tr>
+												 	<td>
+												 		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											      				th:field="*{roleCode}" value="5"/>Intendant et enseignant</label>
+												 	</td>
+											      	<td>
+											      		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											      				th:field="*{roleCode}" value="6"/>Intendant uniquement</label>
+											      	</td>
+										      	</tr>
+										      	<tr>
+												 	<td>
+												 		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											      				th:field="*{roleCode}" value="7"/>Enseignant uniquement</label>
+												 	</td>
+											      	<td>
+											      		<span th:if="${#fields.hasErrors('roleCode')}"
+															th:errors="*{roleCode}" class="redcolor">Erreur de roleCode</span>
+											      	</td>
+										      	</tr>
+											</tbody>
+										</table>      
+									</div>
+								</div>
+							</fieldset>
+						</fieldset>
+						
+						<fieldset class="col-md-4">
+							
+							<fieldset>
+								<legend class="text-primary">Adresses</legend>
+								
+								<div class="form-group">
+								<label for="numtel1Pers"> Num tel 1: <span
+									class="redcolor">*</span></label> <input type="text" name="numtel1Pers"
+									id="numtel1Pers" class="form-control" th:value="*{numtel1Pers}" th:field="*{numtel1Pers}"
+									placeholder="Numéro de téléphone 1" />
+								</div>
+								<div th:if="${#fields.hasErrors('numtel1Pers')}"
+									th:errors="*{numtel1Pers}" class="redcolor">erreur de numtel1</div>
+									
+								<div class="form-group">
+								<label for="numtel2Pers"> Num tel 2: </label> <input type="text" name="numtel2Pers"
+									id="numtel2Pers" class="form-control" th:value="*{numtel2Pers}" th:field="*{numtel2Pers}"
+									placeholder="Numéro de téléphone 2" />
+								</div>
+								<div th:if="${#fields.hasErrors('numtel2Pers')}"
+									th:errors="*{numtel2Pers}" class="redcolor">erreur de numtel2</div>
+									
+								<div class="form-group">
+								<label for="emailPers"> Email:  </label> <input type="text" name="emailPers"
+									id="emailPers" class="form-control" th:value="*{emailPers}" th:field="*{emailPers}"
+									placeholder="Adresse email" />
+								</div>
+								<div th:if="${#fields.hasErrors('username')}"
+									th:errors="*{username}" class="redcolor">erreur de email</div>
+									
+								<div class="form-group">
+								<label for="villePers"> Ville habitée: </label> <input type="text" name="villePers"
+									id="villePers" class="form-control" th:value="*{villePers}" th:field="*{villePers}"
+									placeholder="Ville habitée" />
+								</div>
+								<div th:if="${#fields.hasErrors('villePers')}"
+									th:errors="*{villePers}" class="redcolor">erreur de villePers</div>
+									
+								<div class="form-group">
+								<label for="quartierPers"> Quartier habitée: </label> <input type="text" name="quartierPers"
+									id="quartierPers" class="form-control" th:value="*{quartierPers}" th:field="*{quartierPers}"
+									placeholder="Quartier habitée" />
+								</div>
+								<div th:if="${#fields.hasErrors('quartierPers')}"
+									th:errors="*{quartierPers}" class="redcolor">erreur de quartierPers</div>
+								
+								
+							</fieldset>
+							<fieldset>
+								<legend class="text-primary">Informations de connexion</legend>
+								
+								<div class="form-group">
+									<label for="username" > Nom d'utilisateur: </label> <input type="text" name="username"
+										id="username" class="form-control" th:value="*{username}" th:field="*{username}"
+										placeholder="Login de connexion" />
+										<!-- <a href="#" th:href="@{/logesco/users/getupdatePersonnels(username=*{username})}" class="pull-right">
+										Rechercher</a> -->
+								</div>
+								<div th:if="${#fields.hasErrors('username')}"
+									th:errors="*{username}" class="redcolor">erreur de username</div>
+							
+							
+								<div class="form-group">
+								<label for="password"> Mot de passe: </label> <input type="password" name="password"
+									id="password" class="form-control" th:value="*{password}" th:field="*{password}"
+									placeholder="Mot de passe de connexion" />
+								</div>
+								<div th:if="${#fields.hasErrors('password')}"
+									th:errors="*{password}" class="redcolor">erreur de password</div>
+									
+								<p class="alert alert-warning"><span style="text-decoration: underline;">NB:</span>
+								Ce mot de passe doit être modifié par l'utilisateur dès la première connexion</p>
+							</fieldset>
+						</fieldset>
+					<button type="submit" class="btn btn-primary  pull-right">Envoyer</button>
+					<button type="reset" class="btn btn-danger">Effacer</button>
+			</form>
+		</div>
+	</div>
+</div>
+<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

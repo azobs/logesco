@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	
+<head>
+<meta charset="UTF-8"/>
+<title>Insert title here</title>
+
+		<link rel="stylesheet"  type="text/css"  href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"  
+	 	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" /><!-- -->
+	 	
+		<link rel="stylesheet"  type="text/css"  href="../static/css/myStyle.css"  
+	 	th:href="@{/css/myStyle.css}"/>
+
+</head>
+<body>
+	
+	<!-- debut de la partie entete de la page d'index -->
+<header> 
+	<div class=" col-md-12 div-header">
+	<div class="col-md-3 redcolor ">
+		<img alt="Ici le logo de l'application"  src="../static/images/logopng.png"  
+			th:src="@{/images/logopng.png}"/>
+	</div>
+	
+	<div class="col-md-6 greencolor ">
+		<h1 th:inline="text" align="center" class="alert alert-info">Bienvenue &nbsp; [[${#httpServletRequest.remoteUser}]]!</h1>
+		
+		<p layout:fragment="chemin"></p>
+		
+		<!-- <form th:action="@{/logout}" method="post">
+            <input type="submit" class="btn btn-default  pull-right"  value="Se déconnecter"/>
+        </form> -->
+		
+	</div>
+	
+	<div class="col-md-3  alert alert-info">
+		
+			<span th:text="${session.dfNameJour}">Nom du jour</span>&nbsp;
+			<span th:text="${session.dfJour}">Numero du jour dans le mois</span>&nbsp;
+			<span th:text="${session.dfmois}">Nom ou numero mois en cours</span>&nbsp;
+			<span th:text="${session.dfyear}">annee en cours</span> :&nbsp;
+			<span th:text="${session.dfheure}">Heure dans la journée</span>
+		
+		<form th:action="@{/logout}" method="post">
+            <input type="submit" class="btn btn-primary  pull-right"  value="Se déconnecter"/>
+        </form>
+	</div>
+	
+	</div>
+</header>
+<!-- fin de la partie entete de la page d'index -->
+
+<!-- debut de la partie variable qui sera chargé par toutes les autres pages de la session admin --> 
+
+<section>
+	
+	<!--debut de la conception d'une barre des menus avec les boutons munis de liste deroulante et groupe -->
+
+		<div class="container reculeverticalementbar">
+			<div class="btn-group btn-group-justified" >
+				<div class="btn-group" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SUPERADMIN')">
+					<button type="button" class="btn btn-default dropdown-toggle"
+						data-toggle="dropdown">
+						Paramètres &nbsp;<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu">
+						<li><a th:href="@{/logesco/admin/index}" href="#">Modifier mon mot de passe</a></li>
+						<li class="divider"></li>
+						<li><a th:href="@{/logesco/admin/getupdateAdresse}" href="#">Modifier mon adresse</a></li>
+						<li class="divider"></li>
+						<li><a href="#" th:href="@{/logesco/admin/getupdateUsername}">Modifier un nom d'utilisateur</a></li>
+					</ul>
+				</div>
+				<div class="btn-group" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SUPERADMIN')">
+					<button type="button" class="btn btn-default dropdown-toggle"
+						data-toggle="dropdown">
+						L'établissement &nbsp;<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu">
+						<li><a href="#" th:href="@{/logesco/admin/getupdateEtablissement}">Enregistrer les données de l'établissement</a></li>
+						<li class="divider"></li>
+						<li><a href="#" th:href="@{/logesco/admin/getupdateEmblemeEtab}">Enregistrer les emblèmes de l'établissement</a></li>
+						<li class="divider"></li>
+						<li><a href="#" th:href="@{/logesco/admin/getupdateProviseur}">Enregistrer le chef d'établissement</a></li>
+						<li class="divider"></li>
+						<li><a href="#"  th:href="@{/logesco/admin/getupdateCycles}">Créer/Modifier les cycles</a></li>
+						<li class="divider"></li>
+						<li><a href="#" th:href="@{/logesco/admin/getupdateNiveaux}">Créer/Modifier les niveaux</a></li>
+						<li class="divider"></li>
+						<li><a href="#" th:href="@{/logesco/admin/getupdateSections}">Créer/Modifier les sections</a></li>
+					</ul>
+				</div>
+				
+				<div class="btn-group" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SUPERADMIN')">
+					<button type="button" class="btn btn-default dropdown-toggle"
+						data-toggle="dropdown">
+						Les périodes de l'année&nbsp;<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu">
+						<li><a href="#" th:href="@{/logesco/admin/getupdateSequences}">Enregistrer/Modifier les séquences</a></li>
+						<li class="divider"></li>
+						<li><a href="#" th:href="@{/logesco/admin/getupdateTrimestres}">Enregistrer/Modifier les trimestres</a></li>
+						<li class="divider"></li>
+						<li><a href="#"  th:href="@{/logesco/admin/getupdateAnnee}">Enregistrer/Modifier l'année scolaire</a></li>
+					</ul>
+				</div>
+				
+				<div class="btn-group" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SUPERADMIN')">
+					<button type="button" class="btn btn-default dropdown-toggle"
+						data-toggle="dropdown">
+						Les spécialités &nbsp;<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu">
+						<li><a href="#"  th:href="@{/logesco/admin/getupdateSpecialites}">Gérer les spécialités</a></li>
+					</ul>
+				</div>
+				
+				<div class="btn-group" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SUPERADMIN')">
+					<button type="button" class="btn btn-default dropdown-toggle"
+						data-toggle="dropdown">
+						Les classes &nbsp;<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu">
+						<li>
+							<a href="#" th:href="@{/logesco/admin/getupdateClasses}">Configurer les salles de classe</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a href="#" th:href="@{/logesco/admin/getupdateMatieres}">Gérer les départements</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a href="#" th:href="@{/logesco/admin/getupdateGroupes}">Gérer les groupes(modules) de cours</a>
+						</li>
+						<li class="divider"></li>
+						<li> <!-- th:href="@{/logesco/users/censeur/getupdateCours}" -->
+							<a href="#"  data-toggle="modal" data-target="#dialogChoixClasse">
+								Configurer les cours dans les salles de classe
+							</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a href="#" >Exporter la configuration des cours d'une classe</a>
+						</li>
+						<!-- <li class="divider"></li>
+						<li>
+							<a href="#">
+								Passer un conseil de classe séquentiel
+							</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a href="#">
+								Passer un conseil de classe trimestriel
+							</a>
+						</li>-->
+						<li class="divider"></li>
+						<li>
+							<a href="#">
+								Passer un conseil de classe annuel
+							</a>
+						</li>
+					</ul>
+				</div>
+				
+				<div class="btn-group" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SUPERADMIN')">
+					<button type="button" class="btn btn-default dropdown-toggle"
+						data-toggle="dropdown">
+						Les rôles utilisateurs &nbsp;<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu">
+						<li><a href="#" th:href="@{/logesco/admin/getupdateRoles}">Ajouter des rôles à des utilisateurs</a></li>
+					</ul>
+				</div>
+				
+				
+			</div>
+		</div>
+<!--fin de la conception d'une barre des menus avec les boutons munis de liste deroulante et groupe -->
+
+<!-- Modal de Choix classe à configurer-->
+	<div class="modal fade" id="dialogChoixClasse" tabindex="-1" role="dialog" 
+				aria-labelledby="dialogChoixClasse"  aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+					
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Configuration des cours d'une classe</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							
+							<h4 align="center">Sélectionner la classe dont les cours seront paramétrés</h4>
+							
+							<form action="#" th:action="@{/logesco/admin/getupdateCours}" 
+								method="get"  th:if="${session.listofNiveaux}">
+							
+								<div th:if="${session.listofNiveaux}">
+									<div class="form-group  col-md-6">
+										<select class="form-control" name="idClasseAssocie" id="idClasseAssocie">
+											<optgroup  th:each="n:${session.listofNiveaux}" th:label="${n.codeNiveaux}" 
+												th:if="${session.listofNiveaux}" >
+												<option th:each="c:${n.listofClasses}" th:value="${c.idClasses}"
+													th:inline="text">
+													 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+												</option>
+											</optgroup>
+										</select>
+									
+									</div>
+									<button type="submit" class="btn btn-primary  pull-right col-md-2">Configurer</button>
+										<br/>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								</div>
+							</form>
+							
+						</div>
+						<div class="modal-footer">
+						
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+							
+							
+						</div>
+					</div>
+				</div>
+		</div>
+<!--FIN de  Modal de Choix classe à configurer-->
+	
+	<div layout:fragment="formactionadmin"> 
+
+	</div>
+</section>
+<!-- fin de la partie variable qui sera chargé par toutes les autres pages de la session admin --> 
+
+
+<!-- debut de la partie pied de la page d'index -->	
+	<footer>
+		<div class="navbar-fixed-bottom">
+			<span class="alert alert-info">
+			<small>CopyRight SchoolMind appeler le 678470262 en cas de souci</small></span>
+		</div>
+	</footer>
+<!-- fin de la partie pied de la page d'index -->
+     
+<!-- zone d'insertion des fichiers javascript -->
+<script src="webjars/jquery/1.11.1/jquery.min.js" 
+	th:src="@{/webjars/jquery/1.11.1/jquery.min.js}" ></script>
+<script src="webjars/bootstrap/3.3.7/js/bootstrap.min.js" 
+	th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}" ></script>
+	
+<script>
+/* $('.dropdown-toggle').mouseover(function() {
+	$(this).dropdown('toggle');
+}); */ 
+</script>
+	
+</body>
+</html>

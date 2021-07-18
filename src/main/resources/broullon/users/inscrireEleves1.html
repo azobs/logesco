@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title th:text="#{inscrireEleves.titre_page}">Inscrire un élève</title>
+</head>
+<body>
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-9    reculeverticalementmodifdonneepersoform">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4 th:text="#{inscrireEleves.entete_panel}">
+				Rechercher un élève connaissant sa classe et le modifier
+			</h4>
+		</div>
+		<div class="panel-body">
+			
+			
+			<form action="#" th:action="@{/logesco/users/intendant/getinscriptionEleves}" 
+				method="get"  th:if="${listofClasses}" class="form-inline">
+				
+				<fieldset class="col-md-12"  th:if="${listofNiveaux}">
+					<legend class="text-primary" th:text="#{inscrireEleves.label_choixclasse}">
+						Choisir la classe de l'élève à inscrire
+					</legend>
+					
+					<div class="form-group">
+						<label for="idClasseSelect" th:text="#{inscrireEleves.label_classe}"> Classe d'appartenance: <span
+										class="redcolor">*</span></label> 
+						<select class="form-control" name="idClasseSelect" id="idClasseSelect" >
+							
+							<optgroup th:label="${n.codeNiveaux}" th:if="${listofNiveaux}" th:each="n:${listofNiveaux}">
+											
+								<option th:each="c:${n.listofClasses}" th:value="${c.idClasses}"
+										th:inline="text">
+										 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+								</option>
+												
+							</optgroup>
+										 
+							
+						</select>
+						&nbsp;&nbsp;
+						
+						
+						&nbsp; 
+						<button type="submit" class="btn btn-primary  pull-right" 
+							th:text="#{inscrireEleves.bouton_listeleve}">
+							Rechercher la liste des élèves
+						</button>
+					</div>
+					
+				</fieldset>
+			</form>
+				
+			<fieldset  class="col-md-12">
+				<hr/>
+			</fieldset>
+			
+			<fieldset  class="col-md-12" th:if="${erreurClasseNonConfig}">
+				<p class="alert alert-danger" th:inline="text">
+					[[#{inscrireEleves.label_erreur_classenonconfig}]]
+					 <span th:inline="text">
+					 	[[${classeSelect.codeClasses}]] [[${classeSelect.specialite.codeSpecialite}]] [[${classeSelect.numeroClasses}]] 
+					 </span> 
+					 <span>
+					 	[[#{inscrireEleves.label_erreur_classenonconfig_choisi}]]
+					 </span>
+				</p>
+			</fieldset>
+			
+			<fieldset  class="col-md-12" th:if="${erreurClasseVide}">
+				<p class="alert alert-warning" th:inline="text">
+					 [[#{inscrireEleves.label_erreur_classevide}]]
+					 <span th:inline="text">
+					 	[[${classeSelect.codeClasses}]] [[${classeSelect.specialite.codeSpecialite}]] [[${classeSelect.numeroClasses}]] 
+					 </span>.
+				</p>
+			</fieldset>
+			
+			<fieldset  class="col-md-12" th:if="${param.updateetatInsceleveserrorMt}">
+					<h4 align="justify" class="alert alert-danger" th:text="#{inscrireEleves.label_erreur_etatInsceleves}">
+						Erreur de montant: Le solde du compte d'inscription ne saurait être supérieur au montant de la scolarité.
+					</h4>
+			</fieldset>
+				
+			<fieldset th:if="${listofEleves}" class="col-md-12">
+				
+				<legend class="text-primary" th:inline="text"> [[#{inscrireEleves.label_listeeleveclasse}]]
+					<span th:inline="text" th:if="${classeSelect}" class="greencolor"> [[${classeSelect.codeClasses}]] 
+						[[${classeSelect.specialite.codeSpecialite}]] [[${classeSelect.numeroClasses}]]</span> (Total:
+					<span th:text="${effectifprovClasse}" class="redcolor"></span>)
+				</legend>
+					
+				<table class="table table-striped">
+					<thead class="thead-light">
+						<tr>
+							<th scope="col" th:text="#{inscrireEleves.th_matricule}">MATRICULE</th>
+							<th scope="col" th:text="#{inscrireEleves.th_nomsprenoms}">NOMS ET PRENOMS</th>
+							<th scope="col" th:text="#{inscrireEleves.th_datenaissance}">DATE ET LIEU DE NAISSANCE</th>
+							<th scope="col" th:text="#{inscrireEleves.th_adresse}">ADRESSE</th>
+							<th scope="col" th:text="#{inscrireEleves.th_montantverse}">MONTANT VERSE</th>
+							<th class="text-center" scope="col" th:text="#{inscrireEleves.th_action}">ACTION</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="eleve:${listofEleves}">
+									
+							<td th:inline="text">[[${eleve.matriculeEleves}]] </td>
+									
+							<td th:inline="text">[[${#strings.capitalize(eleve.nomsEleves)}]] [[${eleve.prenomsEleves}]] </td>
+									
+							<td th:inline="text">
+								[[#{inscrireEleves.label_nele}]] 
+								[[${#dates.format(eleve.datenaissEleves,"dd-MM-yyyy")}]] 
+								[[#{inscrireEleves.label_a}]] [[${eleve.lieunaissEleves}]]
+							</td>
+									
+							<td th:inline="text">[[${eleve.numtel1Parent}]]</td>
+									
+							<td th:inline="text">
+								[[${eleve.compteInscription.montant}]]/[[${classeSelect.montantScolarite}]]
+							</td>
+									
+							<td>
+								<form action="#" th:action="@{/logesco/users/intendant/versementSco}" 
+									method="get"  th:if="${listofClasses}" class="form-inline">
+											
+									<input type="text" name="montantAVerse"
+										id="montantAVerse" class="form-control" placeholder="0" value="0.0"/>
+												
+									<input type="hidden" name="montantScolarite"
+										id="montantScolarite" class="form-control"  th:value="${montantScolarite}"/>
+											
+									<input type="hidden" name="numPageEleves"
+										id="numPageEleves" class="form-control" th:value="${pageCouranteEleves}"/>
+									
+									<input type="hidden" name="idEleveAModif"
+										id="idEleveAModif" class="form-control" th:value="${eleve.idEleves}"/>
+											
+									<input type="hidden" name="idClasseSelect"
+										id="idClasseSelect" class="form-control" th:value="${idClasseSelect}"/>
+											
+									<button type="submit" class="btn btn-primary  pull-right" 
+										th:text="#{inscrireEleves.bouton_verser}">
+										Verser
+									</button>
+								</form>
+								
+							</td>
+									
+								</tr>
+						</tbody>
+					</table>
+					
+					<div class="container">
+							<ul class="pagination"><!-- nav nav-pills -->
+								<li th:each="p,status:${listofPagesEleves}" th:class="${status.index==pageCouranteEleves}?active:' ' ">
+									<a th:href="@{/logesco/users/intendant/getinscriptionEleves(idClasseSelect=${idClasseSelect},
+											numPageEleves=${status.index})}"
+											 th:text="${status.index+1}"></a>
+								</li>
+							</ul>
+							
+						</div> 
+					
+					<a class="btn btn-default btn-sm pull-right" href="#" title="Dresser le rapport de versement pour imprimer"
+							th:href="@{/logesco/users/intendant/getrapportVersement(idClassesConcerne=${idClasseSelect})}" 
+							role="button" th:text="#{inscrireEleves.bouton_dresserrecapversement}">
+								Dresser le recapitulatif des versements pour cette classe
+					</a>
+					
+					
+				</fieldset>
+		
+		</div>
+	</div>
+</div>
+<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

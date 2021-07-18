@@ -1,0 +1,42 @@
+**) Changer le mot de passe administrateur et du superadministrateur
+**) Créér les roles PROVISEUR, CENSEUR, SG, ENSEIGNANT, TITULAIRE, USER
+**) Enregistrer l'année scolaire à gérer
+**) Enregistrer l'établissement à  gérer
+**) Enregistrer le chef de cet établissement (le proviseur ou le principal)
+**) Enregistrer les différentes sections présentes dans l'établissement
+**) Enregistrer les cycles présents dans l'établissement
+**) Enregistrer les niveaux sachant que chaque niveau est dans un cycle
+**) Enregistrer les spécialités
+**) Enregistrer les classes sachant que chaque classe doit etre dans un niveau, une section et appartient à une spécialité
+**) Enregistrer les département par l'administrateur
+**) Enregistrer les périodes: de préférence il faut enregistrer les périodes au fur et à mesure de l'évolution de l'année scolaire: Donc on commence par le trimestre 1 et la séquence 1. Lorsqu'elle sera fini, on va enregistrer la séquence 2, puis le trimestre 2 avec la séquence 3 puis la séquence 4, puis le trimestre 3 et la séquence 5 et enfin la séquence 6. 
+**) Enregistrer les censeurs dans la session du superadmin
+**) Enregistrer les SG dans la session du superadmin
+**) Enregistrer l'intendant dans la session du superadmin
+**) Enregistrer les enseignants dans la session du superadmin
+**) Enregistrer les cours car on a un seul cours pour une classe et ce cours appartient a un département
+**) Demander au censeur d'attribuer les titulaires aux classes et de préférence juste au classe où l'effectif est plus grand que 0. 
+
+
+****** le reste revient a la formation ***
+Donc il faudra préparer le fichier d'aide:
+	Pour le superadmin qui est celui qui administre le système lorsque l'admin principal du système n'est pas la
+	Pour le proviseur afin que sa session soit comprise et bien gérer (il peut se faire accompagner de sa secretaire pendant la formation)
+	Pour le censeur afin que sa session soit comprise et bien exploiter
+	Pour le SG
+	Pour l'intendant au niveau de la gestion des inscriptions et du reste
+	Pour les enseignants enfin qui devrait normalement être suivi par tous car ils peuvent tous avoir des cours à enseigner (Ici il faudra utiliser une session qui:
+	N'a que le role enseignant
+	Puis qui a le role proviseur et enseignant
+	Puis qui a le role censeur et enseignant
+	puis qui a le role SG et enseignant
+	Puis qui a le role Intendant et enseignant)
+
+
+
+Chaque annee il faut exporter la base de donnée et la garder. Puis modifier l'intitulé de l'année en cours afin de passer à une nouvelle année automatiquement
+-Ensuite, il faut simplemet supprimer toutes les évaluations avec les notes qu'elle contient. 
+-Supprimer toutes les absences 
+-Le reste des configurations peut être fait par le proviseur et les censeurs comme par exple créer les nouveau cours, attribuer les nouveaux cours aux classes, changer les titulaires de classes, changer les enseignants des différents cours. 
+-Donc chaque fois on a toujours une seule année scolaire active enregistrée dans la base de donnée
+

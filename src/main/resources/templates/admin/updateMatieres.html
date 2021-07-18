@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/adminlayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Gérer les départements (matières)</title>
+</head>
+<body>
+<div layout:fragment="formactionadmin">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-8  col-md-offset-2  reculeverticalementmodifpasswordform">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4>Gérer les départements</h4>
+		</div>
+		<div class="panel-body">
+			<form action="#" th:action="@{/logesco/admin/postupdateMatieres}" 
+				method="post"   class="form-inline" th:object="${updateMatieresForm}">
+			
+				<div th:if="${param.updatematiereserrorCode}">
+					<h4 align="justify" class="alert alert-danger">Le code associé à une matière doit être unique</h4>
+				</div>
+				
+				<div th:if="${param.updatematieressuccess}">
+					<h4 align="justify" class="alert alert-success">Mise à jour effectuée avec succès</h4>
+				</div>
+				
+				<div th:if="${param.supprimmatieressuccess}">
+					<h4 align="justify" class="alert alert-success">Suppression effectuée avec succès</h4>
+				</div>
+				
+				<div th:if="${param.supprimmatiereserrorCours}">
+					<h4 align="justify" class="alert alert-danger">Erreur de suppression: Des cours sont déjà enregistrés 
+						pour cette matière</h4>
+				</div>
+			
+			
+				<table class="table table-striped">
+					<thead class="thead-light">
+						<tr>
+							<th class="text-center" scope="col">CODE</th>
+							<th class="text-center" scope="col">INTITULE</th>
+							<th class="text-center" scope="col">INTITULE 2<sup>nd</sup> LANGUE</th>
+						    <th class="text-center" scope="col">ACTION</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr>
+							<td>
+								<div class="form-group">
+									<input type="text" name="codeMatiere"
+										id="codeMatiere" class="form-control" th:value="*{codeMatiere}" th:field="*{codeMatiere}"
+										placeholder="Code " />
+								</div>
+								<div th:if="${#fields.hasErrors('codeMatiere')}"
+									th:errors="*{codeMatiere}" class="redcolor">Erreur de code de matiere</div>
+							</td>
+							
+							<td>
+								<div class="form-group">
+									<input type="text" name="intituleMatiere"
+										id="intituleMatiere" class="form-control" th:value="*{intituleMatiere}" th:field="*{intituleMatiere}"
+										placeholder="Intitulé matière" />
+								</div>
+								<div th:if="${#fields.hasErrors('intituleMatiere')}"
+									th:errors="*{intituleMatiere}" class="redcolor">Erreur d'intitulé de matiere</div>
+									
+								<input type="hidden" name="idMatiere"
+										id="idMatiere" class="form-control" th:value="*{idMatiere}" th:field="*{idMatiere}"/>
+							</td>
+							
+							<td>
+								<div class="form-group">
+									<input type="text" name="intitule2langueMatiere"  id="intitule2langueMatiere" class="form-control" 
+												th:value="*{intitule2langueMatiere}"  th:field="*{intitule2langueMatiere}"
+										placeholder="Intitulé matière dans la 2nd langue" />
+								</div>
+								<div th:if="${#fields.hasErrors('intitule2langueMatiere')}"
+									th:errors="*{intitule2langueMatiere}" class="redcolor">Erreur d'intitulé de matiere</div>
+								
+							</td>
+							
+							<td>
+								<button type="submit" class="btn btn-primary  pull-right">
+									<span class="glyphicon glyphicon-save"></span> Envoyer
+								</button>
+							</td>
+							
+						</tr>
+					</tbody>
+				</table>	
+				<hr/>
+				<table class="table table-striped">
+					<tbody>	
+						<!-- LISTE DES DIFFERENTES MATIERES ENREGISTREE AU CAS OU CETTE LISTE EST DEJA DANS LE MODELE -->
+						
+						<tr th:each="mat:${listofMatieres}" th:if="${listofMatieres}">
+						
+							<td th:inline="text">[[${mat.codeMatiere}]] </td>
+							
+							<td th:inline="text">[[${mat.intituleMatiere}]] </td>
+							
+							<td th:inline="text">[[${mat.intitule2langueMatiere}]] </td>
+							
+							<td>
+							
+								<div>
+									<span>
+										<a class="btn btn-primary btn-sm pull-left" href="#" 
+											th:href="@{/logesco/admin/getupdateMatieres(idMatiere=${mat.idMatiere}, 
+											numPageMatiere=${pageCouranteMatiere})}" role="button">
+											<span class="glyphicon glyphicon-edit"></span> Modifier
+										</a>
+									
+										<a class="btn btn-danger btn-sm pull-right" href="#" 
+											th:href="@{/logesco/admin/getsupprimerMatieres(idMatiere=${mat.idMatiere})}" role="button">
+												<span class="glyphicon glyphicon-trash"></span> Supprimer
+										</a>
+									</span>
+								</div>
+								
+							</td>
+							
+						</tr>
+						
+					</tbody>
+					
+				</table>
+				
+				
+				<div class="container">
+					<ul class="pagination"><!-- nav nav-pills -->
+						<li th:each="p,status:${listofPagesMatieres}" th:class="${status.index==pageCouranteMatiere}?active:' ' ">
+							<a th:href="@{/logesco/admin/getupdateMatieres(numPageMatiere=${status.index},
+									idMatiere=*{idMatiere})}"
+									th:text="${status.index+1}"></a>
+						</li>
+					</ul>
+				</div> 
+			
+				<a class=" pull-right" href="#" 
+			      						th:href="@{/logesco/admin/exportlistMatieres}" 
+			      						role="button">Exporter la liste des matières</a>
+			
+			</form>
+		</div>
+	</div>
+</div>
+<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Saisie des rapports de discipline</title>
+</head>
+<body onload="donneFocus()">
+
+<span layout:fragment="titre_boite">
+        Formulaire de saisie des rapports d'absence de  la
+		<span th:inline="text" class="alert alert-warning"> Séquence  
+			[[${sequenceConcerneRabs.numeroSeq}]].</span>
+</span>
+
+<div layout:fragment="formactionusers">
+	<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE   col-md-offset-1-->
+	<div class="col-md-9">
+	<div class="col-md-7">
+			<form action="#" class="form-inline"
+						th:action="@{/logesco/users/sg/getUpdateRAbsences}" method="get">
+					
+					<div th:if="${param.updaterabssaisiError}">
+						<h4 align="justify" class="alert alert-danger">Erreur système lors de l'enregistrement des heures d'absences
+						ligne 252 de SGController.</h4>
+					</div>
+					
+					<div th:if="${param.updaterabssaisiErrorNH}">
+						<h4 align="justify" class="alert alert-danger">Erreur de saisi du nombre d'heure.</h4>
+					</div>
+					
+					<div th:if="${param.updaterabssaisiwarningElv}">
+						<h4 align="justify" class="alert alert-warning">Rapport d'absence enregistrée avec succès. 
+							Il y a pas d'élève suivant dans la liste.</h4>
+					</div>
+					
+					<div th:if="${param.updaterabsSucces}">
+						<h4 align="justify" class="alert alert-success">Rapport d'absence enregistrée avec succès. 
+						Vous pouvez continuer</h4>
+					</div>
+					
+					<table class="table table-striped">
+						<thead>
+								<tr>
+									<th>
+									</th>
+								</tr>
+						</thead>
+						<tbody th:if="${eleveCharge}">
+							<tr>
+								<td>
+										<label>Noms et prénoms: </label> <!-- name="nomsEleves" id="nomsEleves" --> 
+										<input type="text"  readonly="readonly"
+												class="form-control" th:value="${eleveCharge.nomsEleves+'  '+ eleveCharge.prenomsEleves}" />
+												
+										<input type="hidden" name="idEleves" id="idEleves" 
+												class="form-control" th:value="${eleveCharge.idEleves}" />
+										
+										<input type="hidden" name="idSequenceConcerne" id="idSequenceConcerne" 
+												class="form-control" th:value="${sequenceConcerneRabs.idPeriodes}" />
+												
+									</td>
+									
+									<td>
+										<label>Date et lieu de naissance: </label> <!-- name="datenaissEleves" id="datenaissEleves"   -->
+										<input type="text" readonly="readonly"
+												class="form-control" th:value="${#dates.format(eleveCharge.datenaissEleves,'dd-MM-yyyy')}" />
+									</td>
+									
+									<td>
+										<label th:inline="text">Heure d'absence justifié: </label>
+										<input type="text" name="nbreheureJustifie" id="nbreheureJustifie" 
+												class="form-control" th:value="${rabsEleveCharge != null}?${rabsEleveCharge.nbreheureJustifie}:0" />
+									</td>
+									
+									<td>
+										<label th:inline="text">Heure d'absence non justifié: </label>
+										<input type="text" name="nbreheureNJustifie" id="nbreheureNJustifie" 
+												class="form-control" th:value="${rabsEleveCharge != null}?${rabsEleveCharge.nbreheureNJustifie}:0" />
+									</td>
+							</tr>
+							
+							<tr>
+								<td>
+									<label>Heure de consigne: </label>  
+									<input type="text"  class="form-control" name="consigne" id="consigne" 
+										th:value="${rabsEleveCharge != null}?${rabsEleveCharge.consigne}:0" />
+											
+								</td>
+								<td>
+									<label>Jours d'exclusion: </label> 
+									<input type="text"  class="form-control" name="jourExclusion" id="jourExclusion" 
+										th:value="${rabsEleveCharge != null}?${rabsEleveCharge.jourExclusion}:0" />
+											
+								</td>
+								
+								<td>
+									<label>Avertissement conduite: </label>  
+									
+									<select class="form-control" name="avertConduite" id="avertConduite">
+										<option value="non">non</option>
+										<option value="oui" 
+											th:selected="${rabsEleveCharge != null}?(${rabsEleveCharge.avertConduite == true}?' ')">
+											oui
+										</option>
+									</select>
+									
+								</td>
+								
+								<td>
+									<label>Blâme conduite: </label> 
+									
+									<select class="form-control" name="blameConduite" id="blameConduite">
+										<option value="non">non</option>
+										<option value="oui" 
+											th:selected="${rabsEleveCharge != null}?(${rabsEleveCharge.blameConduite == true}?' ')">
+											oui
+										</option>
+									</select>
+											
+								</td>
+								
+							</tr>
+							
+							<tr>
+								<td>
+									<input type="hidden"  name="numPageEleves"  id="numPageEleves"
+												class="form-control" th:value="${pageCouranteEleves}" />
+								</td>
+								
+								<td>
+										<!-- <button type="submit" class="btn btn-primary  pull-right">Précédent</button> -->
+									<a class="btn btn-primary btn-sm pull-left" href="#" 
+											th:href="@{/logesco/users/sg/getPrecedentRabsSaisi(idEleves=${eleveCharge.idEleves}, 
+											idSequenceConcerne=${sequenceConcerneRabs.idPeriodes},
+											numPageEleves=${pageCouranteEleves})}" role="button">Précédent</a>
+								</td>
+								
+								<td>
+									<button type="submit" class="btn btn-primary btn-sm  pull-right">Enregistrer et poursuivre</button>
+								</td>
+									
+							</tr>
+							
+						</tbody>
+					</table>
+					
+				</form>
+				
+				<form action="#" class="form-inline"
+						th:action="@{/logesco/users/sg/getRechercheEleveParNumeroRabs}" method="get">
+					
+					<div class="form-group" >
+						<label th:inline="text"> Numéro de l'élève dans la liste:</label>
+											
+						<input type="text" name="numeroElv" id="numeroElv" 
+								class="form-control" />
+					</div>
+					
+					<input type="hidden" name="idEleves" id="idEleves"  th:if="${eleveCharge}"
+								class="form-control" th:value="${eleveCharge.idEleves}"/>
+					
+					<input type="hidden" name="idSequenceConcerne" id="idSequenceConcerne" 
+								class="form-control" th:value="${sequenceConcerneRabs.idPeriodes}" />
+								
+					<input type="hidden" name="numPageEleves" id="numPageEleves"  th:if="${pageCouranteEleves}"
+								class="form-control" th:value="${pageCouranteEleves}"/>
+								
+					<button type="submit" class="btn btn-primary btn-sm">Rechercher</button>	
+					
+				</form>
+				
+				<br/>
+				<a class="btn btn-default btn-sm pull-left" href="#" title="Retourner à la page précédente"
+						th:href="@{/logesco/users/sg/getdonneesSaisieRAbsences}" role="button">Retourner</a>
+				
+	</div>
+	
+	<div class="col-md-4    reculeverticalementmodifpasswordform">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+					<h4 align="center">Recapitulatif des Absences saisies</h4>
+			</div>
+			<div class="panel-body">
+				<table class="table table-bordered table-hover "  th:if="${listofEleves}" >
+					<thead>
+						<tr>
+							<th>Numéro</th>
+							<th>Noms et prénoms</th>
+							<th th:inline="text">HNJ</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="eleve:${listofEleves}" th:class="${eleve.idEleves == eleveCharge.idEleves}?'bg-info':' ' ">
+						
+							<td th:inline="text"><b>[[${eleve.getNumero(listofAllEleve)}]]</b> </td>
+							
+							<td th:inline="text"><b>[[${#strings.capitalize(eleve.nomsEleves)}]] [[${eleve.prenomsEleves}]]</b> </td>
+							
+							<td th:inline="text"><span class="badge badge-light">
+								[[${eleve.getRapportDAbsenceSeq(sequenceConcerneRabs.idPeriodes) != null}?
+								${eleve.getRapportDAbsenceSeq(sequenceConcerneRabs.idPeriodes).nbreheureNJustifie}:'0']]
+								</span>
+							</td>
+						
+						</tr>
+					</tbody>
+				</table>
+				
+				<a class="btn btn-primary btn-sm pull-right" href="#" 
+						th:href="@{/logesco/users/sg/getRabsSeqClasse(idClasseConcerne=${eleveCharge.classe.idClasses}, 
+						idSequenceConcerne=${sequenceConcerneRabs.idPeriodes})}" role="button">Afficher le recapitulatif</a>
+				
+				
+			</div>
+		</div>
+	</div>
+	</div>
+	<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE   col-md-offset-1-->
+	<!-- On peut inserer du javascript ici ie le javascript qui concerne exclusivement cette page. -->
+
+<script type="text/javascript">
+//alert("dd");
+	function donneFocus(){
+		//alert("donne focus");
+		document.getElementById('nbreheureNJustifie').focus();
+	}
+</script>
+	</div>
+</body>
+</html>

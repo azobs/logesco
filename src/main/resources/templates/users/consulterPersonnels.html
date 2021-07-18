@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title th:inline="text">[[#{consultpers.titre_page}]]</title>
+</head>
+<body>
+<span layout:fragment="titre_boite">
+      <kbd th:inline="text"> [[#{consultpers.titre_boite}]]</kbd>
+</span>
+
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-9">  <!-- col-md-6 col-md-offset-3 -->
+		
+		<div th:if="${param.enregpersonnelswarningRole}">
+				<h4 align="justify" class="alert alert-warning" th:inline="text">[[#{consultpers.labelerreur_enregpersonnelswarningRole}]].</h4>
+		</div>
+			
+			
+			<div th:if="${listofProviseur}">
+				<table class="table table-striped">
+					<caption><h3 th:inline="text">[[#{consultpers.caption_chef}]]</h3></caption>
+					<thead class="thead-light">
+						<tr>
+							<th scope="col" th:inline="text">[[#{consultpers.th_numcni}]]</th>
+							<th scope="col" th:inline="text">[[#{consultpers.th_nomsprenomsdatenaiss}]]</th>
+							<th scope="col">PROFIL</th>
+						     <th class="text-center" scope="col">ACTION</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="proviseur:${listofProviseur}">
+							<td th:text="${proviseur.numcniPers}"></td>
+							<td th:inline="text">[[${#strings.capitalize(proviseur.nomsPers)}]] [[${proviseur.prenomsPers}]] 
+								[[#{consultpers.nele}]] [[${#dates.format(proviseur.datenaissPers,"dd-MM-yyyy")}]]</td>
+							
+							<td>
+								<div class="card col-md-4"> 
+									<img th:src="@{/logesco/users/getphotoPers(idPers=${proviseur.idUsers})}" 
+										class="card-img-top img-rounded" width="100" height="100"/>
+										
+								</div>
+							</td>
+							<td>
+			      				<div>
+				      				
+				      				<span class="col-md-4">
+										<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" 
+											th:attr="data-target='#'+${proviseur.idUsers}" th:inline="text">
+										  <span class="glyphicon glyphicon-eye-open"></span> [[#{consultpers.bouton_afficher}]]
+										</button>
+				      				</span>
+				      				
+			      				</div>
+			      			</td>
+							
+							
+							<!-- Modal Division concernant la boite de dialogue d'affichage-->
+							<div class="modal fade" th:id="${proviseur.idUsers}"  tabindex="-1" role="dialog" 
+										aria-labelledby="affichage" aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <h3 class="modal-title" id="affichage">BADGE</h3>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							          <span aria-hidden="true">&times;</span>
+							        </button>
+							      </div>
+							      <div class="modal-body">
+							        	<h4><b>Numéro de CNI:</b> <span th:text="${proviseur.numcniPers}"></span></h4>
+							        	<h4><b>Noms et prénoms:</b> <span th:inline="text">[[${#strings.capitalize(proviseur.nomsPers)}]]  
+							        		[[${proviseur.prenomsPers}]]</span></h4>
+							        	<h4><b>Date et lieu de naissance:</b> <span th:inline="text">[[${#dates.format(proviseur.datenaissPers,"dd-MM-yyyy")}]] à 
+							        		[[${proviseur.lieunaissPers}]]</span></h4>
+							        	<h4><b>Sexe et nationnalité:</b> <span th:inline="text">[[${proviseur.sexePers}]] de 
+							        		nationalité [[${proviseur.nationalitePers}]]</span></h4>
+							        	<h4><b>Grade et statut:</b> <span th:inline="text">[[${proviseur.gradePers}]]  
+							        		[[${proviseur.statutPers}]]</span></h4>
+							        	<h4><b>Diplôme et spécialité:</b> <span th:inline="text">[[${proviseur.diplomePers}]] 
+							        		[[${proviseur.specialiteProf}]]</span></h4>
+							        	<h4><b>Adresses:</b> <span th:inline="text">[[${proviseur.numtel1Pers}]] / [[${proviseur.numtel2Pers}]]
+							        		/ [[${proviseur.emailPers}]]</span></h4>
+							        	<h4><b>Domicilié à:</b> <span th:inline="text">[[${proviseur.villePers}]] plus précisément au quartier
+							        		[[${proviseur.quartierPers}]]</span></h4>
+							        	<h4><b>Nom d'utilisateur:</b> <span th:text="${proviseur.username}"></span></h4>
+								        <span class="card col-md-4"> 
+											<img th:src="@{/logesco/users/getphotoPers(idPers=${proviseur.idUsers})}" 
+													class="card-img-top img-rounded" width="100" height="100"/>
+													
+										</span>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+							      </div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:inline="text">
+							        	[[#{consultpers.bouton_fermer}]]
+							        </button>
+							        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+							        <a class="btn btn-primary btn-sm" href="#" 
+											th:href="@{/logesco/users/chefetab/getimprimerPersonnels(idUsers=${proviseur.idUsers})}" 
+											role="button" th:inline="text">
+											<span class="glyphicon glyphicon-print"></span> [[#{consultpers.bouton_imprimer}]]
+									</a>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<!-- Modal Fin de la Division concernant la boite de dialogue -->
+							
+							
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			
+			<div th:if="${listofCenseurs}">
+				<table class="table table-striped">
+					<caption><h3 th:inline="text">Liste des censeurs enregistrés</h3></caption>
+					<thead class="thead-light">
+						<tr>
+							<th scope="col" th:inline="text">[[#{consultpers.th_numcni}]]</th>
+							<th scope="col" th:inline="text">[[#{consultpers.th_nomsprenomsdatenaiss}]]</th>
+							<th scope="col" th:inline="text">[[#{consultpers.th_listrole}]]</th>
+							<th scope="col">PROFIL</th>
+						     <th class="text-center" scope="col">ACTION</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="censeur:${listofCenseurs}">
+							<td th:text="${censeur.numcniPers}"></td>
+							<td th:inline="text">[[${#strings.capitalize(censeur.nomsPers)}]] [[${censeur.prenomsPers}]] 
+								[[#{consultpers.nele}]] [[${#dates.format(censeur.datenaissPers,"dd-MM-yyyy")}]]</td>
+							<td>
+								<div th:each="usersroles:${censeur.listofusersRoles}">
+									<span th:inline="text">[[${usersroles.roleAssocie.role}]] </span>
+								</div>
+							</td>
+							<td>
+								<div class="card col-md-4"> 
+									<img th:src="@{/logesco/users/getphotoPers(idPers=${censeur.idUsers})}" 
+										class="card-img-top img-rounded" width="100" height="100"/>
+										
+								</div>
+							</td>
+							<td>
+			      				<div>
+				      				<div>
+				      					<a class="btn btn-primary btn-sm" href="#" 
+												th:href="@{/logesco/users/chefetab/getupdatePersonnels(idUsers=${censeur.idUsers}, 
+												numPageCenseur=${pageCouranteCenseurs})}" role="button" th:inline="text">
+												<span class="glyphicon glyphicon-edit"></span> [[#{consultpers.bouton_modifier}]]
+										</a>
+				      				</div>
+				      				&nbsp;
+				      				<div >
+										<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" 
+											th:attr="data-target='#'+${censeur.idUsers}" th:inline="text">
+										  <span class="glyphicon glyphicon-eye-open"></span> [[#{consultpers.bouton_afficher}]]
+										</button>
+				      				</div>
+				      				&nbsp;
+				      				<div>
+				      					<!-- <a class="btn btn-danger btn-sm pull-right" href="#" 
+				      						role="button">Supprimer</a> -->
+				      					<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" 
+											data-target="#dialogSupprCenseur" th:inline="text">
+										  <span class="glyphicon glyphicon-trash"></span> [[#{consultpers.bouton_supprimer}]]
+										</button>
+				      				</div>
+			      				</div>
+			      			</td>
+							
+							
+							<!-- Modal Division concernant la boite de dialogue d'affichage-->
+							<div class="modal fade" th:id="${censeur.idUsers}"  tabindex="-1" role="dialog" 
+										aria-labelledby="affichage" aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <h3 class="modal-title" id="affichage">BADGE</h3>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							          <span aria-hidden="true">&times;</span>
+							        </button>
+							      </div>
+							      <div class="modal-body">
+							        	<h4><b>Numéro de CNI:</b> <span th:text="${censeur.numcniPers}"></span></h4>
+							        	<h4><b>Noms et prénoms:</b> <span th:inline="text">[[${#strings.capitalize(censeur.nomsPers)}]]  
+							        		[[${censeur.prenomsPers}]]</span></h4>
+							        	<h4><b>Date et lieu de naissance:</b> <span th:inline="text">[[${#dates.format(censeur.datenaissPers,"dd-MM-yyyy")}]] à 
+							        		[[${censeur.lieunaissPers}]]</span></h4>
+							        	<h4><b>Sexe et nationnalité:</b> <span th:inline="text">[[${censeur.sexePers}]] de 
+							        		nationalité [[${censeur.nationalitePers}]]</span></h4>
+							        	<h4><b>Grade et statut:</b> <span th:inline="text">[[${censeur.gradePers}]]  
+							        		[[${censeur.statutPers}]]</span></h4>
+							        	<h4><b>Diplôme et spécialité:</b> <span th:inline="text">[[${censeur.diplomePers}]] 
+							        		[[${censeur.specialiteProf}]]</span></h4>
+							        	<h4><b>Fonction:</b> <span th:inline="text">Censeur N°[[${censeur.numeroCens}]]</span></h4>
+							        	<h4><b>Adresses:</b> <span th:inline="text">[[${censeur.numtel1Pers}]] / [[${censeur.numtel2Pers}]]
+							        		/ [[${censeur.emailPers}]]</span></h4>
+							        	<h4><b>Domicilié à:</b> <span th:inline="text">[[${censeur.villePers}]] plus précisément au quartier  
+							        		[[${censeur.quartierPers}]]</span></h4>
+							        	<h4><b>Nom d'utilisateur:</b> <span th:text="${censeur.username}"></span></h4>
+								        <span class="card col-md-4"> 
+											<img th:src="@{/logesco/users/getphotoPers(idPers=${censeur.idUsers})}" 
+													class="card-img-top img-rounded" width="100" height="100"/>
+													
+										</span>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+							      </div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:inline="text">
+							        	[[#{consultpers.bouton_fermer}]]
+							        </button>
+							        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+							        <a class="btn btn-primary btn-sm" href="#"  
+											th:href="@{/logesco/users/chefetab/getimprimerPersonnels(idUsers=${censeur.idUsers})}" 
+											role="button" th:inline="text">
+											<span class="glyphicon glyphicon-print"></span> [[#{consultpers.bouton_imprimer}]]
+									</a>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<!-- Modal Fin de la Division concernant la boite de dialogue -->
+							
+							 <!-- Modal de suppression-->
+							<div class="modal fade" id="dialogSupprCenseur" tabindex="-1" role="dialog" aria-labelledby="dialogSupprLabel" 
+								aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							          <span aria-hidden="true">&times;</span>
+							        </button>
+							      </div>
+							      <div class="modal-body" th:inline="text">
+							        	[[#{consultpers.label_confirm}]]?
+							      </div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:inline="text">
+							        	[[#{consultpers.bouton_fermer}]]
+							        </button>
+							        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+							        <a class="btn btn-danger btn-sm" href="#" 
+											th:href="@{/logesco/users/chefetab/getsuppressionPersonnels(idUsers=${censeur.idUsers})}" 
+											role="button" th:inline="text">
+											<span class="glyphicon glyphicon-menu-right"></span> [[#{consultpers.bouton_continuer}]]
+									</a>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<!--Fin du Modal de suppression-->
+							
+							
+						</tr>
+					</tbody>
+				</table>
+				
+				<div class="container">
+					<ul class="pagination"><!-- nav nav-pills -->
+						<li th:each="p,status:${listofPagesCenseurs}" th:class="${status.index==pageCouranteCenseurs}?active:' ' ">
+							<a th:href="@{/logesco/users/chefetab/getconsulterPersonnels(numPageCenseur=${status.index})}"
+								 th:text="${status.index+1}"></a>
+						</li>
+					</ul>
+					
+				</div> 
+			
+			</div>
+			
+			
+			
+			<!-- Affichage des surveillants généraux -->
+			
+			<div th:if="${listofSg}">
+				<table class="table table-striped">
+					<caption><h3 th:inline="text">[[#{consultpers.caption_listsurv}]]</h3></caption>
+					<thead class="thead-light">
+						<tr>
+							<th scope="col" th:inline="text">[[#{consultpers.th_numcni}]]</th>
+							<th scope="col" th:inline="text">[[#{consultpers.th_nomsprenomsdatenaiss}]]</th>
+							<th scope="col" th:inline="text">[[#{consultpers.th_listrole}]]</th>
+							<th scope="col">PROFIL</th>
+						     <th class="text-center" scope="col">ACTION</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="sg:${listofSg}">
+							<td th:text="${sg.numcniPers}"></td>
+							<td th:inline="text">[[${#strings.capitalize(sg.nomsPers)}]] [[${sg.prenomsPers}]] 
+								né le [[${#dates.format(sg.datenaissPers,"dd-MM-yyyy")}]]</td>
+							<td>
+								<div th:each="usersroles:${sg.listofusersRoles}">
+									<span th:inline="text">[[${usersroles.roleAssocie.role}]] </span>
+								</div>
+							</td>
+							<td>
+								<div class="card col-md-4"> 
+									<img th:src="@{/logesco/users/getphotoPers(idPers=${sg.idUsers})}" 
+										class="card-img-top img-rounded" width="100" height="100"/>
+										
+								</div>
+							</td>
+							<td>
+			      				<div>
+			      					<div>
+				      					<a class="btn btn-primary btn-sm" href="#" 
+												th:href="@{/logesco/users/chefetab/getupdatePersonnels(idUsers=${sg.idUsers}, 
+												numPageSg=${pageCouranteSG})}" role="button" th:inline="text">
+												<span class="glyphicon glyphicon-edit"></span> [[#{consultpers.bouton_modifier}]]
+										</a>
+				      				</div>
+				      				&nbsp;
+				      				<div>
+										<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" 
+											th:attr="data-target='#'+${sg.idUsers}" th:inline="text">
+										 <span class="glyphicon glyphicon-eye-open"></span>  [[#{consultpers.bouton_afficher}]]
+										</button>
+				      				</div>
+				      				&nbsp;
+				      				<div>
+				      					<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" 
+											data-target="#dialogSupprSg" th:inline="text">
+										  <span class="glyphicon glyphicon-trash"></span> [[#{consultpers.bouton_supprimer}]]
+										</button>
+				      				</div>
+			      				
+			      				</div>
+			      			</td>
+							
+							
+							<!-- Modal Division concernant la boite de dialogue d'affichage-->
+							<div class="modal fade" th:id="${sg.idUsers}"  tabindex="-1" role="dialog" 
+										aria-labelledby="affichage" aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <h3 class="modal-title" id="affichage">BADGE</h3>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							          <span aria-hidden="true">&times;</span>
+							        </button>
+							      </div>
+							      <div class="modal-body">
+							        	<h4><b>Numéro de CNI:</b> <span th:text="${sg.numcniPers}"></span></h4>
+							        	<h4><b>Noms et prénoms:</b> <span th:inline="text">[[${#strings.capitalize(sg.nomsPers)}]]  
+							        		[[${sg.prenomsPers}]]</span></h4>
+							        	<h4><b>Date et lieu de naissance:</b> <span th:inline="text">[[${#dates.format(sg.datenaissPers,"dd-MM-yyyy")}]] à 
+							        		[[${sg.lieunaissPers}]]</span></h4>
+							        	<h4><b>Sexe et nationnalité:</b> <span th:inline="text">[[${sg.sexePers}]] de 
+							        		nationalité [[${sg.nationalitePers}]]</span></h4>
+							        	<h4><b>Grade et statut:</b> <span th:inline="text">[[${sg.gradePers}]]  
+							        		[[${sg.statutPers}]]</span></h4>
+							        	<h4><b>Diplôme et spécialité:</b> <span th:inline="text">[[${sg.diplomePers}]] 
+							        		[[${sg.specialiteProf}]]</span></h4>
+							        	<h4><b>Fonction:</b> <span th:inline="text">Surveillant général N°[[${sg.numeroSG}]]</span></h4>
+							        	<h4><b>Adresses:</b> <span th:inline="text">[[${sg.numtel1Pers}]] / [[${sg.numtel2Pers}]]
+							        		/ [[${sg.emailPers}]]</span></h4>
+							        	<h4><b>Domicilié à:</b> <span th:inline="text">[[${sg.villePers}]] plus précisément au quartier   
+							        		[[${sg.quartierPers}]]</span></h4>
+							        	<h4><b>Nom d'utilisateur:</b> <span th:text="${sg.username}"></span></h4>
+								        <span class="card col-md-4"> 
+											<img th:src="@{/logesco/users/getphotoPers(idPers=${sg.idUsers})}" 
+													class="card-img-top img-rounded" width="100" height="100"/>
+													
+										</span>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+							      </div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:inline="text">
+							        	[[#{consultpers.bouton_fermer}]]
+							        </button>
+							        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+							        <a class="btn btn-primary btn-sm" href="#" 
+											th:href="@{/logesco/users/chefetab/getimprimerPersonnels(idUsers=${sg.idUsers})}" 
+											role="button" th:inline="text">
+											<span class="glyphicon glyphicon-print"></span> [[#{consultpers.bouton_imprimer}]]
+									</a>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<!-- Modal Fin de la Division concernant la boite de dialogue -->
+							
+							 <!-- Modal de suppression-->
+							<div class="modal fade" id="dialogSupprSg" tabindex="-1" role="dialog" aria-labelledby="dialogSupprLabel" 
+								aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							          <span aria-hidden="true">&times;</span>
+							        </button>
+							      </div>
+							      <div class="modal-body" th:inline="text">
+							        [[#{consultpers.label_confirm}]]?
+							      </div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:inline="text">
+							        	[[#{consultpers.bouton_fermer}]]
+							        </button>
+							        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+							        <a class="btn btn-danger btn-sm" href="#" 
+											th:href="@{/logesco/users/chefetab/getsuppressionPersonnels(idUsers=${sg.idUsers})}" 
+											role="button" th:inline="text"> [[#{consultpers.bouton_continuer}]]</a>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<!--Fin du Modal de suppression-->
+							
+							
+							
+						</tr>
+					</tbody>
+				</table>
+				
+				<div class="container">
+					<ul class="pagination"><!-- nav nav-pills -->
+						<li th:each="p,status:${listofPagesSg}" th:class="${status.index==pageCouranteSG}?active:' ' ">
+							<a th:href="@{/logesco/users/chefetab/getconsulterPersonnels(numPageSg=${status.index})}"
+								 th:text="${status.index+1}"></a>
+						</li>
+					</ul>
+					
+				</div> 
+				
+			</div>
+			
+			<!-- Affichage des Intendants -->
+			
+			<div th:if="${listofIntendant}">
+				<table class="table table-striped">
+					<caption><h3 th:inline="text">[[#{consultpers.caption_listintendant}]]</h3></caption>
+					<thead class="thead-light">
+						<tr>
+							<th scope="col" th:inline="text">[[#{consultpers.th_numcni}]]</th>
+							<th scope="col" th:inline="text">[[#{consultpers.th_nomsprenomsdatenaiss}]]</th>
+							<th scope="col" th:inline="text">[[#{consultpers.th_listrole}]]</th>
+							<th scope="col">PROFIL</th>
+						     <th class="text-center" scope="col">ACTION</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="intendant:${listofIntendant}">
+							<td th:text="${intendant.numcniPers}"></td>
+							<td th:inline="text">[[${#strings.capitalize(intendant.nomsPers)}]] [[${intendant.prenomsPers}]] 
+								né le [[${#dates.format(intendant.datenaissPers,"dd-MM-yyyy")}]]</td>
+							<td>
+								<div th:each="usersroles:${intendant.listofusersRoles}">
+									<span th:inline="text">[[${usersroles.roleAssocie.role}]] </span>
+								</div>
+							</td>
+							<td>
+								<div class="card col-md-4"> 
+									<img th:src="@{/logesco/users/getphotoPers(idPers=${intendant.idUsers})}" 
+										class="card-img-top img-rounded" width="100" height="100"/>
+										
+								</div>
+							</td>
+							<td>
+			      				<div>
+		      				
+			      					<div>
+				      					<a class="btn btn-primary btn-sm pull-left" href="#" 
+												th:href="@{/logesco/users/chefetab/getupdatePersonnels(idUsers=${intendant.idUsers}, 
+												numPageIntendant=${pageCouranteIntendant})}" role="button" th:inline="text">
+												<span class="glyphicon glyphicon-edit"></span> [[#{consultpers.bouton_modifier}]]
+										</a>
+				      				</div>
+				      				<br/>&nbsp;
+				      				<div>
+										<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" 
+											th:attr="data-target='#'+${intendant.idUsers}" th:inline="text">
+										  <span class="glyphicon glyphicon-eye-open"></span> [[#{consultpers.bouton_afficher}]]
+										</button>
+				      				</div>
+				      				&nbsp;
+				      				<div>
+				      					<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" 
+											data-target="#dialogSupprIntendant" th:inline="text">
+										  <span class="glyphicon glyphicon-trash"></span> [[#{consultpers.bouton_supprimer}]]
+										</button>
+				      				</div>
+			      				
+			      				</div>
+			      			</td>
+							
+							
+							<!-- Modal Division concernant la boite de dialogue d'affichage-->
+							<div class="modal fade" th:id="${intendant.idUsers}"  tabindex="-1" role="dialog" 
+										aria-labelledby="affichage" aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <h3 class="modal-title" id="affichage">BADGE</h3>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							          <span aria-hidden="true">&times;</span>
+							        </button>
+							      </div>
+							      <div class="modal-body">
+							        	<h4><b>Numéro de CNI:</b> <span th:text="${intendant.numcniPers}"></span></h4>
+							        	<h4><b>Noms et prénoms:</b> <span th:inline="text">[[${#strings.capitalize(intendant.nomsPers)}]]  
+							        		[[${intendant.prenomsPers}]]</span></h4>
+							        	<h4><b>Date et lieu de naissance:</b> <span th:inline="text">[[${#dates.format(intendant.datenaissPers,"dd-MM-yyyy")}]] à 
+							        		[[${intendant.lieunaissPers}]]</span></h4>
+							        	<h4><b>Sexe et nationnalité:</b> <span th:inline="text">[[${intendant.sexePers}]] de 
+							        		nationalité [[${intendant.nationalitePers}]]</span></h4>
+							        	<h4><b>Grade et statut:</b> <span th:inline="text">[[${intendant.gradePers}]]  
+							        		[[${intendant.statutPers}]]</span></h4>
+							        	<h4><b>Diplôme et spécialité:</b> <span th:inline="text">[[${intendant.diplomePers}]] 
+							        		[[${intendant.specialiteProf}]]</span></h4>
+							        	<h4><b>Fonction:</b> <span th:inline="text">Intendant N°[[${intendant.numeroInt}]]</span></h4>
+							        	<h4><b>Adresses:</b> <span th:inline="text">[[${intendant.numtel1Pers}]] / 
+							        	[[${intendant.numtel2Pers}]] / [[${intendant.emailPers}]]</span></h4>
+							        	<h4><b>Domicilié à:</b> <span th:inline="text">[[${intendant.villePers}]] plus précisément au quartier  
+							        		[[${intendant.quartierPers}]]</span></h4>
+							        	<h4><b>Nom d'utilisateur:</b> <span th:text="${intendant.username}"></span></h4>
+								        <span class="card col-md-4"> 
+											<img th:src="@{/logesco/users/getphotoPers(idPers=${intendant.idUsers})}" 
+													class="card-img-top img-rounded" width="100" height="100"/>
+													
+										</span>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+							      </div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:inline="text">
+							        	[[#{consultpers.bouton_fermer}]]
+							        </button>
+							        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+							        <a class="btn btn-primary btn-sm" href="#" 
+											th:href="@{/logesco/users/chefetab/getimprimerPersonnels(idUsers=${intendant.idUsers})}" 
+											role="button" th:inline="text">
+											<span class="glyphicon glyphicon-print"></span> [[#{consultpers.bouton_imprimer}]]
+									</a>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<!-- Modal Fin de la Division concernant la boite de dialogue -->
+								
+							 <!-- Modal de suppression-->
+							<div class="modal fade" id="dialogSupprIntendant" tabindex="-1" role="dialog" aria-labelledby="dialogSupprLabel" 
+								aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <h5 class="modal-title" id="dialogSupprLabel">Confirmation</h5>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							          <span aria-hidden="true">&times;</span>
+							        </button>
+							      </div>
+							      <div class="modal-body" th:inline="text">
+							        [[#{consultpers.label_confirm}]]
+							      </div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+							        	[[#{consultpers.bouton_fermer}]]
+							        </button>
+							        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+							        <a class="btn btn-danger btn-sm" href="#" 
+											th:href="@{/logesco/users/chefetab/getsuppressionPersonnels(idUsers=${intendant.idUsers})}" 
+											role="button" th:inline="text">
+											[[#{consultpers.bouton_continuer}]]
+									</a>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<!--Fin du Modal de suppression-->
+							
+							
+						</tr>
+					</tbody>
+				</table>
+				
+				<div class="container">
+					<ul class="pagination"><!-- nav nav-pills -->
+						<li th:each="p,status:${listofPageIntendant}" th:class="${status.index==pageCouranteIntendant}?active:' ' ">
+							<a th:href="@{/logesco/users/chefetab/getconsulterPersonnels(numPageIntendant=${status.index})}"
+								 th:text="${status.index+1}"></a>
+						</li>
+					</ul>
+					
+				</div> 
+				
+			</div>
+			
+			<!-- Affichage des Enseignants -->
+			
+			<div th:if="${listofEnseignants}">
+				<table class="table table-striped">
+					<caption><h3>Liste des enseignants enregistrés</h3></caption>
+					<thead class="thead-light">
+						<tr>
+							<th scope="col" th:inline="text">[[#{consultpers.th_numcni}]]</th>
+							<th scope="col" th:inline="text">[[#{consultpers.th_nomsprenomsdatenaiss}]]</th>
+							<th scope="col" th:inline="text">[[#{consultpers.th_listrole}]]</th>
+							<th scope="col">PROFIL</th>
+						     <th class="text-center" scope="col">ACTION</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="ens:${listofEnseignants}">
+							<td th:text="${ens.numcniPers}"></td>
+							<td th:inline="text">[[${#strings.capitalize(ens.nomsPers)}]] [[${ens.prenomsPers}]] 
+								né le [[${#dates.format(ens.datenaissPers,"dd-MM-yyyy")}]]</td>
+							<td>
+								<div th:each="usersroles:${ens.listofusersRoles}">
+									<span th:inline="text">[[${usersroles.roleAssocie.role}]] </span>
+								</div>
+							</td>
+							<td>
+								<div class="card col-md-4"> 
+									<img th:src="@{/logesco/users/getphotoPers(idPers=${ens.idUsers})}" 
+										class="card-img-top img-rounded" width="100" height="100"/>
+										
+								</div>
+							</td>
+							<td>
+			      				<div>
+			      				
+			      					
+			      					<div>
+				      					<a class="btn btn-primary btn-sm pull-left" href="#" 
+												th:href="@{/logesco/users/chefetab/getupdatePersonnels(idUsers=${ens.idUsers}, 
+												numPageEns=${pageCouranteEnseignant})}" role="button" th:inline="text">
+												<span class="glyphicon glyphicon-edit"></span> [[#{consultpers.bouton_modifier}]]
+										</a>
+				      				</div>
+				      				<br/>&nbsp;
+				      				<div>
+										<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" 
+											th:attr="data-target='#'+${ens.idUsers}" th:inline="text">
+										  <span class="glyphicon glyphicon-eye-open"></span> [[#{consultpers.bouton_afficher}]]
+										</button>
+				      				</div>
+				      				<br/>&nbsp;
+				      				<div>
+				      					<!-- <a class="btn btn-danger btn-sm pull-right" href="#" 
+				      						role="button">Supprimer</a> -->
+				      					<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" 
+											data-target="#dialogSupprEns" th:inline="text">
+										  <span class="glyphicon glyphicon-trash"></span> [[#{consultpers.bouton_supprimer}]]
+										</button>
+				      				</div>
+			      				
+			      				
+			      				</div>
+			      			</td>
+							
+							
+							<!-- Modal Division concernant la boite de dialogue d'affichage-->
+							<div class="modal fade" th:id="${ens.idUsers}"  tabindex="-1" role="dialog" 
+										aria-labelledby="affichage" aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <h3 class="modal-title" id="affichage">BADGE</h3>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							          <span aria-hidden="true">&times;</span>
+							        </button>
+							      </div>
+							      <div class="modal-body">
+							        	<h4><b>Numéro de CNI:</b> <span th:text="${ens.numcniPers}"></span></h4>
+							        	<h4><b>Noms et prénoms:</b> <span th:inline="text">[[${#strings.capitalize(ens.nomsPers)}]]  
+							        		[[${ens.prenomsPers}]]</span></h4>
+							        	<h4><b>Date et lieu de naissance:</b> <span th:inline="text">[[${#dates.format(ens.datenaissPers,"dd-MM-yyyy")}]] à 
+							        		[[${ens.lieunaissPers}]]</span></h4>
+							        	<h4><b>Sexe et nationnalité:</b> <span th:inline="text">[[${ens.sexePers}]] de 
+							        		nationalité [[${ens.nationalitePers}]]</span></h4>
+							        	<h4><b>Grade et statut:</b> <span th:inline="text">[[${ens.gradePers}]]  
+							        		[[${ens.statutPers}]]</span></h4>
+							        	<h4><b>Diplôme et spécialité:</b> <span th:inline="text">[[${ens.diplomePers}]] 
+							        		[[${ens.specialiteProf}]]</span></h4>
+							        	<h4><b>Fonction:</b> <span th:inline="text">Enseignant</span></h4>
+							        	<h4><b>Adresses:</b> <span th:inline="text">[[${ens.numtel1Pers}]] / 
+							        	[[${ens.numtel2Pers}]] / [[${ens.emailPers}]]</span></h4>
+							        	<h4><b>Domicilié à:</b> <span th:inline="text">[[${ens.villePers}]] plus précisément au quartier  
+							        		[[${ens.quartierPers}]]</span></h4>
+							        	<h4><b>Nom d'utilisateur:</b> <span th:text="${ens.username}"></span></h4>
+								        <span class="card col-md-4"> 
+											<img th:src="@{/logesco/users/getphotoPers(idPers=${ens.idUsers})}" 
+													class="card-img-top img-rounded" width="100" height="100"/>
+													
+										</span>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+										<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+							      </div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:inline="text">
+							        	[[#{consultpers.bouton_fermer}]]
+							        </button>
+							        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+							        <a class="btn btn-primary btn-sm" href="#" 
+											th:href="@{/logesco/users/chefetab/getimprimerPersonnels(idUsers=${ens.idUsers})}" 
+											role="button" th:inline="text"><span class="glyphicon glyphicon-print"></span>
+											[[#{consultpers.bouton_imprimer}]]
+									</a>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<!-- Modal Fin de la Division concernant la boite de dialogue -->
+				
+							 <!-- Modal de suppression-->
+							<div class="modal fade" id="dialogSupprEns" tabindex="-1" role="dialog" aria-labelledby="dialogSupprLabel" 
+								aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <h5 class="modal-title" id="dialogSupprLabel">Confirmation</h5>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							          <span aria-hidden="true">&times;</span>
+							        </button>
+							      </div>
+							      <div class="modal-body" th:inline="text">
+							        [[#{consultpers.label_confirm}]]?
+							      </div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:inline="text">
+							        	[[#{consultpers.bouton_fermer}]]
+							        </button>
+							        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+							        <a class="btn btn-danger btn-sm" href="#" 
+											th:href="@{/logesco/users/chefetab/getsuppressionPersonnels(idUsers=${ens.idUsers})}" 
+											role="button" th:inline="text">
+											[[#{consultpers.bouton_continuer}]]	
+									</a>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<!--Fin du Modal de suppression-->
+							
+							
+						</tr>
+					</tbody>
+				</table>
+				
+				<div class="container">
+					<ul class="pagination"><!-- nav nav-pills -->
+						<li th:each="p,status:${listofPageEnseignants}" th:class="${status.index==pageCouranteEnseignant}?active:' ' ">
+							<a th:href="@{/logesco/users/chefetab/getconsulterPersonnels(numPageEns=${status.index})}"
+								 th:text="${status.index+1}"></a>
+						</li>
+					</ul>
+					
+				</div> 
+				
+				
+				
+			</div>
+			
+			<a class=" pull-right" href="#"  target="_blank"
+			      						th:href="@{/logesco/users/chefetab/exportlistMembrePersonnels}" 
+			      						role="button" th:inline="text">
+			      						[[#{consultpers.bouton_exportlistmembre}]]	
+			</a>
+			 <a class=" pull-left" href="#" 
+			      						th:href="@{/logesco/users/chefetab/exportlistEnseignants}" 
+			      						role="button" th:inline="text">
+			      						[[#{consultpers.bouton_exportlistens}]]
+				</a>
+			      						
+			 
+			 
+</div>
+
+<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

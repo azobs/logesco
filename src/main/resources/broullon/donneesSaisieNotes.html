@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8" />
+<title>Paramètres de saisie des notes</title>
+</head>
+<body>
+	<span layout:fragment="titre_boite">
+        Paramètres de saisie des rapports d'absence
+    </span>
+    
+	<div layout:fragment="formactionusers">
+		<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+		<div class="col-md-9">
+			<form action="#"
+						th:action="@{/logesco/users/getdonneesSaisieNotes}" method="get"
+						class="form-inline">
+						<div th:if="${listofNiveaux !=null and anneeActive != null}" >
+							<div class="form-group">
+								<label for="idClassesConcerne"> Classes: <span
+									class="redcolor">*</span></label>
+								<select class="form-control" name="idClassesConcerne"
+									id="idClassesConcerne" >
+
+									<optgroup th:label="${n.codeNiveaux}" th:if="${listofNiveaux}"
+										th:each="n:${listofNiveaux}">
+
+										<option th:each="c:${n.listofClasses}"
+											th:if="${c.estEnseignantDeClasse(profConnecte.idUsers)==1 && c.geteffectifEleve()>0}"
+											th:value="${c.idClasses}" th:inline="text">
+										
+											 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+											
+										</option>
+
+									</optgroup>
+
+								</select>
+							</div>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<div class="form-group">
+								<label th:inline="text"> Année Scolaire: <span
+									class="redcolor">[[${anneeActive.intituleAnnee}]]</span></label>
+								<input type="hidden" name="idAnneeActive" id="idAnneeActive" 
+									class="form-control" th:value="${anneeActive.idPeriodes}" />
+							</div>
+							
+							<button type="submit" class="btn btn-primary  pull-right">
+								<span class="glyphicon glyphicon-send"></span> Envoyer
+							</button>
+						</div>
+						
+					</form>
+					<br/>
+					<!-- ici on va afficher le form qui permettra de choisir la séquence et le cours pour lequel on veut saisir les notes -->
+					
+					<form action="#" class="form-inline"
+						th:action="@{/logesco/users/getformSaisieNotes}" method="get" 
+						th:if="${listofTrimestresAnnee != null and listofCoursClasse != null}">
+						
+						<div>
+							<h4>Classe Concernée: 
+								<span  th:if="${classeConcerne}"  th:inline="text">
+									[[${classeConcerne.codeClasses}]] [[${classeConcerne.specialite.codeSpecialite}]] 
+									[[${classeConcerne.numeroClasses}]]
+								</span>
+							</h4>
+						</div>
+						
+						<table class="table table-striped" 
+							th:if="${listofTrimestresAnnee != null and listofCoursClasse != null}">
+							<tbody>
+								<tr th:each="t:${listofTrimestresAnnee}">
+									<td>
+										<kbd><span  th:inline="text">Trimestre <span
+										class="redcolor">N°<b>[[${t.numeroTrim}]]</b></span>&nbsp; &nbsp;&nbsp;
+										
+										</span></kbd>
+										
+										<table class="table table-striped"  th:if="${t.listofsequence != null}">
+											<tbody>
+												<tr th:each="s:${t.listofsequence}" th:if="${s.etatPeriodes == true}">
+													<td>
+														<kbd> Séquence  <span  th:inline="text" >N°[[${s.numeroSeq}]]</span></kbd>
+														
+														<table class="table table-bordered" th:if="${listofCoursClasse}">
+															<thead class="thead-light">
+																<tr>
+																	<th class="text-center" scope="col">MATIERE</th>
+																	<th class="text-center" scope="col">INTITULE COURS</th>
+																	<th class="text-center" scope="col">COEF</th>
+																    <th class="text-center" scope="col">ACTION</th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr th:each="coursClasse:${listofCoursClasse}">
+																	
+																	<td th:inline="text">[[${coursClasse.matiere.codeMatiere}]]:
+																		<span class="greencolor"><b>
+																			[[${coursClasse.codeCours}]]
+																			</b>
+																		</span>
+																	</td>
+																	
+																	<td th:inline="text">[[${coursClasse.intituleCours}]]</td>
+																	
+																	<td th:inline="text">[[${coursClasse.coefCours}]]</td>
+																	
+																	<td>
+																		<div>
+																			<input type="hidden" name="idCoursConcerne" id="idCoursConcerne" 
+																				class="form-control" th:value="${coursClasse.idCours}" />
+																		
+																			<span>
+																				<a class="btn btn-success btn-sm pull-left" href="#" 
+																					th:href="@{/logesco/users/getformSaisieNotes(
+																					idSequenceConcerne=${s.idPeriodes}, 
+																					idClassesConcerne=${coursClasse.classe.idClasses}, 
+																					typeEval='CC',
+																					idCoursConcerne=${coursClasse.idCours})}" role="button">
+																					<span class="glyphicon glyphicon-pencil"></span> Saisir les notes D1
+																				</a>
+																			</span> 
+																			
+																			<span>
+																				<a class="btn btn-primary btn-sm pull-right" href="#" 
+																					th:href="@{/logesco/users/getformSaisieNotes(
+																					idSequenceConcerne=${s.idPeriodes}, 
+																					idClassesConcerne=${coursClasse.classe.idClasses}, 
+																					typeEval='DS',
+																					idCoursConcerne=${coursClasse.idCours})}" role="button">
+																					<span class="glyphicon glyphicon-pencil"></span> Saisir les notes D2
+																				</a>
+																			</span>
+																		</div>
+																		
+																	</td>
+																	
+																</tr>
+																<tr>
+																	<td colspan="4">
+																		<div class="">
+																			<ul class="pagination">
+																				<li th:each="p,status:${listofPagesCoursClasse}" 
+																					th:class="${status.index==pageCouranteCoursClasse}?active:' ' ">
+																					<a th:href="@{/logesco/users/getdonneesSaisieNotes(
+																						idClassesConcerne=${idClassesConcerne},
+																						idAnneeActive=${anneeActive.idPeriodes},
+																						numPageCoursClasse=${status.index},
+																						numPageTrimAn=${pageCouranteTrimestresAnnee})}"
+																							th:text="${status.index+1}"></a>
+																				</li>
+																			</ul>
+																		</div>
+																	</td>
+																</tr>
+															</tbody>
+															
+														</table>
+														
+														<!-- <div class="container">
+															<ul class="pagination">nav nav-pills
+																<li th:each="p,status:${listofPagesCoursClasse}" 
+																	th:class="${status.index==pageCouranteCoursClasse}?active:' ' ">
+																	<a th:href="@{/logesco/users/getdonneesSaisieNotes(
+																		numPageCoursClasse=${status.index},
+																		numPageTrimAn=${pageCouranteTrimestresAnnee})}"
+																			th:text="${status.index+1}"></a>
+																</li>
+															</ul>
+														</div>  -->
+														
+													</td>
+												</tr>
+											</tbody>
+										</table>
+																			
+									</td>
+								</tr>
+								
+							</tbody>
+						</table>
+						
+						<div class="container">
+							<ul class="pagination"><!-- nav nav-pills -->
+								<li th:each="p,status:${listofPagesTrimestresAnnee}" th:class="${status.index==pageCouranteTrimestresAnnee}?active:' ' ">
+									<a th:href="@{/logesco/users/getdonneesSaisieNotes(
+										idClassesConcerne=${idClassesConcerne},
+										idAnneeActive=${anneeActive.idPeriodes},
+										numPageTrimAn=${status.index})}"
+											th:text="${status.index+1}"></a>
+								</li>
+							</ul>
+						</div> 
+						
+					</form>
+					
+		</div>
+		<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+	</div>
+</body>
+</html>

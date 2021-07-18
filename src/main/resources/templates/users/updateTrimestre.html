@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Actualiser les trimestres</title>
+</head>
+<body>
+
+<span layout:fragment="titre_boite">
+       <kbd>Actualiser les périodes (trimestre)</kbd>
+</span>
+
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-9">
+	
+			<div th:if="${param.actualiserTrimerrorSeq}">
+				<h4 align="justify" class="alert alert-danger">Erreur de changement d'état: Sequences non vérouillées dans le trimestre.</h4>
+			</div>
+			
+			<div th:if="${param.actualiserTrimerror}">
+				<h4 align="justify" class="alert alert-danger">Erreur de changement d'état: On ne peut
+				avoir qu'un seul trimestre actif à la fois. Désactiver les autres et recommencer.</h4>
+			</div>
+			
+			<div th:if="${param.actualiserTrimsuccessFalse}">
+				<h4 align="justify" class="alert alert-success">Le trimestre est désormais désactivée.</h4>
+			</div>
+			
+			<div th:if="${param.actualiserTrimsuccessTrue}">
+				<h4 align="justify" class="alert alert-success">Le trimestre est désormais activée.</h4>
+			</div>
+		
+			<table class="table table-striped">
+				<thead class="thead-light">
+					<tr>
+						<th scope="col">Trimestre</th>
+						<th scope="col">Date début</th>
+						<th scope="col">Date fin</th>
+						<th scope="col">Activée?</th>
+					     <th class="text-center" scope="col">Action</th>
+					</tr>
+				</thead>
+			</table>	
+			<table class="table table-striped" th:each="a:${listofAnnee}">
+				<thead class="thead-light">
+					<tr>
+						<th th:inline="text" >Année scolaire: <span class="badge badge-light">[[${a.intituleAnnee}]]</span></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="t:${a.listoftrimestre}">
+					
+						<td  th:inline="text"><kbd>Trim <span class="redcolor"> [[${t.numeroTrim}]]</span></kbd></td>
+						
+						<td th:text="${#dates.format(t.datedebutPeriodes,'dd-MM-yyyy')}"></td>
+						
+						<td th:text="${#dates.format(t.datefinPeriodes,'dd-MM-yyyy')}"></td>
+						
+						<td th:text="${t.etatPeriodes==false}?'Non':'Oui'"></td>
+						
+						<td>
+			      				<div>
+			      					<a class="btn btn-primary btn-sm" href="#" 
+			      						th:href="@{/logesco/users/censeur/getactualiserTrimestre(idPeriodes=${t.idPeriodes}, 
+											numPageAn=${pageCouranteAnnee})}" 
+			      						role="button" th:text="${t.etatPeriodes==false}?'Activer':'Désactiver'">
+			      						<span class="glyphicon glyphicon-refresh"></span> Actualiser</a>
+			      				</div>
+			      		</td>
+						
+					</tr>
+				</tbody>
+				
+			</table>
+			
+			<div class="container">
+					<ul class="pagination"><!-- nav nav-pills -->
+						<li th:each="p,status:${listofPagesAnnee}" th:class="${status.index==pageCouranteAnnee}?active:' ' ">
+							<a th:href="@{/logesco/users/censeur/getupdateTrimestre(numPageAn=${status.index})}"
+									th:text="${status.index+1}"></a>
+						</li>
+					</ul>
+			</div>
+			
+</div>
+<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

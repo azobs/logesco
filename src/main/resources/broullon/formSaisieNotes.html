@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Saisie des notes</title>
+</head>
+<body onload="donneFocus()">
+
+<span layout:fragment="titre_boite">
+        Formulaire de saisie des notes de  
+	<span th:inline="text" class="alert alert-warning"> Séquence  [[${sequenceConcerne.numeroSeq}]]: [[${coursConcerne.codeCours}]]
+		[[${coursConcerne.intituleCours}]].
+	</span>
+</span>
+
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE   col-md-offset-1-->
+<div class="col-md-9">
+	<div class="col-md-7">
+			<form action="#" class="form-inline"
+						th:action="@{/logesco/users/getUpdateNoteSaisie}" method="get">
+					
+					<div th:if="${param.updatenotesaisiErrorsaveEval}">
+						<h4 align="justify" class="alert alert-danger">
+							Vérifier que la proportion saisie est comprise entre 0 et  100 et si c'est le cas contacter l'administrateur.
+						</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisierrorNote}">
+						<h4 align="justify" class="alert alert-danger">Erreur système lors de l'enregistrement de la notes d'évaluation.</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisiError}">
+						<h4 align="justify" class="alert alert-danger">Valeur de note ou de proportion érronée.</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisiwarningElv}">
+						<h4 align="justify" class="alert alert-warning">Note enregistrée avec succès. Il y a pas d'élève suivant dans la liste.</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisiwarningElvPre}">
+						<h4 align="justify" class="alert alert-warning"> Il y a pas d'élève précédent dans la liste.</h4>
+					</div>
+					
+					<div th:if="${param.updatenotesaisiSucces}">
+						<h4 align="justify" class="alert alert-success">Note enregistrée avec succès. Vous pouvez continuer</h4>
+					</div>
+					
+					<div th:if="${param.numeroElvErrone}">
+						<h4 align="justify" class="alert alert-danger">Saisir un numéro valide</h4>
+					</div>
+					
+					<div th:if="${param.rechEleveNull}">
+						<h4 align="justify" class="alert alert-success">Saisir un numéro valide</h4>
+					</div>
+					
+					<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>
+										<div class="form-group" th:if="${evaluationConcerne}">
+											<label th:inline="text"> Type d'évaluation: <span
+												class="redcolor">[[${evaluationConcerne.typeEval}]]
+													([[${evaluationConcerne.typeEval=='DS'}?'Devoir 2':'Devoir 1 ' ]])</span></label>
+											
+											<input type="hidden" name="idEval" id="idEval" 
+												class="form-control" th:value="${evaluationConcerne.idEval}" />
+											
+										</div>
+									</th>
+									<th>
+										<div class="form-group" th:if="${evaluationConcerne}">
+											<label th:inline="text"> Comptant pour: &nbsp;&nbsp;&nbsp;</label>
+											<input type="text" name="proportionEval" id="proportionEval" 
+												class="form-control redcolor" th:value="${evaluationConcerne.proportionEval}" />
+											
+											<label th:inline="text" th:if="${evaluationAssocie}"> 
+												Donc <span class="redcolor">[[${evaluationAssocie.proportionEval}]]%</span>  
+												pour <span class="redcolor"> [[${evaluationAssocie.typeEval}]]</span> </label>
+											
+										</div>
+									</th>
+								</tr>
+							</thead>
+							<tbody th:if="${eleveCharge}">
+							
+								<tr>
+									<td>
+										<label>Noms et prénoms: </label> <!-- name="nomsEleves" id="nomsEleves" --> 
+										<input type="text"  readonly="readonly"
+												class="form-control" th:value="${eleveCharge.nomsEleves+'  '+ eleveCharge.prenomsEleves}" />
+												
+										<input type="hidden" name="idEleves" id="idEleves" 
+												class="form-control" th:value="${eleveCharge.idEleves}" />
+										
+										<label>Date et lieu de naissance: </label> <!-- name="datenaissEleves" id="datenaissEleves"   -->
+										<input type="text" readonly="readonly"
+												class="form-control" th:value="${#dates.format(eleveCharge.datenaissEleves,'dd-MM-yyyy')}" />
+										
+									</td>
+									
+									<td>
+										<label th:inline="text">Note([[${evaluationConcerne.typeEval}]])/20: </label>
+										<input type="text" name="noteSaisi" id="noteSaisi" 
+												class="form-control" th:value="${notesEvalEleveCharge != null}?${notesEvalEleveCharge.valeurnoteEval}:0" />
+									</td>
+									
+									
+									
+								</tr>
+								
+								<tr>
+									<td>
+										<input type="hidden"  name="numPageEleves"  id="numPageEleves"
+												class="form-control" th:value="${pageCouranteEleves}" />
+										
+										<!-- <button type="submit" class="btn btn-primary  pull-right">Précédent</button> -->
+										<a class="btn btn-primary btn-sm pull-left" href="#" 
+													th:href="@{/logesco/users/getPrecedenteNoteSaisie(idEleves=${eleveCharge.idEleves}, 
+													idEval=${evaluationConcerne.idEval},
+													numPageEleves=${pageCouranteEleves})}" role="button">Précédent</a>
+										
+									</td>
+									
+									<td>
+										<!-- <button type="submit" class="btn btn-primary  pull-right">Précédent</button> -->
+										<button type="submit" class="btn btn-primary btn-sm  pull-right">Enregistrer et poursuivre</button>
+									</td>
+									
+								</tr>
+								
+							</tbody>
+						</table>
+			
+				</form>
+				
+				<form action="#" class="form-inline"
+						th:action="@{/logesco/users/getRechercheEleveParNumero}" method="get">
+					
+					<div class="form-group" >
+						<label th:inline="text"> Numéro de l'élève:</label>
+											
+						<input type="text" name="numeroElv" id="numeroElv" 
+								class="form-control" />
+					
+					
+					<input type="hidden" name="idEvalRech" id="idEvalRech"  th:if="${evaluationConcerne}"
+								class="form-control" th:value="${evaluationConcerne.idEval}"/>
+					
+					<input type="hidden" name="idEleves" id="idEleves"  th:if="${eleveCharge}"
+								class="form-control" th:value="${eleveCharge.idEleves}"/>
+								
+					<input type="hidden" name="numPageEleves" id="numPageEleves"  th:if="${pageCouranteEleves}"
+								class="form-control" th:value="${pageCouranteEleves}"/>
+								
+					<button type="submit" class="btn btn-primary btn-sm">Rechercher</button>	
+					</div>
+				</form>
+				<br/>
+				<a class="btn btn-default btn-sm pull-left" href="#" title="Retourner à la page précédente"
+						th:href="@{/logesco/users/getdonneesSaisieNotes(idClassesConcerne=${eleveCharge.classe.idClasses}, 
+						idAnneeActive=${sequenceConcerne.trimestre.annee.idPeriodes})}" role="button">Retourner</a>
+				
+	</div>
+	
+	
+	
+	<div class="col-md-5">
+			<table class="table table-bordered table-hover "  th:if="${listofEleves}" >
+					<thead>
+						<tr>
+							<th>Numéro</th>
+							<th>Noms et prénoms</th>
+							<th th:inline="text">Note([[${evaluationConcerne.typeEval}]])/20</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="eleve:${listofEleves}" th:class="${eleve.idEleves == eleveCharge.idEleves}?'bg-info':' ' ">
+						
+							<td th:inline="text"><b>[[${eleve.getNumero(listofAllEleve)}]]</b> </td>
+							
+							<td th:inline="text"><b>[[${#strings.capitalize(eleve.nomsEleves)}]] [[${eleve.prenomsEleves}]]</b> </td>
+							
+							<td th:inline="text"><span class="badge badge-light">
+								[[${eleve.getNotesEvalCoursSeq(coursConcerne.idCours,sequenceConcerne.idPeriodes,typeEval) != null}?
+								${eleve.getNotesEvalCoursSeq(coursConcerne.idCours,sequenceConcerne.idPeriodes,typeEval).valeurnoteEval}:'0']]
+								</span>
+							</td>
+							
+						</tr>
+					</tbody>		
+				</table>
+				
+				<a class="btn btn-primary btn-sm pull-left" href="#" 
+						th:href="@{/logesco/users/getNotesEvalClasse(idClasseConcerne=${eleveCharge.classe.idClasses}, 
+						idEvalConcerne=${evaluationConcerne.idEval})}" role="button">Afficher le relevé</a>
+				
+				<a class="btn btn-primary btn-sm pull-right" href="#" 
+						th:href="@{/logesco/users/getNotesFinaleClasse(idClasseConcerne=${eleveCharge.classe.idClasses}, 
+						idCoursConcerne=${evaluationConcerne.cours.idCours},idSequenceConcerne=${sequenceConcerne.idPeriodes})}" 
+						role="button">Relevé de note séquentiel</a>
+			
+		</div>
+	</div>
+	
+<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<!-- On peut inserer du javascript ici ie le javascript qui concerne exclusivement cette page. -->
+
+<script type="text/javascript">
+//alert("dd");
+	function donneFocus(){
+		//alert("donne focus");
+		document.getElementById('noteSaisi').focus();
+	}
+</script>
+
+</div>
+</body>
+</html>

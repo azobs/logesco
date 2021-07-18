@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Gérer les élèves</title>
+</head>
+<body>
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-12    reculeverticalementmodifdonneepersoform">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4>Rechercher un élève connaissant sa classe et le modifier</h4>
+		</div>
+		<div class="panel-body">
+			<p class="alert alert-warning">
+				<span style="text-decoration: underline;">IMPORTANT:</span> Une fois l'élève trouvé, cliquer sur le bouton modifier
+				situé sur la même ligne et  modifier l'information désirée dans le formulaire. 
+			</p>
+			
+			<div th:if="${param.supprimEleveserror}">
+				<h4 align="justify" class="alert alert-danger">Erreur de suppression de l'élève</h4>
+			</div>
+			
+			<div th:if="${param.supprimElevessucces}">
+				<h4 align="justify" class="alert alert-success">Elève supprimer avec succès</h4>
+			</div>
+			
+			<form action="#" th:action="@{/logesco/users/chefetab/getgestionEleves}" 
+				method="get"  th:if="${listofClasses}">
+			
+				<fieldset class="col-md-2"  th:if="${listofClasses}">
+					<legend class="text-primary">Choisir la classe</legend>
+					<div class="form-group">
+						<label for="idClasseSelect"> Classe d'appartenance: <span
+										class="redcolor">*</span></label> 
+						<select class="form-control" name="idClasseSelect" id="idClasseSelect" >
+							
+							<optgroup th:label="${n.codeNiveaux}" th:if="${listofNiveaux}" th:each="n:${listofNiveaux}">
+											
+								<option th:each="c:${n.listofClasses}" th:value="${c.idClasses}"
+										th:inline="text">
+										 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+								</option>
+												
+							</optgroup>
+										 
+							<!-- <option th:each="c:${listofClasses}" th:value="${c.idClasses}"
+									th:inline="text">
+									 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]</option> -->
+										 
+						</select>
+						<hr/>
+						<!-- <div class="form-group">
+							<label for="motcleNom"> A partir d'un motif dans le nom: <span
+								class="redcolor">*</span></label> <input type="text" name="motcleNom"
+								id="motcleNom" class="form-control" placeholder="Motif contenu dans le nom" />
+						</div> -->
+						
+						&nbsp; 
+						<button type="submit" class="btn btn-primary  pull-right">Envoyer</button>
+					</div>
+					
+				</fieldset>
+				
+				<fieldset  class="col-md-10" >
+					<legend class="text-primary" th:if="${classeSelect}">
+						<span th:inline="text">
+							[[${classeSelect != null?'Liste des élèves de la':' '}]]
+						</span> 
+					<span th:inline="text"  class="greencolor"> [[${classeSelect.codeClasses}]] 
+					[[${classeSelect.specialite.codeSpecialite}]] [[${classeSelect.numeroClasses}]]</span> (Total: Masculin = 
+						<span th:text="${effectifprovMasculinClasse}" class="badge badge-light"></span> Féminin = 
+						<span th:text="${effectifprovFemininClasse}" class="badge badge-light"></span> Soit
+						<span th:text="${effectifprovClasse}" class="badge badge-light"></span>)
+					</legend>
+					<div th:if="${listofEleves}" >
+						<table class="table table-striped table-hover">
+							<!-- <caption><h3></h3></caption> -->
+							<thead class="thead-light">
+								<tr>
+									<th scope="col">NOMS ET PRENOMS</th>
+									<th scope="col">DATE ET LIEU DE NAISSANCE</th>
+									<th scope="col">PROFIL ET ADRESSE</th>
+								    <th class="text-center" scope="col">ACTION</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="eleve:${listofEleves}">
+								
+									<td th:inline="text">[[${#strings.capitalize(eleve.nomsEleves)}]] [[${eleve.prenomsEleves}]] </td>
+									
+									<td th:inline="text">Né le [[${#dates.format(eleve.datenaissEleves,"dd-MM-yyyy")}]] à [[${eleve.lieunaissEleves}]]</td>
+									
+									<td>
+										<div class="card col-md-4"> 
+											<img th:src="@{/logesco/users/getphotoEleve(idEleves=${eleve.idEleves})}" 
+												class="card-img-top img-rounded" width="100" height="100"/>
+											<div class="card-body">
+											    <p class="card-text" th:inline="text">[[${eleve.numtel1Parent}]]</p>
+											 </div>	
+										</div>
+									</td>
+									
+									<td>
+										<div>
+										
+											<span class="col-md-4">
+												<a class="btn btn-primary btn-sm pull-left" href="#" 
+													th:href="@{/logesco/users/chefetab/getgestionEleves(idElevesAModif=${eleve.idEleves}, 
+													numPageEleves=${pageCouranteEleves},
+													idClasseSelect=${eleve.classe.idClasses})}" role="button">Modifier</a>
+											</span>
+											
+											<span class="col-md-4">
+												<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" 
+													th:attr="data-target='#'+${eleve.idEleves}">
+												  Afficher
+												</button>
+						      				</span>
+						      				
+						      				<span class="col-md-4">
+						      					<!-- <a class="btn btn-danger btn-sm pull-right" href="#" 
+						      						role="button">Supprimer</a> -->
+						      					<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" 
+													data-target="#dialogSupprEleves">
+												  Supprimer
+												</button>
+						      				</span>
+											
+										</div>
+									</td>	
+									
+									
+									<!-- Modal Division concernant la boite de dialogue d'affichage-->
+									<div class="modal fade" th:id="${eleve.idEleves}"  tabindex="-1" role="dialog" 
+												aria-labelledby="affichage" aria-hidden="true">
+									  <div class="modal-dialog modal-dialog-centered" role="document">
+									    <div class="modal-content">
+									      <div class="modal-header">
+									        <h3 class="modal-title" id="affichage">BADGE ELEVE</h3>
+									        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									          <span aria-hidden="true">&times;</span>
+									        </button>
+									      </div>
+									      <div class="modal-body">
+									        	<h4><b>Matricule:</b> <span th:text="${eleve.matriculeEleves}"></span></h4>
+									        	<h4><b>Noms et prénoms:</b> <span th:inline="text">[[${#strings.capitalize(eleve.nomsEleves)}]]  
+									        		[[${eleve.prenomsEleves}]]</span></h4>
+									        	<h4><b>Date et lieu de naissance:</b> <span th:inline="text">[[${#dates.format(eleve.datenaissEleves,"dd-MM-yyyy")}]] à 
+									        		[[${eleve.lieunaissEleves}]]</span></h4>
+									        	<h4><b>Sexe et nationnalité:</b> <span th:inline="text">[[${eleve.sexeEleves}]] de 
+									        		nationalité [[${eleve.nationaliteEleves}]]</span></h4>
+									        	<h4><b>Statut:</b> <span th:inline="text">[[${eleve.statutEleves}]]  Redoublant?: 
+									        		[[${eleve.redoublant}]]</span></h4>
+									        	<h4><b>Classe:</b> <span th:inline="text">[[${eleve.classe.codeClasses}]] 
+									        	[[${eleve.classe.specialite.codeSpecialite}]] [[${eleve.classe.numeroClasses}]]</span></h4>
+									        	<h4><b>Spécialité:</b> <span th:inline="text">[[${eleve.classe.specialite.libelleSpecialite}]]</span></h4>
+									        	<h4><b>Adresses des parents:</b> <span th:inline="text">[[${eleve.numtel1Parent}]] 
+									        		/ [[${eleve.emailParent}]]</span></h4>
+									        	<h4><b>Domicilié à:</b> <span th:inline="text">[[${eleve.villeEleves}]] plus précisément au quartier  
+									        		[[${eleve.quartierEleves}]]</span></h4>
+										        <span class="card col-md-4"> 
+													<img th:src="@{/logesco/users/getphotoEleve(idEleves=${eleve.idEleves})}" 
+															class="card-img-top img-rounded" width="100" height="100"/>
+															
+												</span>
+												<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+												<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+												<h4>&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+									      </div>
+									      <div class="modal-footer">
+									        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+									        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+									        <a class="btn btn-primary btn-sm" href="#" 
+													th:href="@{/logesco/users/getimprimerEleves(idEleves=${eleve.idEleves})}" 
+													role="button">Imprimer</a>
+									      </div>
+									    </div>
+									  </div>
+									</div>
+									<!-- Modal Fin de la Division concernant la boite de dialogue -->
+									
+									<!-- Modal de suppression-->
+									<div class="modal fade" id="dialogSupprEleves" tabindex="-1" role="dialog" 
+										aria-labelledby="dialogSupprLabel"  aria-hidden="true">
+									  <div class="modal-dialog modal-dialog-centered" role="document">
+									    <div class="modal-content">
+									      <div class="modal-header">
+									        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+									        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									          <span aria-hidden="true">&times;</span>
+									        </button>
+									      </div>
+									      <div class="modal-body">
+									        Voulez-vous vraiment suppprimer cet élève de la liste des élèves?
+									      </div>
+									      <div class="modal-footer">
+									        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+									        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+									        <a class="btn btn-danger btn-sm" href="#" 
+													th:href="@{/logesco/users/chefetab/getsupprimerEleves(idElevesASupprim=${eleve.idEleves},
+													idClasseSelect=${eleve.classe.idClasses})}" 
+													role="button">Continuer</a>
+									      </div>
+									    </div>
+									  </div>
+									</div>
+									<!--Fin du Modal de suppression-->
+									
+									
+								</tr>
+							</tbody>
+						</table>
+						
+						<div class="container">
+							<ul class="pagination"><!-- nav nav-pills -->
+								<li th:each="p,status:${listofPagesEleves}" th:class="${status.index==pageCouranteEleves}?active:' ' ">
+									<a th:href="@{/logesco/users/chefetab/getgestionEleves(idClasseSelect=${idClasseSelect},
+											numPageEleves=${status.index})}"
+											 th:text="${status.index+1}"></a>
+								</li>
+							</ul>
+						</div> 
+						
+					</div>
+				</fieldset>
+			</form>
+			
+				<!-- FORMULAIRE PREVU POUR LA MODIFICATION DUN ELEVE QUI ETAIT DANS LA LISTE
+				CI DESSUS ET QUON A CLIQUER SUR LE BOUTON MODIFIER QUI ETAIT DEVANT 
+				C'est apres ce clic que le traitement laissera dans le modèle l'objet eleveAModif-->
+			<form action="#" th:action="@{/logesco/users/chefetab/postupdateEleves}"
+						th:object="${updateElevesForm}"  method="post" enctype="multipart/form-data"
+						id="formupdateEleves" name="formupdateEleves">
+						
+				<fieldset class="col-md-12" th:if="${eleveAModif}">
+					<legend class="text-primary">Formulaire de modification</legend>
+					
+					<fieldset class="col-md-4">
+						<legend class="text-primary">Paramètres personnels de l'élève</legend>
+						
+						<input type="hidden" name="idEleves"
+								id="idEleves" class="form-control" th:value="*{idEleves}" th:field="*{idEleves}" />
+						
+						<!-- <div class="form-group">
+							<label for="matriculeEleves"> Matricule de l'élève: <span
+								class="redcolor">*</span></label> <input type="text" name="matriculeEleves"
+								id="matriculeEleves" class="form-control" th:value="*{matriculeEleves}" th:field="*{matriculeEleves}"
+								placeholder="Le matricule de l'élève" />
+						</div>
+						<div th:if="${#fields.hasErrors('matriculeEleves')}"
+							th:errors="*{matriculeEleves}" class="redcolor">Erreur de matricule de l'élève</div> -->
+						
+						<div class="form-group">
+							<label for="nomsEleves"> Noms de l'élève: <span
+								class="redcolor">*</span></label> <input type="text" name="nomsEleves"
+								id="nomsEleves" class="form-control" th:value="*{nomsEleves}" th:field="*{nomsEleves}"
+								placeholder="Les noms de l'élève" />
+						</div>
+						<div th:if="${#fields.hasErrors('nomsEleves')}"
+							th:errors="*{nomsEleves}" class="redcolor">Erreur de noms de l'élève</div>
+						
+						<div class="form-group">
+							<label for="prenomsEleves"> Prénoms de l'élève: <span
+								class="redcolor">*</span></label> <input type="text" name="prenomsEleves"
+								id="prenomsEleves" class="form-control" th:value="*{prenomsEleves}" th:field="*{prenomsEleves}"
+								placeholder="Les prénoms de l'élève" />
+						</div>
+						<div th:if="${#fields.hasErrors('prenomsEleves')}"
+							th:errors="*{prenomsEleves}" class="redcolor">Erreur de prénoms de l'élève</div>
+						
+						<div class="form-group">
+							<label for="datenaissEleves"> Date de naissance: <span
+								class="redcolor">*</span></label> <input type="date" name="datenaissEleves"
+								id="datenaissEleves" class="form-control" th:value="*{datenaissEleves}" th:field="*{datenaissEleves}"
+								placeholder="Date de naissance(année-mois-jour)" min="1990-01-01" max="2011-01-01"/>
+						</div>
+						<div th:if="${#fields.hasErrors('datenaissEleves')}"
+								th:errors="*{datenaissEleves}" class="redcolor">Erreur de date de naissance
+						</div>
+						
+						<div class="form-group">
+							<label for="lieunaissEleves"> Lieu de naissance: <span
+								class="redcolor">*</span></label> <input type="text" name="lieunaissEleves"
+								id="lieunaissEleves" class="form-control" th:value="*{lieunaissEleves}" th:field="*{lieunaissEleves}"
+								placeholder="Le lieu de naissance de l'élève" />
+						</div>
+						<div th:if="${#fields.hasErrors('lieunaissEleves')}"
+							th:errors="*{lieunaissEleves}" class="redcolor">Erreur de lieu de naissance de l'élève</div>
+						
+						<div class="form-group">
+							<label for="nationaliteEleves"> Nationalité de l'élève: <span
+								class="redcolor">*</span></label> <input type="text" name="nationaliteEleves"
+								id="nationaliteEleves" class="form-control" th:value="*{nationaliteEleves}" th:field="*{nationaliteEleves}"
+								placeholder="La nationalité de l'élève" />
+						</div>
+						<div th:if="${#fields.hasErrors('nationaliteEleves')}"
+							th:errors="*{nationaliteEleves}" class="redcolor">Erreur de nationalité de l'élève</div>
+						
+						<div class="form-group">
+								<label for="sexeEleves" class="control-label col-sm-3 text-left"> Sexe: <span
+									class="redcolor">*</span></label> 
+											
+								<div class="radio">
+									    <label><input type="radio" name="sexeEleves" id="sexeEleves" class="radio-inline"
+								    				 th:field="*{sexeEleves}" value="masculin" checked="checked"/>Masculin</label>
+									    <label><input type="radio" name="sexeEleves" id="sexeEleves" class="radio-inline"
+								      				th:field="*{sexeEleves}" value="féminin"/>Féminin</label>
+							   </div>
+							</div>
+							<div th:if="${#fields.hasErrors('sexeEleves')}"
+								th:errors="*{sexeEleves}" class="redcolor">erreur sexe Eleves</div>
+						
+							<div class="form-group col-md-8">
+								<label for="picturephotoEleves"> Photo: </label> <input type="file"
+									name="picturephotoEleves" id="picturephotoEleves" class="form-control-file" 
+									placeholder="Envoyer la photo"/>
+							</div>
+							<div th:if="${#fields.hasErrors('photoEleves')}"
+									th:errors="*{photoEleves}" class="redcolor">Erreur de photo Eleves
+							</div>
+						
+						
+					</fieldset>
+					
+					<fieldset class="col-md-4">
+						<legend class="text-primary">Adresses d'un Parent/Tuteur</legend>
+						
+						<div class="form-group">
+							<label for="numtel1Parent"> Numéro de tel: <span
+								class="redcolor">*</span></label> <input type="text" name="numtel1Parent"
+								id="numtel1Parent" class="form-control" th:value="*{numtel1Parent}" th:field="*{numtel1Parent}"
+								placeholder="Num tel parent/tuteur" />
+						</div>
+						<div th:if="${#fields.hasErrors('numtel1Parent')}"
+							th:errors="*{numtel1Parent}" class="redcolor">Erreur de numero de tel de l'élève</div>
+						
+						<div class="form-group">
+							<label for="emailParent"> Email: <span
+								class="redcolor">*</span></label> <input type="text" name="emailParent"
+								id="emailParent" class="form-control" th:value="*{emailParent}" th:field="*{emailParent}"
+								placeholder="email parent/tuteur" />
+						</div>
+						<div th:if="${#fields.hasErrors('emailParent')}"
+							th:errors="*{emailParent}" class="redcolor">Erreur de email de l'élève</div>
+						
+						<div class="form-group">
+							<label for="villeEleves"> Ville: <span
+								class="redcolor">*</span></label> <input type="text" name="villeEleves"
+								id="villeEleves" class="form-control" th:value="*{villeEleves}" th:field="*{villeEleves}"
+								placeholder="ville habitation" />
+						</div>
+						<div th:if="${#fields.hasErrors('villeEleves')}"
+							th:errors="*{villeEleves}" class="redcolor">Erreur de ville de l'élève</div>
+						
+						<div class="form-group">
+							<label for="quartierEleves"> Quartier: <span
+								class="redcolor">*</span></label> <input type="text" name="quartierEleves"
+								id="quartierEleves" class="form-control" th:value="*{quartierEleves}" th:field="*{quartierEleves}"
+								placeholder="quartier habitation" />
+						</div>
+						<div th:if="${#fields.hasErrors('quartierEleves')}"
+							th:errors="*{quartierEleves}" class="redcolor">Erreur de quartier de l'élève</div>
+						
+						<div class="card" th:if="${eleveAModif}">
+							<img th:src="@{/logesco/users/getphotoEleve(idEleves=${eleveAModif.idEleves})}" 
+									class="card-img-top" width="100" height="100"/>
+							<div class="card-body">
+								 <p class="card-text">Profil de l'élève enregistré</p>
+							</div>
+						</div>
+						
+					</fieldset>
+					
+					<fieldset class="col-md-4">
+						<legend class="text-primary">Informations sur sa classe</legend>
+						
+						<div class="form-group">
+							<label for="idClasse"> Classe d'appartenance: <span
+											class="redcolor">*</span></label> 
+							<select class="form-control" name="idClasse"  th:field="*{idClasse}"
+											 id="idClasse" >
+								
+								<optgroup th:label="${n.codeNiveaux}" th:if="${listofNiveaux}" th:each="n:${listofNiveaux}">
+											
+									<option th:each="c:${n.listofClasses}" th:value="${c.idClasses}"
+											th:inline="text">
+											 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+									</option>
+												
+								</optgroup>
+											 
+								<!-- <option th:each="c:${listofClasses}" th:value="${c.idClasses}"
+											 		th:inline="text"> [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]]
+											 		 [[${c.numeroClasses}]]</option> -->
+											 
+							</select>&nbsp;
+						</div>
+						<div th:if="${#fields.hasErrors('idClasse')}"
+								th:errors="*{idClasse}" class="redcolor">Erreur de classe</div>
+						
+						<div class="form-group">
+								<label for="statutEleves" class="control-label col-sm-3 text-left"> Statut: <span
+									class="redcolor">*</span></label> 
+											
+								<div class="radio">
+									    <label><input type="radio" name="statutEleves" id="statutEleves" class="radio-inline"
+								    				 th:field="*{statutEleves}" value="ancien" checked="checked"/>Ancien</label>
+									    <label><input type="radio" name="statutEleves" id="statutEleves" class="radio-inline"
+								      				th:field="*{statutEleves}" value="nouveau"/>Nouveau</label>
+								      	 <label><input type="radio" name="statutEleves" id="statutEleves" class="radio-inline"
+								      				th:field="*{statutEleves}" value="exclu"/>Exclu</label>
+							   </div>
+							</div>
+							<div th:if="${#fields.hasErrors('statutEleves')}"
+								th:errors="*{statutEleves}" class="redcolor">erreur statutEleves Eleves</div>
+						
+						<div class="form-group">
+							<label for="redoublant"> Redoublant?: </label> 
+							<label  th:text="*{redoublant}" class="redcolor"> oui/non </label>
+							<label for="redoublant"> Etat inscription: </label> 
+							<label  th:text="*{etatInscEleves}" class="redcolor"> inscrit/non_inscrit </label>
+						</div>
+						
+						<div th:if="${eleveEnreg}" >
+						
+							<label th:inline="text">Effectif provisoire de  [[${classeConcerne.codeClasses}]] 
+							[[${classeConcerne.specialite.codeSpecialite}]] 	[[${classeConcerne.numeroClasses}]]: 
+							<span class="redcolor" th:inline="text">[[${effectifprovClasse}]]</span></label>
+							
+					     </div>
+						
+					</fieldset>
+					
+					<button type="submit" class="btn btn-primary  pull-right">Envoyer</button>
+					
+				</fieldset>
+				
+			</form>
+			
+		</div>
+	</div>
+</div>
+<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

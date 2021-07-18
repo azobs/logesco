@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title th:inline="text">[[#{donneesaisidiscipline.titre_page}]]</title>
+</head>
+<body>
+
+<span layout:fragment="titre_boite">
+        <kbd th:inline="text">[[#{donneesaisidiscipline.titre_boite}]]</kbd>
+</span>
+
+<div layout:fragment="formactionusers">
+	<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+	<div class="col-md-8  col-md-offset-1">
+			<form action="#"
+				th:action="@{/logesco/users/sg/getformSaisieRDiscipline}" method="get"
+						class="form-inline">
+					
+						<div th:if="${listofNiveaux !=null and anneeActive != null}" >
+							<div class="form-group">
+								<label for="idClassesConcerne" th:inline="text">[[#{donneesaisidiscipline.label_classe}]] : <span
+									class="redcolor">*</span></label>
+									
+								<select class="form-control" name="idClassesConcerne"
+									id="idClassesConcerne" >
+									
+									<optgroup th:label="${n.codeNiveaux}" th:if="${listofNiveaux}"
+										th:each="n:${listofNiveaux}">
+
+										<option th:each="c:${n.listofClasses}"
+											th:value="${c.idClasses}" th:inline="text">
+											[[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]]
+											[[${c.numeroClasses}]]</option>
+
+									</optgroup>
+									
+								</select>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<div class="form-group">
+									<label th:inline="text">[[#{donneesaisidiscipline.label_sequence}]] : </label>
+									<select class="form-control" name="idSequenceConcerne"
+										id="idSequenceConcerne" >
+										
+										<option th:each="s:${listofSequenceActive}"
+											th:value="${s.idPeriodes}" th:inline="text">
+											[[${s.numeroSeq}]] 
+										</option>
+											
+									</select>
+								</div>
+								
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<div class="form-group">
+									<label th:inline="text"> [[#{donneesaisidiscipline.label_anneescolaire}]] : <span
+										class="redcolor">[[${anneeActive.intituleAnnee}]]</span></label>
+									<input type="hidden" name="idAnneeActive" id="idAnneeActive" 
+										class="form-control" th:value="${anneeActive.idPeriodes}" />
+								</div>								
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<button type="submit" class="btn btn-primary  pull-right" th:inline="text">
+									<span class="glyphicon glyphicon-send"></span> [[#{donneesaisidiscipline.bouton_envoyer}]] 
+								</button>
+							</div>
+						</div>
+					
+					</form>
+			
+	</div>
+	<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

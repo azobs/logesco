@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title th:inline="text">[[#{enregpers.titre_page}]]</title>
+</head>
+<body>
+<span layout:fragment="titre_boite">
+      <kbd th:inline="text"> [[#{enregpers.titre_boite}]] </kbd>
+</span>
+
+<div layout:fragment="formactionusers">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-9">
+		<p class="alert alert-warning">
+				<span style="text-decoration: underline;">IMPORTANT:</span> 
+				<span th:inline="text">[[#{enregpers.label_important}]].</span>
+		</p>
+			<form action="#" th:action="@{/logesco/users/chefetab/postenregPersonnels}"
+						th:object="${enregPersonnelsForm}"  method="post" enctype="multipart/form-data">
+						
+						<input type="hidden"
+							name="idPersonnels" id="idPersonnels" class="form-control" th:field="*{idPersonnels}" th:value="*{idPersonnels}" />
+				
+				<div th:if="${param.enregpersonnelserrorNumeroCni}">
+					<h4 align="justify" class="alert alert-danger" th:inline="text">
+						[[#{enregpers.labelerreur_enregpersonnelserrorNumeroCni}]].
+					</h4>
+				</div>
+				
+				<div th:if="${param.enregpersonnelserrorNomsPrenomsDatenaiss}">
+					<h4 align="justify" class="alert alert-danger" th:inline="text">
+						[[#{enregpers.labelerreur_enregpersonnelserrorNomsPrenomsDatenaiss}]].
+					</h4>
+				</div>
+				
+				<div th:if="${param.enregpersonnelserrorUsername}">
+					<h4 align="justify" class="alert alert-danger" th:inline="text">
+						[[#{enregpers.labelerreur_enregpersonnelserrorUsername}]].
+					</h4>
+				</div>
+				
+				<div th:if="${param.enregpersonnelserrorNumeroPers}">
+					<h4 align="justify" class="alert alert-danger" th:inline="text">
+						[[#{enregpers.labelerreur_enregpersonnelserrorNumeroPers}]].
+					</h4>
+				</div>
+				
+				<div th:if="${param.enregpersonnelserrorUsername}" th:inline="text">
+					<h4 align="justify" class="alert alert-danger">
+						[[#{enregpers.labelerreur_enregpersonnelserrorUsername}]].
+					</h4>
+				</div>
+				
+				<div th:if="${param.enregpersonnelserrorRole}">
+					<h4 align="justify" class="alert alert-danger" th:inline="text">
+						[[#{enregpers.labelerreur_enregpersonnelserrorRole}]] .
+					</h4>
+				</div>
+				
+				<div th:if="${param.enregpersonnelserrorRoleEns}">
+					<h4 align="justify" class="alert alert-danger" th:inline="text">
+					[[#{enregpers.labelerreur_enregpersonnelserrorRoleEns}]] .</h4>
+				</div>
+					<div>
+						<fieldset class="col-md-4">
+							<legend class="text-primary" th:inline="text" >[[#{enregpers.legend_parampers}]]</legend>
+							
+							<div class="form-group">
+								<label for="numcniPers" th:inline="text"> [[#{enregpers.label_numcni}]]: <span
+									class="redcolor">*</span></label> <input type="text" name="numcniPers"
+									id="numcniPers" class="form-control" th:value="*{numcniPers}" th:field="*{numcniPers}"
+									placeholder="Numéro de cni" />
+									<!-- <a href="#" th:href="@{/logesco/users/chefetab/getenregPersonnels(numcniPers=*{numcniPers})}" class="pull-right">
+										Rechercher</a> -->
+							</div>
+							<div th:if="${#fields.hasErrors('numcniPers')}"
+								th:errors="*{numcniPers}" class="redcolor">Erreur de numero de carte d'identité</div>
+								
+						    <div class="form-group">
+								<label for="nomsPers" th:inline="text"> [[#{enregpers.label_noms}]] : <span
+									class="redcolor">*</span></label> <input type="text" name="nomsPers"
+									id="nomsPers" class="form-control" th:value="*{nomsPers}" th:field="*{nomsPers}"
+									placeholder="Les noms" />
+							</div>
+							<div th:if="${#fields.hasErrors('nomsPers')}"
+								th:errors="*{nomsPers}" class="redcolor">Erreur de noms</div>
+						 	
+						 	 <div class="form-group">
+								<label for="prenomsPers" th:inline="text"> [[#{enregpers.label_prenoms}]]: <span
+									class="redcolor">*</span></label> <input type="text" name="prenomsPers"
+									id="prenomsPers" class="form-control" th:value="*{prenomsPers}" th:field="*{prenomsPers}"
+									placeholder="Vos prénoms" />
+							</div>
+							<div th:if="${#fields.hasErrors('prenomsPers')}"
+								th:errors="*{prenomsPers}" class="redcolor">Erreur de prénoms</div>
+							
+							<div class="form-group">
+								<label for="datenaissPers" th:inline="text"> [[#{enregpers.label_datenaiss}]]: <span
+									class="redcolor">*</span></label> <input type="date" name="datenaissPers"
+									id="datenaissPers" class="form-control" th:value="*{datenaissPers}" th:field="*{datenaissPers}"
+									placeholder="Date de naissance(année-mois-jour)" min="1960-01-01" max="2000-01-01" />
+							</div>
+							<div th:if="${#fields.hasErrors('datenaissPers')}"
+									th:errors="*{datenaissPers}" class="redcolor">Erreur de date de naissance
+							</div>
+							
+							 <div class="form-group">
+								<label for="lieunaissPers" th:inline="text"> [[#{enregpers.label_lieunaiss}]]: <span
+									class="redcolor">*</span></label> <input type="text" name="lieunaissPers"
+									id="lieunaissPers" class="form-control" th:value="*{lieunaissPers}" th:field="*{lieunaissPers}"
+									placeholder="Lieu de naissance" />
+							</div>
+							<div th:if="${#fields.hasErrors('lieunaissPers')}"
+								th:errors="*{lieunaissPers}" class="redcolor">Erreur de lieu de naissance</div>
+								
+							<div class="form-group">
+								<label for="nationalitePers" th:inline="text"> [[#{enregpers.label_nationalite}]]: <span
+									class="redcolor">*</span></label> <input type="text" name="nationalitePers"
+									id="nationalitePers" class="form-control" th:value="*{nationalitePers}" th:field="*{nationalitePers}"
+									placeholder="Nationalité" />
+							</div>
+							<div th:if="${#fields.hasErrors('nationalitePers')}"
+								th:errors="*{nationalitePers}" class="redcolor">Erreur de nationalite</div>
+							
+							<div class="form-group">
+								<label for="sexePers" class="control-label  text-left" th:inline="text">  [[#{enregpers.label_sexe}]]: <span
+									class="redcolor">*</span></label> 
+									
+									<span class="radio">
+									    <label>
+									    	<input type="radio" name="sexePers" id="sexePers" class="radio-inline"
+									    		th:field="*{sexePers}" value="masculin" checked="checked"/>Masculin/Male</label>
+									    <label><input type="radio" name="sexePers" id="sexePers" class="radio-inline"
+									      				th:field="*{sexePers}" value="féminin"/>Féminin/Female</label>
+									 </span>
+							</div>
+							<div th:if="${#fields.hasErrors('sexePers')}"
+									th:errors="*{sexePers}" class="redcolor">erreur sexePers</div>
+							
+							
+							
+							<div class="form-group">
+								<label for="picturephotoPers"> Photo: </label> <input type="file"
+									name="picturephotoPers" id="picturephotoPers" class="form-control-file" 
+									placeholder="Envoyer votre photo" accept="image/*"/>
+							</div>
+							
+							<div th:if="${#fields.hasErrors('photoPers')}"
+									th:errors="*{photoPers}" class="redcolor">Erreur de photo
+							</div>
+								
+						</fieldset>
+						
+						<fieldset class="col-md-4">
+							<fieldset>
+								<legend class="text-primary" th:inline="text">[[#{enregpers.legend_paramprof}]]</legend>
+								<div class="form-group">
+									<label for="statutPers" class="control-label  text-left" th:inline="text"> [[#{enregpers.label_statut}]]: <span
+										class="redcolor">*</span></label> 
+										
+										<table class="table table-bordered">
+											<tbody>
+												<tr>
+												 	<td>
+												 		 <label><input type="radio" name="statutPers" id="statutPers" class="radio-inline"
+										    				 th:field="*{statutPers}" value="Vacataire" checked="checked"/>Vacataire&nbsp;</label>
+												 	</td>
+												 	<td>
+												 		 <label><input type="radio" name="statutPers" id="statutPers" class="radio-inline"
+										      				th:field="*{statutPers}" value="ECI"/>ECI</label>
+												 	</td>
+												</tr>
+												<tr>
+												 	<td>
+												 		 <label><input type="radio" name="statutPers" id="statutPers" class="radio-inline"
+										      				th:field="*{statutPers}" value="Fonctionnaire"/>Fonctionnaire</label>
+												 	</td>
+												 	<td>
+												 		 <label><input type="radio" name="statutPers" id="statutPers" class="radio-inline"
+										      				th:field="*{statutPers}" value="Permanent"/>Permanent</label>
+												 	</td>
+												</tr>
+											</tbody>
+										</table>
+										
+										<!-- <span class="radio">
+										    <label><input type="radio" name="statutPers" id="statutPers" class="radio-inline"
+										    				 th:field="*{statutPers}" value="Vacataire" checked="checked"/>Vacataire&nbsp;&nbsp;&nbsp;&nbsp;</label>
+										    <label><input type="radio" name="statutPers" id="statutPers" class="radio-inline"
+										      				th:field="*{statutPers}" value="ECI"/>ECI</label>
+										     <label><input type="radio" name="statutPers" id="statutPers" class="radio-inline"
+										      				th:field="*{statutPers}" value="Fonctionnaire"/>Fonctionnaire</label>
+										      <label><input type="radio" name="statutPers" id="statutPers" class="radio-inline"
+										      				th:field="*{statutPers}" value="Permanent"/>Permanent</label>
+										 </span> -->
+								</div>
+								<div th:if="${#fields.hasErrors('statutPers')}"
+									th:errors="*{statutPers}" class="redcolor">erreur statutPers</div>
+								
+								<div class="form-group">
+									<label for="gradePers"> Grade: <span
+										class="redcolor">*</span></label> <input type="text" name="gradePers"
+										id="gradePers" class="form-control" th:value="*{gradePers}" th:field="*{gradePers}"
+										placeholder="PLEG" />
+								</div>
+								<div th:if="${#fields.hasErrors('gradePers')}"
+									th:errors="*{gradePers}" class="redcolor">erreur Grade</div>
+									
+								<div class="form-group">
+									<label for="diplomePers" th:inline="text"> [[#{enregpers.label_diplome}]]: <span
+										class="redcolor">*</span></label> <input type="text" name="diplomePers"
+										id="diplomePers" class="form-control" th:value="*{diplomePers}" th:field="*{diplomePers}"
+										placeholder="DIPEG 2" />
+								</div>
+								<div th:if="${#fields.hasErrors('diplomePers')}"
+									th:errors="*{diplomePers}" class="redcolor">erreur de diplome</div>
+									
+							   	<div class="form-group">
+									<label for="specialiteProf" th:inline="text"> [[#{enregpers.label_specialite}]] : <span
+										class="redcolor">*</span></label> <input type="text" name="specialiteProf"
+										id="specialiteProf" class="form-control" th:value="*{specialiteProf}" th:field="*{specialiteProf}"
+										placeholder="" />
+								</div>
+								<div th:if="${#fields.hasErrors('specialiteProf')}"
+									th:errors="*{specialiteProf}" class="redcolor">erreur de specialité</div>
+								
+								
+								<div class="form-group">
+									<label for="numeroPers"><!--  Numéro d'ordre dans la fonction: <span
+										class="redcolor">*</span> --></label><input type="hidden" name="numeroPers"
+										id="numeroPers" class="form-control" th:value="*{numeroPers}" th:field="*{numeroPers}" />
+										
+								</div>
+								<div th:if="${#fields.hasErrors('numeroPers')}"
+									th:errors="*{numeroPers}" class="redcolor">Erreur de numero d'ordre</div> 
+								
+							</fieldset>
+							
+						</fieldset>
+						
+						<fieldset class="col-md-4">
+							
+							<fieldset>
+								<legend class="text-primary" th:inline="text">[[#{enregpers.label_adresse}]]</legend>
+								
+								<div class="form-group">
+								<label for="numtel1Pers" th:inline="text"> [[#{enregpers.label_numtel1}]]: <span
+									class="redcolor">*</span></label> <input type="text" name="numtel1Pers"
+									id="numtel1Pers" class="form-control" th:value="*{numtel1Pers}" th:field="*{numtel1Pers}"
+									placeholder="Numéro de téléphone 1" />
+								</div>
+								<div th:if="${#fields.hasErrors('numtel1Pers')}"
+									th:errors="*{numtel1Pers}" class="redcolor">erreur de numtel1</div>
+									
+								<div class="form-group">
+								<label for="numtel2Pers" th:inline="text"> [[#{enregpers.label_numtel2}]]: </label> <input type="text" name="numtel2Pers"
+									id="numtel2Pers" class="form-control" th:value="*{numtel2Pers}" th:field="*{numtel2Pers}"
+									placeholder="Numéro de téléphone 2" />
+								</div>
+								<div th:if="${#fields.hasErrors('numtel2Pers')}"
+									th:errors="*{numtel2Pers}" class="redcolor">erreur de numtel2</div>
+									
+								<div class="form-group">
+								<label for="emailPers" th:inline="text"> [[#{enregpers.label_email}]]:  </label> <input type="text" name="emailPers"
+									id="emailPers" class="form-control" th:value="*{emailPers}" th:field="*{emailPers}"
+									placeholder="Adresse email" />
+								</div>
+								<div th:if="${#fields.hasErrors('username')}"
+									th:errors="*{username}" class="redcolor">erreur de email</div>
+									
+								<div class="form-group">
+								<label for="villePers" th:inline="text"> [[#{enregpers.label_ville}]]: </label> <input type="text" name="villePers"
+									id="villePers" class="form-control" th:value="*{villePers}" th:field="*{villePers}"
+									placeholder="Ville habitée" />
+								</div>
+								<div th:if="${#fields.hasErrors('villePers')}"
+									th:errors="*{villePers}" class="redcolor">erreur de villePers</div>
+									
+								<div class="form-group">
+								<label for="quartierPers" th:inline="text"> [[#{enregpers.label_quartier}]]: </label> <input type="text" name="quartierPers"
+									id="quartierPers" class="form-control" th:value="*{quartierPers}" th:field="*{quartierPers}"
+									placeholder="Quartier habitée" />
+								</div>
+								<div th:if="${#fields.hasErrors('quartierPers')}"
+									th:errors="*{quartierPers}" class="redcolor">erreur de quartierPers</div>
+								
+								
+							</fieldset>
+							<fieldset>
+								<legend class="text-primary" th:inline="text">[[#{enregpers.legend_infologin}]]</legend>
+								
+								<div class="form-group">
+									<label for="username" th:inline="text">[[#{enregpers.label_username}]] : </label> <input type="text" name="username"
+										id="username" class="form-control" th:value="*{username}" th:field="*{username}"
+										placeholder="Login de connexion" />
+										<!-- <a href="#" th:href="@{/logesco/users/chefetab/getenPersonnels(username=*{username})}" class="pull-right">
+										Rechercher</a> -->
+								</div>
+								<div th:if="${#fields.hasErrors('username')}"
+									th:errors="*{username}" class="redcolor">erreur de username</div>
+							
+							
+								<div class="form-group">
+								<label for="password" th:inline="text">[[#{enregpers.label_password}]] : </label> <input type="password" name="password"
+									id="password" class="form-control" th:value="*{password}" th:field="*{password}"
+									placeholder="Mot de passe de connexion" />
+								</div>
+								<div th:if="${#fields.hasErrors('password')}"
+									th:errors="*{password}" class="redcolor">erreur de password</div>
+									
+							</fieldset>
+						</fieldset>
+						</div>
+						
+						
+						<div class="col-md-12">
+						<p class="alert alert-warning"><span style="text-decoration: underline;">NB:</span>
+								<span th:inline="text">[[#{enregpers.label_recomnandation}]].</span></p>
+						<fieldset>
+								<legend class="text-primary" th:inline="text">[[#{enregpers.label_role}]]  <span
+										class="redcolor">*</span></legend>
+								<div class="form-group">
+									<div class="radio">
+										<table class="table table-bordered">
+											<tbody>
+												<tr>
+												 	<!-- <td>
+												 		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											    				 th:field="*{roleCode}" value="1" checked="checked"/>Censeur et enseignant</label>
+												 	</td> -->
+											      	<td>
+											      		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											      				th:field="*{roleCode}" value="2"/>Censeur</label>  <!-- uniquement -->
+											      	</td>
+											      	<!-- <td>
+												 		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											      				th:field="*{roleCode}" value="3"/>SG et enseignant</label>
+												 	</td> -->
+											      	<td>
+											      		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											      				th:field="*{roleCode}" value="4"/>SG</label>
+											      	</td>
+										      	</tr>
+										      	<tr>
+												 	<!-- <td>
+												 		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											      				th:field="*{roleCode}" value="5"/>Intendant et enseignant</label>
+												 	</td> -->
+											      	<td>
+											      		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											      				th:field="*{roleCode}" value="6"/>Intendant</label>
+											      	</td>
+											      	<td>
+												 		<label><input type="radio" name="roleCode" id="roleCode" class="radio-inline"
+											      				th:field="*{roleCode}" value="7"/>Enseignant</label>
+												 	</td>
+											      	<!-- <td>
+											      		<span th:if="${#fields.hasErrors('roleCode')}"
+															th:errors="*{roleCode}" class="redcolor">Erreur de roleCode</span>
+											      	</td> -->
+										      	</tr>
+											</tbody>
+										</table>      
+									</div>
+								</div>
+							</fieldset>
+						</div>
+					<div class="col-md-12">	
+						<button type="submit" class="btn btn-primary  pull-right" th:inline="text"> 
+							<span class="glyphicon glyphicon-save"></span> [[#{enregpers.bouton_envoyer}]]
+						</button>
+						<button type="reset" class="btn btn-danger" th:inline="text">
+							<span class="glyphicon glyphicon-erase"></span> [[#{enregpers.bouton_effacer}]]
+						</button>
+					</div>
+			</form>
+</div>
+<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

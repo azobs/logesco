@@ -1,0 +1,151 @@
+
+	public void constructModelgetformSaisieNotes(Model model,	HttpServletRequest request, Long idEleves,  Long idSequenceConcerne,  
+			Long idCoursConcerne, String typeEval, Long idClassesConcerne,  int numPageEleves, int taillePage ){
+		
+		Page<Eleves> pageofEleves=usersService.findPageElevesClasse(idClassesConcerne,	
+				numPageEleves, taillePage);
+		
+		if(pageofEleves != null){
+			
+			if(pageofEleves.getContent().size()!=0){
+				
+				model.addAttribute("listofEleves", pageofEleves.getContent());
+				int[] listofPagesEleves=new int[pageofEleves.getTotalPages()];
+					
+				model.addAttribute("listofPagesEleves", listofPagesEleves);
+					
+				model.addAttribute("pageCouranteEleves", numPageEleves);
+				System.out.println("la liste des élève contient "+pageofEleves.getContent().size());
+			}
+		}
+		/*
+		 * Il faut donc la liste de tous les élèves de la classe dans le modele dans le même ordre qu'ils vont apparaitre dans les pages
+		 */
+		List<Eleves> listofAllEleve = usersService.findListElevesClasse(idClassesConcerne);
+		
+		/*for(Eleves e : listofAllEleve){
+			System.out.println("AFFx  Noms "+e.getNomsEleves()+" ID: "+e.getIdEleves().longValue());
+		}*/
+		
+		if(listofAllEleve != null){
+			model.addAttribute("effectifTotal", listofAllEleve.size());
+			
+			if((listofAllEleve.size() > 0)){
+				model.addAttribute("listofAllEleve", listofAllEleve);
+				/*
+				 * On doit charger dans le modèle le premier élève de la liste et à chaque fois on va charger l'élève dont 
+				 * le numero est passé en paramètre
+				 */
+				int numEleve = usersService.getNumeroEleve(listofAllEleve, idEleves);
+				
+				//System.out.println("numEleve  "+numEleve+ " idEleves "+idEleves.longValue());
+				model.addAttribute("numEleve", numEleve);
+				
+				
+				/*
+				 * Au chargement de la page idEleves vaudra 0 et par conséquent getNumeroEleve va retourner 0. 
+				 * Il faut donc charger le premier élève de la liste. 
+				 */
+				if(numEleve == 0) numEleve = 1;
+				
+				Eleves eleveCharge =  listofAllEleve.get(numEleve-1);
+				
+				System.out.println("le numero du gar charge est "+numEleve);
+				System.out.println("et le gar lui même a pour nom  "+eleveCharge.getNomsEleves());
+				
+				model.addAttribute("eleveCharge",eleveCharge);//car l'élève 1 est à l'indice 0 de la liste
+				
+				
+				//System.out.println("AFFx1  "+listofAllEleve.get(numEleve-1).getNomsEleves());
+				/*
+				 * Il faut charger du même coup la note que cet élève à obtenu à cette évaluation au cas ou elle est déjà enregistré
+				 */
+				NotesEval notesEvalEleveCharge = eleveCharge.getNotesEvalCoursSeq(idCoursConcerne, idSequenceConcerne, typeEval);
+				
+				if(notesEvalEleveCharge != null) model.addAttribute("notesEvalEleveCharge", notesEvalEleveCharge);
+				
+				Sequences sequenceConcerne = usersService.findSequences(idSequenceConcerne);
+				Cours coursConcerne = usersService.findCours(idCoursConcerne);
+				
+				model.addAttribute("sequenceConcerne", sequenceConcerne);
+				model.addAttribute("coursConcerne", coursConcerne);
+				model.addAttribute("typeEval", typeEval);
+				
+			}
+			
+		}
+		/*
+		 * Il faut placer dans le modele l'évaluation pour laquelle on veut enregistrer les notes
+		 */
+		Evaluations eval = usersService.findEvaluations(idCoursConcerne, idSequenceConcerne, typeEval);
+		model.addAttribute("evaluationConcerne", eval);
+	}
+	
+	
+	
+	@GetMapping(path="/getformSaisieNotes")
+	public String getformSaisieNotes(
+			Model model, HttpServletRequest request,
+			@RequestParam(name="idSequenceConcerne", defaultValue="-1") Long idSequenceConcerne,
+			@RequestParam(name="idClassesConcerne", defaultValue="0") Long idClassesConcerne,
+			@RequestParam(name="idCoursConcerne", defaultValue="0") Long idCoursConcerne,
+			@RequestParam(name="typeEval", defaultValue="DS") String typeEval,
+			@RequestParam(name="idEleves", defaultValue="0") Long idEleves,
+			@RequestParam(name="numPageEleves", defaultValue="0") int numPageEleves,
+			@RequestParam(name="taillePage", defaultValue="5") int taillePage){
+		
+		/*
+		 * Il faut enregistrer l'évaluation s'il n'existe pas encore
+		 * pour cela il faut idCours et idSequence et les paramètres de eval
+		 */
+		Sequences sequenceConcerne = usersService.findSequences(idSequenceConcerne);
+		Cours coursConcerne = usersService.findCours(idCoursConcerne);
+		
+		Evaluations eval = new Evaluations();
+		eval.setContenuEval("");
+		eval.setCours(coursConcerne);
+		eval.setDateenregEval(new Date());
+		eval.setSequence(sequenceConcerne);
+		eval.setTypeEval(typeEval);
+		
+		String contenuEval="";
+		String typeEvalAssocie="";
+		int proportionEval = 0;
+		if(typeEval.equals("DS")) {
+			proportionEval = 80;
+			typeEvalAssocie = "CC";
+		}
+		if(typeEval.equals("CC")) {
+			proportionEval = 20;
+			typeEvalAssocie = "DS";
+		}
+		
+		
+		Evaluations evalDeTypeExist = usersService.findEvaluations(coursConcerne.getIdCours(), sequenceConcerne.getIdPeriodes(), typeEval);
+		Evaluations evalDeTypeExistAssocie = usersService.findEvaluations(coursConcerne.getIdCours(), 
+				sequenceConcerne.getIdPeriodes(), typeEvalAssocie);
+		
+		if(evalDeTypeExist == null) {
+			int repServeur = usersService.saveEvaluation(contenuEval, coursConcerne, new Date(), proportionEval, sequenceConcerne, typeEval);
+		
+			if(repServeur == 0) return "redirect:/logesco/users/500?enregEvaluationerror";
+		}
+		
+		/*
+		 * L'évaluation associe existe on la charge dans la session sinon on affichera un pourcentage null.
+		 */
+		if(evalDeTypeExistAssocie != null) {
+			model.addAttribute("evaluationAssocie", evalDeTypeExistAssocie);
+		}
+		
+		/*
+		 * Ensuite il faut charger la liste des élèves dans le model avec pour chacun le moyen d'avoir 
+		 * sa note pour un type d'évaluation précis, dans un cours et une séquence donnée
+		 */
+		
+		this.constructModelgetformSaisieNotes(model,	request, idEleves, idSequenceConcerne,  idCoursConcerne,  typeEval,
+				idClassesConcerne, numPageEleves, taillePage);
+		
+		return "users/formSaisieNotes";
+	}
+	

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="users/userslayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Bulletins trimestre 3 et annuels: Paramètres de production</title>
+</head>
+<body>
+
+<span layout:fragment="titre_boite">
+        <kbd>Paramètres de production des bulletins trimestriels avec rapport annuel</kbd>
+</span>
+
+<div layout:fragment="formactionusers">
+	<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+	<div class="col-md-9">
+		<span class="col-md-12 alert alert-warning">
+			Sélectionner la classe et le trimestre puis cliquer sur le bouton envoyer pour que les bullletins
+			trimestriels soient édités. Une fois cela fait, le fichier les contenant vous sera proposé en téléchargement.
+			<br/><u>NB:</u> Une fois les bulletins générés appuyer du F5 ou actualiser la page pour générer
+			le rapport de conseil de classe. 
+		</span>
+		<form action="#"
+				th:action="@{/logesco/users/bulletins/lancerEditionsBulletinsTrimAn}" method="get"
+				class="form-inline" target="_blank">
+					<div th:if="${listofNiveauxDirigesEns != null and anneeActive != null}" >
+						<div class="form-group">
+							<label for="idClassesConcerne"> Classes: <span
+									class="redcolor">*</span></label>
+									
+							<select class="form-control" name="idClasseConcerne"
+									id="idClasseConcerne" >
+									
+									<optgroup th:label="${n.codeNiveaux}" th:if="${listofNiveauxDirigesEns}"
+										th:each="n:${listofNiveauxDirigesEns}">
+										
+										<option th:each="c:${n.listofClasses}"
+											th:if="${(c.estEnseignantTitulaireDeClasse(profConnecte.idUsers)==1 or patron!=null) and c.geteffectifEleve()>0}"
+											th:value="${c.idClasses}" th:inline="text">
+										
+											 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+											
+										</option>
+										
+									</optgroup>
+									
+							</select>
+						</div>
+						
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<div class="form-group">
+							<label th:inline="text"> Trimestre: </label>
+							<select class="form-control" name="idTrimestreConcerne"
+										id="idTrimestreConcerne" >
+								<option th:each="t:${listofTrimestreActive}"
+											th:value="${t.idPeriodes}" th:inline="text">
+											[[${t.numeroTrim}]] 
+								</option>
+							</select>
+						</div>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						
+						<div class="form-group">
+							<label th:inline="text"> Année Scolaire: <span
+									class="redcolor">[[${anneeActive.intituleAnnee}]]</span></label>
+							<input type="hidden" name="idAnneeActive" id="idAnneeActive" 
+									class="form-control" th:value="${anneeActive.idPeriodes}" />
+						</div>
+						
+						<button type="submit" class="btn btn-primary  pull-right">
+							<span class="glyphicon glyphicon-send"></span> Envoyer
+						</button>
+						
+					</div>
+				</form>
+				<br/>
+				
+				<div th:if="${session.getrapporttriman}">
+					<label>
+						Actualiser la page pour générer automatiquement le rapport de conseil de classe une 
+						fois que les bulletins sont générés.
+					</label>	
+				</div>
+				
+				<div	class="col-md-6">
+					<form action="#"
+							th:action="@{/logesco/users/bulletins/lancerEditionsRapportConseilTrim}" method="get"
+							class="form-inline"  th:if="${session.getrapporttriman}"  target="_blank">
+							
+							<fieldset class="col-md-12" th:if="${session.getrapporttriman}">
+								<legend class="text-primary">Rapport de conseil trimestriel</legend>
+								<button type="submit" class="btn btn-success">
+									<span class="glyphicon glyphicon-cloud-download"></span> Générer le rapport de conseil de classe trimestriel
+								</button>
+							</fieldset>
+					
+					</form>
+				</div>
+				
+				<div	class="col-md-6">
+					<form action="#"
+							th:action="@{/logesco/users/bulletins/lancerEditionsRapportConseilTrimAn}" method="get"
+							class="form-inline"  th:if="${session.getrapportantrim}"  target="_blank">
+							
+							<fieldset class="col-md-12" th:if="${session.getrapportantrim}">
+								<legend class="text-primary">Rapport de conseil annuel</legend>
+								<button type="submit" class="btn btn-success">
+									<span class="glyphicon glyphicon-cloud-download"></span> Générer le rapport de conseil de classe annuel
+								</button>
+							</fieldset>
+					
+					</form>
+				</div>
+				
+			
+		</div>
+	<!-- FIN DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>

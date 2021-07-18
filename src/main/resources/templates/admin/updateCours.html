@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="admin/adminlayout">
+<head>
+<meta charset="UTF-8"/>
+<title>Configurer les cours</title>
+</head>
+<body>
+<div layout:fragment="formactionadmin">
+<!-- DEBUT DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+<div class="col-md-12   reculeverticalementmodifpasswordform">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4>Gérer les cours</h4>
+		</div>
+		<div class="panel-body">
+			<form action="#" th:action="@{/logesco/admin/postupdateCours}" 
+				method="post"   th:object="${updateCoursForm}" >
+				
+				<div class="col-md-6  col-md-offset-3">
+				
+				<div th:if="${param.enregcourssuccess}">
+					<h4 align="justify" class="alert alert-success">Enregistrement effectuée avec succès.</h4>
+				</div>
+				
+				<div th:if="${param.updatecourssuccess}">
+					<h4 align="justify" class="alert alert-success">Mise à jour effectuée avec succès.</h4>
+				</div>
+				
+				<div th:if="${param.supprimcourssuccess}">
+					<h4 align="justify" class="alert alert-success">Suppression effectuée avec succès.</h4>
+				</div>
+				
+				<div th:if="${param.updateCourserror}">
+					<h4 align="justify" class="alert alert-danger">
+						Tous les champs doivent être remplis et le coefficient d'un cours ne peut être qu'un entier naturel.
+					</h4>
+				</div>
+				
+				
+				<div th:if="${param.updatecourserrorCode}">
+					<h4 align="justify" class="alert alert-danger">Erreur de suppression: Le code spécifié ne peut être dupliqué.</h4>
+				</div>
+				
+				<div th:if="${param.supprimcourserrorEval}">
+					<h4 align="justify" class="alert alert-danger">Erreur de suppression: Des évaluations sont déjà enregistrés 
+						pour ce cours.</h4>
+				</div>
+				
+				
+				<fieldset>
+						<legend class="text-primary">Paramètres du cours (représentation d'une matiere dans une classe)</legend>
+						
+						<div th:if="${listofMatiere}">
+							<div class="form-group">
+								<label for="idMatiereAssocie"> Département d'appartenance: <span
+									class="redcolor">*</span></label>
+								<select class="form-control" name="idMatiereAssocie" 
+									id="idMatiereAssocie"  th:field="*{idMatiereAssocie}">
+											 
+									<option th:each="m:${listofMatiere}" th:value="${m.idMatiere}"
+											th:inline="text">
+											 [[${m.codeMatiere}]]/[[${m.intituleMatiere}]]
+									</option>
+														 
+								</select>
+							</div>
+							<div th:if="${#fields.hasErrors('idMatiereAssocie')}"
+								th:errors="*{idMatiereAssocie}" class="redcolor">Erreur de matiere de cours</div>
+							
+						</div>
+						
+						<div th:if="${listofClasses}">
+							<div class="form-group">
+								<label for="idClasseSelect"> Classe: <span
+										class="redcolor">*</span></label>
+								<input type="hidden"  readonly="readonly" name="idClasseSelect" id="idClasseSelect" th:if="${classeSelect}"
+										class="form-control" th:field="*{idClasseSelect}"  th:value="${classeSelect.idClasses}" />
+												
+								<input type="text"  readonly="readonly"  th:if="${classeSelect}"
+										class="form-control" 
+										th:value="${classeSelect.codeClasses+' '+ classeSelect.specialite.codeSpecialite+' '+classeSelect.numeroClasses}" />
+										
+								<!-- <select class="form-control" name="idClasseSelect" id="idClasseSelect"  th:field="*{idClasseSelect}">
+											 
+									<optgroup th:label="${n.codeNiveaux}" th:if="${listofNiveaux}" th:each="n:${listofNiveaux}">
+											
+										<option th:each="c:${n.listofClasses}" th:value="${c.idClasses}"
+											th:inline="text">
+											 [[${c.codeClasses}]] [[${c.specialite.codeSpecialite}]] [[${c.numeroClasses}]]
+										</option>
+												
+									</optgroup>
+													 
+								</select> -->
+										
+							</div>
+							<div th:if="${#fields.hasErrors('idClasseSelect')}"
+								th:errors="*{idClasseSelect}" class="redcolor">Erreur de classe de cours</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="codeCours"> Code du cours: <span
+										class="redcolor">*</span></label>
+							<input type="text" name="codeCours"
+								id="codeCours" class="form-control" th:value="*{codeCours}" th:field="*{codeCours}"
+								placeholder="Code " />
+						</div>
+						<div th:if="${#fields.hasErrors('codeCours')}"
+							th:errors="*{codeCours}" class="redcolor">Erreur de code de cours</div>
+						
+						<div class="form-group">
+							<label for="codeCours"> Intitulé du cours dans la 1<sup>ère</sup> langue de la classe: <span
+										class="redcolor">*</span></label>
+							<input type="text" name="intituleCours"
+										id="intituleCours" class="form-control" th:value="*{intituleCours}" th:field="*{intituleCours}"
+										placeholder="Intitule cours " />
+						</div>
+						<div th:if="${#fields.hasErrors('intituleCours')}"
+									th:errors="*{intituleCours}" class="redcolor">Erreur de intitule de cours</div>
+						
+					 	<div class="form-group">
+					 		<label for="codeCours"> Intitulé du cours dans la 2<sup>nd</sup> langue de la classe: <span
+										class="redcolor">*</span></label>
+							<input type="text" name="intitule2langueCours"
+								id="intitule2langueCours" class="form-control" th:value="*{intitule2langueCours}" th:field="*{intitule2langueCours}"
+								placeholder="Intitule cours dans la seconde langue " />
+						</div>
+						<div th:if="${#fields.hasErrors('intitule2langueCours')}"
+							th:errors="*{intitule2langueCours}" class="redcolor">Erreur de intitule de cours dans la seconde langue</div>
+						
+						<div class="form-group">
+							<label for="codeCours"> Coefficient du cours dans la classe: <span
+										class="redcolor">*</span></label>
+							<input type="text" name="coefCours"
+								id="coefCours" class="form-control" th:value="*{coefCours}" th:field="*{coefCours}"
+								placeholder="Coef cours " />
+						</div>
+						<div th:if="${#fields.hasErrors('coefCours')}"
+							th:errors="*{coefCours}" class="redcolor">Erreur de coef de cours</div>
+									
+						<input type="hidden" name="idCours"
+								id="idCours" class="form-control" th:value="*{idCours}" th:field="*{idCours}"/>	
+						
+						
+						<div class="form-group">
+								<label for="groupeCours"> Groupe d'appartenance dans la classe: <span
+									class="redcolor">*</span></label>
+								<select class="form-control" name="groupeCours" 
+									id="groupeCours"  th:field="*{groupeCours}">
+											 
+									<option value="Scientifique">Cours scientifique</option>
+									<option value="Litteraire">Cours littéraire</option>
+									<option value="Divers">Divers</option>
+														 
+								</select>
+							</div>
+							<div th:if="${#fields.hasErrors('groupeCours')}"
+								th:errors="*{groupeCours}" class="redcolor">Erreur de groupeCours de cours</div>
+						   
+						
+						<div th:if="${listofProf}">
+									<div class="form-group">
+										<label for="codeCours"> Identifiant de l'enseignant du cours: <span
+											class="redcolor">*</span></label>
+										<select class="form-control" name="idUsersAssocie" id="idUsersAssocie"  th:field="*{idUsersAssocie}">
+											 
+											 <optgroup label="Proviseur" th:if="${listofproviseur}">
+											 	<option th:each="p:${listofproviseur}" th:value="${p.idUsers}"
+													th:inline="text">
+													 [[${p.username}]] 
+												</option>
+											 </optgroup>
+											 
+											 <optgroup label="Censeurs" th:if="${listofcenseurs}">
+											 	<option th:each="p:${listofcenseurs}" th:value="${p.idUsers}"
+													th:inline="text">
+													 [[${p.username}]] 
+												</option>
+											 </optgroup>
+											 
+											 <optgroup label="SG" th:if="${listofsg}">
+											 	<option th:each="p:${listofsg}" th:value="${p.idUsers}"
+													th:inline="text">
+													 [[${p.username}]] 
+												</option>
+											 </optgroup>
+											 
+											  <optgroup label="Intendant" th:if="${listofintendant}">
+											 	<option th:each="p:${listofintendant}" th:value="${p.idUsers}"
+													th:inline="text">
+													 [[${p.username}]] 
+												</option>
+											 </optgroup>
+											 
+											  <optgroup label="Enseignants" th:if="${listofenseignants}">
+											 	<option th:each="p:${listofenseignants}" th:value="${p.idUsers}"
+													th:inline="text">
+													 [[${p.username}]] 
+												</option>
+											 </optgroup>
+											 
+										</select>
+									</div>
+									<div th:if="${#fields.hasErrors('idUsersAssocie')}"
+										th:errors="*{idUsersAssocie}" class="redcolor">Erreur de Users pour cours</div>
+								</div>
+						<div class="form-group">
+							<button type="submit" class="btn btn-primary  pull-right">
+								<span class="glyphicon glyphicon-save"></span> Envoyer
+							</button>
+						</div>
+				
+				</fieldset>
+				</div>
+				<hr  class="col-md-12"/>
+				<table class="table table-striped">
+					
+					<thead class="thead-light">
+						<tr>
+							<th class="text-center" scope="col">MATIERE</th>
+							 <th class="text-center" scope="col">CODE DU COURS</th>
+						    <th class="text-center" scope="col">INTITULE/INTITULE 2<sup>nd</sup> LANGUE </th>
+						   <!--  <th class="text-center" scope="col">INTITULE 2<sup>nd</sup> LANGUE</th> -->
+						    <th class="text-center" scope="col">COEF</th>
+							<th class="text-center" scope="col">IDENTIFIANT DE L'ENSEIGNANT</th>
+						    <th class="text-center" scope="col">CLASSE</th>
+						    <th class="text-center" scope="col">ACTION</th>
+						</tr>
+					</thead>
+				
+					<tbody>
+						<!-- LISTE DES DIFFERENTS COURS ENREGISTREE AU CAS OU CETTE LISTE EST DEJA DANS LE MODELE -->
+						<tr th:each="cours:${listofCours}" th:if="${listofCours}">
+							
+							<td th:inline="text">[[${cours.matiere.codeMatiere}]] <br/>
+								Cours [[${cours.groupeCours}]]
+							</td>
+							
+							<td th:inline="text">[[${cours.codeCours}]]</td>
+							
+							<td th:inline="text">[[${cours.intituleCours}]] <br/> [[${cours.intitule2langueCours}]] </td>
+							
+							<td th:inline="text">[[${cours.coefCours}]] </td>
+							
+							<td th:inline="text">[[${cours.proffesseur.nomsPers}]] [[${cours.proffesseur.prenomsPers}]]</td>
+							
+							<td th:inline="text">[[${cours.classe.codeClasses}]] [[${cours.classe.specialite.codeSpecialite}]] 
+								[[${cours.classe.numeroClasses}]] </td>
+							
+							
+							
+							<td>
+							
+								<div>
+									<span>
+										<a class="btn btn-primary btn-sm pull-left" href="#" 
+											th:href="@{/logesco/admin/getupdateCours(idCours=${cours.idCours}, idClasseAssocie=${cours.classe.idClasses},
+											numPageCours=${pageCouranteCours})}" role="button">
+											<span class="glyphicon glyphicon-edit"></span> Modifier
+										</a>
+									
+										<a class="btn btn-danger btn-sm pull-right" href="#" 
+											th:href="@{/logesco/admin/getsupprimerCours(idCours=${cours.idCours}, 
+												idClasseAssocie=${cours.classe.idClasses})}" role="button">
+												<span class="glyphicon glyphicon-trash"></span> Supprimer
+										</a>
+									</span>
+								</div>
+								
+							</td>
+							
+						</tr>
+					</tbody>
+				</table>
+				
+				<div class="container">
+					<ul class="pagination"><!-- nav nav-pills -->
+						<li th:each="p,status:${listofPagesCours}" th:class="${status.index==pageCouranteCours}?active:' ' ">
+							<a th:href="@{/logesco/admin/getupdateCours(numPageCours=${status.index},
+									idCours=*{idCours})}"
+									th:text="${status.index+1}"></a>
+						</li>
+					</ul>
+				</div> 
+				
+				<a class=" pull-right" href="#" 
+			      						th:href="@{/logesco/admin/exportlistCours}" 
+			      						role="button">
+			       <span class="glyphicon glyphicon-list"></span> 	Exporter la configuration des cours
+			     </a>
+				
+			</form>
+		</div>
+	</div>
+</div>
+<!-- fin DU FORMULAIRE PERMETTANT D'EFFECTUER L'ACTION DEMANDEE -->
+</div>
+</body>
+</html>
